@@ -1,0 +1,131 @@
+.navbar {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	padding: 0 40px;
+	height: 105px;
+	background-color: #fff;
+	border-bottom: 1px var(--color-text) solid;
+	position: sticky;
+	top: 0;
+	z-index: 100;
+}
+
+.navbar-logo a {
+	font-size: 1.4rem;
+	font-weight: 700;
+	letter-spacing: 0.2em;
+	color: var(--color-text);
+	text-decoration: none;
+}
+
+.navbar-links {
+	display: flex;
+	align-items: center;
+	gap: 60px;
+	list-style: none;
+	margin: 0;
+	padding: 0;
+}
+
+.navbar-links a {
+	font-size: 0.95rem;
+	font-weight: 700;
+	letter-spacing: 0.2em;
+	text-transform: uppercase;
+	color: var(--color-text);
+	text-decoration: none;
+	transition: opacity 0.2s;
+	font-family: var(--font-title);
+}
+
+.navbar-links a:hover {
+	opacity: 0.5;
+}
+
+.navbar-link--highlight {
+	color: #b5936b !important;
+}
+
+.navbar-icons {
+	display: flex;
+	align-items: center;
+	gap: 50px;
+	font-weight: 100;
+}
+
+.navbar-icon,
+.navbar-icon a {
+	background: none;
+	border: none;
+	cursor: pointer;
+	color: var(--color-text);
+	padding: 4px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	transition: opacity 0.2s;
+	font-family: var(--font-signature);
+	font-size: 2rem;
+	font-weight: 400;
+}
+
+.navbar-icon:hover {
+	opacity: 0.5;
+}
+
+.navbar-search {
+	position: absolute;
+	top: 110px;
+	right: 0;
+	width: 25%;
+	background-color: #fff;
+	/* border-bottom: 1px solid var(--color-text); */
+	padding: 16px 40px;
+	display: flex;
+	align-items: center;
+	gap: 16px;
+	animation: slideDown 0.2s ease;
+}
+
+.navbar-search-input {
+	flex: 1;
+	border: none;
+	border-bottom: 1px solid var(--color-text);
+	outline: none;
+	font-family: var(--font-body);
+	font-size: 1rem;
+	color: var(--color-text);
+	padding: 8px 0;
+	background: transparent;
+}
+
+.navbar-search-close {
+	background: none;
+	border: none;
+	cursor: pointer;
+	font-size: 1rem;
+	color: var(--color-text);
+	transition: opacity 0.2s;
+}
+
+.navbar-search-close:hover {
+	opacity: 0.5;
+}
+
+@keyframes slideDown {
+	from {
+		opacity: 0;
+		transform: translateY(-10px);
+	}
+	to {
+		opacity: 1;
+		transform: translateY(0);
+	}
+}
+
+.navbar-logo-img {
+	height: 100px;
+	width: auto;
+	margin-top: 7px;
+}

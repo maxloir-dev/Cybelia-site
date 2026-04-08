@@ -1,0 +1,7 @@
+.intro-text {
+	font-size: clamp(4rem, 12vw, 10rem);
+	font-weight: 900;
+	text-transform: uppercase;
+	letter-spacing: -0.05em;
+	line-height: 1;
+}

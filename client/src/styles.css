@@ -1,0 +1,60 @@
+/* Variables */
+:root {
+	--font-title: "Cinzel", serif;
+	--font-body: "Oswald", sans-serif;
+	--font-signature: "Great Vibes", cursive;
+
+	--color-primary: #111;
+	--color-secondary: #777;
+	--color-text: #965846;
+}
+
+/* Reset */
+* {
+	margin: 0;
+	padding: 0;
+	box-sizing: border-box;
+}
+
+/* Body */
+body {
+	font-family: var(--font-body);
+	font-weight: 200;
+	color: var(--color-text);
+	background-color: #fff;
+}
+
+/* Titres */
+h1,
+h2,
+h3 {
+	font-family: var(--font-title);
+	letter-spacing: 2px;
+	text-transform: uppercase;
+	color: var(--color-text);
+}
+
+/* Gros titre */
+h1 {
+	font-size: 3rem;
+}
+
+/* Sous titre */
+.subtitle {
+	font-size: 1.2rem;
+	color: var(--color-text);
+	font-weight: 200;
+}
+
+/* Signature */
+.signature {
+	font-family: var(--font-signature);
+	font-size: 2rem;
+}
+
+/* Container */
+.container {
+	max-width: 1200px;
+	margin: auto;
+	padding: 40px;
+}
