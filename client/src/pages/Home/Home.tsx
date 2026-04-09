@@ -1,11 +1,10 @@
 "use client";
 import { useState, useEffect } from "react";
-import SplitText from "../components/SplitText";
+import SplitText from "../../components/SplitText";
 import "./Home.css";
-import Hero from "../components/Hero/Hero";
-import Features from "../components/Features/Features";
-import CircularGallery from "../components/CircularGallery/CircularGallery";
-import Footer from "../components/Footer/Footer";
+import Hero from "../../components/Hero/Hero";
+import Features from "../../components/Features/Features";
+import CircularGallery from "../../components/CircularGallery/CircularGallery";
 
 interface HomeProps {
 	onIntroComplete: () => void;

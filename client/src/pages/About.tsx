@@ -1,4 +1,4 @@
-import BookPortfolio from "../components/BookPortfolio";
+import BookPortfolio from "../components/BookPortfolio/BookPortfolio";
 
 function Home() {
 	return (
