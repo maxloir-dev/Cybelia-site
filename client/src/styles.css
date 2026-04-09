@@ -7,6 +7,7 @@
 	--color-primary: #111;
 	--color-secondary: #777;
 	--color-text: #965846;
+	--color-background: #9e7b65;
 }
 
 /* Reset */
@@ -57,4 +58,8 @@ h1 {
 	max-width: 1200px;
 	margin: auto;
 	padding: 40px;
+}
+main {
+	padding: 0;
+	margin: 0;
 }
