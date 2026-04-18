@@ -6,7 +6,7 @@ import Home from "./pages/Home/Home";
 import Login from "./pages/Login/Login";
 import Register from "./pages/Register/Register";
 import Shop from "./pages/Shop";
-import Admin from "./pages/Admin";
+import Admin from "./pages/Admin/Admin";
 import About from "./pages/About";
 import Personnalise from "./pages/Personnalise";
 import Contact from "./pages/Contact";
