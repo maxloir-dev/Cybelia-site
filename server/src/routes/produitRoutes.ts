@@ -5,6 +5,7 @@ import {
 	addProduit,
 	editProduit,
 	removeProduit,
+	getProduitsByCategorieid,
 } from "../controllers/produitController";
 import { verifierToken, verifierAdmin } from "../middlewares/authMiddleware";
 
@@ -17,6 +18,9 @@ router.get("/", getProduits);
 
 // Récupère un produit par son id
 router.get("/:id", getProduit);
+
+// Récupère les produits par catégorie (public)
+router.get("/categorie/:id", getProduitsByCategorieid);
 
 // Routes protégées
 

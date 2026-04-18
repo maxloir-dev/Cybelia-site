@@ -1,6 +1,3 @@
-// Point d'entrée du serveur Node.js
-
-// Imports des outils
 import express from "express"; // Framework web
 import cors from "cors"; // Autorise React à communiquer avec le serveur
 import dotenv from "dotenv"; // Charge les variables d'environnement (.env)
@@ -11,6 +8,9 @@ import pool from "./config/database"; // Connexion à MySQL
 // Imports des routes
 import produitRoutes from "./routes/produitRoutes"; // Routes /api/produits
 import authRoutes from "./routes/authRoutes"; // Routes /api/auth
+import commandeRoutes from "./routes/commandeRoutes"; // Routes /api/commandes
+import utilisateurRoutes from "./routes/utilisateurRoutes"; // Routes /api/utilisateurs
+import categorieRoutes from "./routes/categorieRoutes"; // Routes /api/categories
 
 // Chargement des variables d'environnement
 dotenv.config();
@@ -28,6 +28,9 @@ app.use(express.json()); // Permet de lire le JSON dans les requêtes
 
 app.use("/api/produits", produitRoutes);
 app.use("/api/auth", authRoutes);
+app.use("/api/commandes", commandeRoutes);
+app.use("/api/utilisateurs", utilisateurRoutes);
+app.use("/api/categories", categorieRoutes);
 
 // Route de vérification que le serveur tourne
 app.get("/health", (req, res) => {
