@@ -3,7 +3,18 @@ import pool from "../config/database";
 // Requêtes SQL liées aux produits
 
 // Récupère tous les produits avec le nom de leur catégorie
-export const getAllProduits = async () => {
+export const getAllProduits = async (categorieId?: number) => {
+	if (categorieId) {
+		const [rows] = await pool.query(
+			`SELECT p.id, p.nom, p.description, p.prix, p.image_url, p.created_at,
+			        c.nom AS categorie
+			 FROM produits p
+			 JOIN categories c ON p.categorie_id = c.id
+			 WHERE p.categorie_id = ?`,
+			[categorieId],
+		);
+		return rows;
+	}
 	const [rows] = await pool.query(`
         SELECT p.id, p.nom, p.description, p.prix, p.image_url, p.created_at,
                c.nom AS categorie

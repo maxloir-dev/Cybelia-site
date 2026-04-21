@@ -17,8 +17,17 @@ function Navbar() {
 				<li>
 					<Link to="/">Accueil</Link>
 				</li>
-				<li>
-					<Link to="/shop">Shop</Link>
+				<li className="navbar-dropdown-wrapper">
+					<span className="navbar-dropdown-trigger">
+						Shop
+						<svg width="10" height="6" viewBox="0 0 10 6" fill="none" stroke="currentColor" strokeWidth="1.5">
+							<path d="M1 1l4 4 4-4" />
+						</svg>
+					</span>
+					<ul className="navbar-dropdown">
+						<li><Link to="/shop/affiches">Affiches</Link></li>
+						<li><Link to="/shop/cartes">Cartes postales</Link></li>
+					</ul>
 				</li>
 				<li>
 					<Link to="/personnalise" className="navbar-link--highlight">

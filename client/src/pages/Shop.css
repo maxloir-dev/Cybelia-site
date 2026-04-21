@@ -1,0 +1,41 @@
+.shop-accueil {
+  padding: 140px 40px 60px 40px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.shop-accueil-titre {
+  font-size: 2.5rem;
+  font-weight: bold;
+  margin-bottom: 60px;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+}
+
+.shop-categories {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 32px;
+}
+
+.shop-categorie-card {
+  display: flex;
+  align-items: flex-end;
+  height: 420px;
+  background-color: #f0ece6;
+  text-decoration: none;
+  color: var(--color-text);
+  transition: opacity 0.2s;
+  padding: 28px;
+}
+
+.shop-categorie-card:hover {
+  opacity: 0.85;
+}
+
+.shop-categorie-label {
+  font-size: 1.3rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
