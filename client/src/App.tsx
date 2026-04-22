@@ -11,6 +11,7 @@ import About from "./pages/About";
 import Personnalise from "./pages/Personnalise";
 import Contact from "./pages/Contact";
 import Panier from "./pages/Panier";
+import Show from "./components/Show_product/Show";
 import ProtectedRoute from "./components/ProtectedRoute";
 
 // ============================================
@@ -33,6 +34,9 @@ function App() {
 				/>
 				<Route path="/login" element={<Login />} />
 				<Route path="/register" element={<Register />} />
+<Route path="/shop/cartes" element={<Show categorieId={1} titre="Cartes postales" />} />
+				<Route path="/shop/affiches" element={<Show categorieId={2} titre="Affiches" />} />
+				<Route path="/admin" element={<Admin />} />
 				<Route path="/shop" element={<Shop />} />
 				<Route path="/about" element={<About />} />
 				<Route path="/contact" element={<Contact />} />
