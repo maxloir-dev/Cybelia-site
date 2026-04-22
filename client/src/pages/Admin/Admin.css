@@ -1,0 +1,377 @@
+/* Layout principal */
+
+.admin-main {
+	max-width: 1200px;
+	margin: 0 auto;
+	padding: 60px 40px;
+	min-height: 100vh;
+}
+
+.admin-header {
+	text-align: center;
+	margin-bottom: 60px;
+}
+
+.admin-header h1 {
+	font-size: 3rem;
+	margin-bottom: 12px;
+}
+
+/* Cartes d'accueil */
+
+.admin-cards {
+	display: grid;
+	grid-template-columns: repeat(3, 1fr);
+	gap: 24px;
+	margin-top: 40px;
+}
+
+.admin-card {
+	background: #060010;
+	border: 1px solid rgba(150, 88, 70, 0.2);
+	padding: 48px 32px;
+	cursor: pointer;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	gap: 16px;
+	text-align: center;
+	transition:
+		border-color 0.3s,
+		transform 0.3s;
+}
+
+.admin-card:hover {
+	border-color: var(--color-text);
+	transform: translateY(-4px);
+}
+
+.admin-card__icon {
+	font-size: 2.5rem;
+}
+
+.admin-card h2 {
+	color: #fff;
+	font-size: 1.4rem;
+	letter-spacing: 3px;
+}
+
+.admin-card p {
+	color: rgba(255, 255, 255, 0.5);
+	font-size: 0.9rem;
+}
+
+/* Bouton retour */
+
+.admin-retour {
+	background: none;
+	border: none;
+	color: var(--color-text);
+	font-family: var(--font-body);
+	font-size: 0.9rem;
+	letter-spacing: 1px;
+	cursor: pointer;
+	margin-bottom: 32px;
+	padding: 0;
+	transition: opacity 0.2s;
+}
+
+.admin-retour:hover {
+	opacity: 0.7;
+}
+
+/* Liste des éléments */
+
+.admin-liste {
+	display: flex;
+	flex-direction: column;
+	gap: 12px;
+	margin-top: 32px;
+}
+
+.admin-item {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	padding: 20px 24px;
+	border: 1px solid rgba(150, 88, 70, 0.2);
+	transition: border-color 0.2s;
+}
+
+.admin-item:hover {
+	border-color: var(--color-text);
+}
+
+.admin-item--cliquable {
+	cursor: pointer;
+}
+
+.admin-item__info {
+	display: flex;
+	flex-direction: column;
+	gap: 4px;
+}
+
+.admin-item__titre {
+	font-family: var(--font-title);
+	font-size: 1rem;
+	color: var(--color-primary);
+	letter-spacing: 1px;
+}
+
+.admin-item__detail {
+	font-size: 0.85rem;
+	color: var(--color-secondary);
+}
+
+.admin-item__prix {
+	font-family: var(--font-title);
+	font-size: 1.1rem;
+	color: var(--color-text);
+}
+
+.admin-item__fleche {
+	color: var(--color-text);
+	font-size: 1.2rem;
+}
+
+/* Actions produits */
+
+.admin-item__actions {
+	display: flex;
+	gap: 8px;
+}
+
+.admin-btn {
+	padding: 8px 16px;
+	border: none;
+	font-family: var(--font-body);
+	font-size: 0.8rem;
+	letter-spacing: 1px;
+	text-transform: uppercase;
+	cursor: pointer;
+	transition: opacity 0.2s;
+}
+
+.admin-btn:hover {
+	opacity: 0.8;
+}
+
+.admin-btn--modifier {
+	background-color: var(--color-text);
+	color: #fff;
+}
+
+.admin-btn--supprimer {
+	background-color: #c0392b;
+	color: #fff;
+}
+
+/* Filtres catégories */
+
+.admin-filtres {
+	display: flex;
+	gap: 12px;
+	margin-top: 24px;
+}
+
+.admin-filtre {
+	padding: 10px 24px;
+	border: 1px solid rgba(150, 88, 70, 0.3);
+	background: none;
+	font-family: var(--font-body);
+	font-size: 0.85rem;
+	letter-spacing: 1px;
+	text-transform: uppercase;
+	color: var(--color-secondary);
+	cursor: pointer;
+	transition: all 0.2s;
+}
+
+.admin-filtre:hover {
+	border-color: var(--color-text);
+	color: var(--color-text);
+}
+
+.admin-filtre--actif {
+	background-color: var(--color-text);
+	border-color: var(--color-text);
+	color: #fff;
+}
+
+/* Profil client */
+
+.admin-profil {
+	padding: 24px;
+	border: 1px solid rgba(150, 88, 70, 0.2);
+	margin-top: 24px;
+	margin-bottom: 32px;
+}
+
+.admin-profil h2 {
+	font-size: 1.2rem;
+	margin-bottom: 16px;
+}
+
+.admin-profil__info {
+	display: flex;
+	flex-direction: column;
+	gap: 8px;
+}
+
+.admin-profil__info p {
+	font-size: 0.9rem;
+	color: var(--color-secondary);
+}
+
+.admin-profil__info span {
+	font-family: var(--font-title);
+	color: var(--color-primary);
+	margin-right: 8px;
+	text-transform: uppercase;
+	font-size: 0.8rem;
+	letter-spacing: 1px;
+}
+
+.admin-historique h2 {
+	font-size: 1.2rem;
+	margin-bottom: 16px;
+}
+
+/* Détail produit */
+
+.admin-produit-detail {
+	display: grid;
+	grid-template-columns: 1fr 1fr;
+	gap: 48px;
+	margin-top: 32px;
+}
+
+.admin-produit-detail__image {
+	width: 100%;
+	aspect-ratio: 1;
+	object-fit: cover;
+}
+
+.admin-produit-detail__info {
+	display: flex;
+	flex-direction: column;
+	gap: 16px;
+}
+
+.admin-produit-detail__description {
+	color: var(--color-secondary);
+	line-height: 1.6;
+}
+
+.admin-produit-detail__prix {
+	font-family: var(--font-title);
+	font-size: 1.8rem;
+	color: var(--color-text);
+}
+
+.admin-produit-detail__date {
+	font-size: 0.85rem;
+	color: var(--color-secondary);
+}
+
+/* Chargement */
+
+.admin-chargement {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	min-height: 100vh;
+	font-family: var(--font-title);
+	letter-spacing: 2px;
+	color: var(--color-text);
+}
+
+/* ============================================
+   Edition inline
+============================================ */
+.admin-edit-input {
+	width: 100%;
+	background: transparent;
+	border: none;
+	border-bottom: 2px solid var(--color-text);
+	outline: none;
+	font-family: var(--font-body);
+	font-size: 1rem;
+	color: var(--color-primary);
+	padding: 4px 0;
+	transition: border-color 0.2s;
+}
+
+.admin-edit-input:focus {
+	border-bottom-color: var(--color-background);
+}
+
+.admin-edit-titre {
+	font-family: var(--font-title);
+	font-size: 2.5rem;
+	letter-spacing: 2px;
+	text-transform: uppercase;
+	color: var(--color-text);
+}
+
+.admin-edit-textarea {
+	resize: vertical;
+	min-height: 100px;
+	line-height: 1.6;
+	padding: 8px 0;
+}
+
+.admin-edit-prix-wrapper {
+	display: flex;
+	align-items: center;
+	gap: 4px;
+}
+
+.admin-edit-prix {
+	font-family: var(--font-title);
+	font-size: 1.8rem;
+	color: var(--color-text);
+	width: 120px;
+}
+
+.admin-edit-euro {
+	font-family: var(--font-title);
+	font-size: 1.8rem;
+	color: var(--color-text);
+}
+/* Formulaire ajout produit */
+
+.admin-form {
+	display: flex;
+	flex-direction: column;
+	gap: 24px;
+	margin-top: 32px;
+	max-width: 600px;
+}
+
+.admin-form__field {
+	display: flex;
+	flex-direction: column;
+	gap: 8px;
+}
+
+.admin-form__field label {
+	font-family: var(--font-body);
+	font-size: 0.85rem;
+	letter-spacing: 1px;
+	text-transform: uppercase;
+	color: var(--color-secondary);
+}
+
+.admin-form__row {
+	display: grid;
+	grid-template-columns: 1fr 1fr;
+	gap: 24px;
+}
+
+.admin-form__actions {
+	display: flex;
+	gap: 12px;
+	margin-top: 8px;
+}

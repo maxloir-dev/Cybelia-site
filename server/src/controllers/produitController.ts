@@ -5,6 +5,7 @@ import {
 	createProduit,
 	updateProduit,
 	deleteProduit,
+	getProduitsByCategorie,
 } from "../models/produitModel";
 
 // Routes publiques (tout le monde peut voir)
@@ -37,6 +38,17 @@ export const getProduit = async (req: Request, res: Response) => {
 		res
 			.status(500)
 			.json({ message: "Erreur lors de la récupération du produit" });
+	}
+};
+// Récupère les produits par catégorie
+export const getProduitsByCategorieid = async (req: Request, res: Response) => {
+	try {
+		const produits = await getProduitsByCategorie(Number(req.params.id));
+		res.json(produits);
+	} catch (error) {
+		res.status(500).json({
+			message: "Erreur lors de la récupération des produits par catégorie",
+		});
 	}
 };
 

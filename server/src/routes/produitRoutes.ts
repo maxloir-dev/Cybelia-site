@@ -1,12 +1,36 @@
 import { Router } from "express";
-import { getProduits, getProduit, addProduit, editProduit, removeProduit } from "../controllers/produitController";
+import {
+	getProduits,
+	getProduit,
+	addProduit,
+	editProduit,
+	removeProduit,
+	getProduitsByCategorieid,
+} from "../controllers/produitController";
+import { verifierToken, verifierAdmin } from "../middlewares/authMiddleware";
 
 const router = Router();
 
-router.get("/", getProduits); // retourne tous les produits
-router.get("/:id", getProduit); // retourne un produit par son ID
-router.post("/", addProduit);
-router.put("/:id", editProduit); // modifie un produit par son ID
-router.delete("/:id", removeProduit); // supprime un produit par son ID
+// Routes publiques
+
+// Récupère tous les produits
+router.get("/", getProduits);
+
+// Récupère un produit par son id
+router.get("/:id", getProduit);
+
+// Récupère les produits par catégorie (public)
+router.get("/categorie/:id", getProduitsByCategorieid);
+
+// Routes protégées
+
+// Ajoute un nouveau produit
+router.post("/", verifierToken, verifierAdmin, addProduit);
+
+// Modifie un produit existant
+router.put("/:id", verifierToken, verifierAdmin, editProduit);
+
+// Supprime un produit
+router.delete("/:id", verifierToken, verifierAdmin, removeProduit);
 
 export default router;
