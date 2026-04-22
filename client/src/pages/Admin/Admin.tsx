@@ -46,9 +46,9 @@ function Admin() {
 		nom: "",
 		description: "",
 		prix: 0,
-		image_url: "",
 		categorie_id: 1,
 	});
+  const [imageFile, setImageFile] = useState<File | null>(null);
 
 	// Navigation vers les vues
 
@@ -105,7 +105,7 @@ function Admin() {
 			formData.append("nom", nouveauProduit.nom);
 			formData.append("description", nouveauProduit.description);
 			formData.append("prix", String(nouveauProduit.prix));
-			formData.append("image_url", nouveauProduit.image_url);
+			if (imageFile) formData.append("image", imageFile);
 			formData.append("categorie_id", String(nouveauProduit.categorie_id));
 			await addProduit(formData);
 			// Réinitialise le formulaire et retourne à l'accueil
@@ -113,9 +113,9 @@ function Admin() {
 				nom: "",
 				description: "",
 				prix: 0,
-				image_url: "",
 				categorie_id: 1,
 			});
+      setImageFile(null);
 			setVue("accueil");
 		} catch {
 			alert("Erreur lors de l'ajout du produit");
@@ -574,20 +574,14 @@ function Admin() {
 					</div>
 
 					<div className="admin-form__field">
-						<label>URL de l'image</label>
-						<input
-							type="text"
-							className="admin-edit-input"
-							placeholder="ex: montagne.jpg"
-							value={nouveauProduit.image_url}
-							onChange={(e) =>
-								setNouveauProduit({
-									...nouveauProduit,
-									image_url: e.target.value,
-								})
-							}
-						/>
-					</div>
+            <label>Image</label>
+            <input
+              type="file"
+              accept="image/*"
+              className="admin-edit-input"
+              onChange={(e) => setImageFile(e.target.files?.[0] || null)}
+            />
+          </div>
 
 					<div className="admin-form__actions">
 						<button
