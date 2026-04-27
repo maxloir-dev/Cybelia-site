@@ -13,6 +13,7 @@ import {
 } from "../../api/utilisateurService";
 import type { Commande, Produit, Utilisateur } from "../../types";
 import "./Admin.css";
+import { uploadImage } from "../../api/uploadService";
 
 // Types des vues possibles
 
@@ -49,6 +50,8 @@ function Admin() {
 		image_url: "",
 		categorie_id: 1,
 	});
+	const [fichierImage, setFichierImage] = useState<File | null>(null);
+	const [previewImage, setPreviewImage] = useState<string>("");
 
 	// Navigation vers les vues
 
@@ -101,14 +104,22 @@ function Admin() {
 
 	const ajouterProduit = async () => {
 		try {
+			let image_url = "";
+
+			// Si une image a été sélectionnée on l'upload d'abord
+			if (fichierImage) {
+				image_url = await uploadImage(fichierImage);
+			}
+
 			const formData = new FormData();
 			formData.append("nom", nouveauProduit.nom);
 			formData.append("description", nouveauProduit.description);
 			formData.append("prix", String(nouveauProduit.prix));
-			formData.append("image_url", nouveauProduit.image_url);
+			formData.append("image_url", image_url);
 			formData.append("categorie_id", String(nouveauProduit.categorie_id));
 			await addProduit(formData);
-			// Réinitialise le formulaire et retourne à l'accueil
+
+			// Réinitialise le formulaire
 			setNouveauProduit({
 				nom: "",
 				description: "",
@@ -116,6 +127,8 @@ function Admin() {
 				image_url: "",
 				categorie_id: 1,
 			});
+			setFichierImage(null);
+			setPreviewImage("");
 			setVue("accueil");
 		} catch {
 			alert("Erreur lors de l'ajout du produit");
@@ -574,19 +587,26 @@ function Admin() {
 					</div>
 
 					<div className="admin-form__field">
-						<label>URL de l'image</label>
+						<label>Image du produit</label>
 						<input
-							type="text"
+							type="file"
+							accept="image/jpeg, image/png, image/webp"
 							className="admin-edit-input"
-							placeholder="ex: montagne.jpg"
-							value={nouveauProduit.image_url}
-							onChange={(e) =>
-								setNouveauProduit({
-									...nouveauProduit,
-									image_url: e.target.value,
-								})
-							}
+							onChange={(e) => {
+								const file = e.target.files?.[0];
+								if (file) {
+									setFichierImage(file);
+									setPreviewImage(URL.createObjectURL(file));
+								}
+							}}
 						/>
+						{previewImage && (
+							<img
+								src={previewImage}
+								alt="Prévisualisation"
+								className="admin-form__preview"
+							/>
+						)}
 					</div>
 
 					<div className="admin-form__actions">
