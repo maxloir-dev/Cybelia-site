@@ -1,0 +1,151 @@
+.contact-page {
+  padding: 140px 40px 80px 40px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.contact-header {
+  margin-bottom: 60px;
+}
+
+.contact-titre {
+  margin-bottom: 12px;
+}
+
+.contact-sous-titre {
+  color: var(--color-secondary);
+  font-size: 1rem;
+  font-weight: 200;
+}
+
+.contact-contenu {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 80px;
+  align-items: start;
+}
+
+.contact-form {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.contact-form-ligne {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+}
+
+.contact-form-champ {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.contact-form-champ label {
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--color-primary);
+}
+
+.contact-form-champ input,
+.contact-form-champ textarea {
+  padding: 12px;
+  border: 1px solid #ccc;
+  border-bottom: 2px solid var(--color-text);
+  font-family: var(--font-body);
+  font-size: 0.95rem;
+  font-weight: 200;
+  outline: none;
+  transition: border-color 0.2s;
+  background: transparent;
+}
+
+.contact-form-champ input:focus,
+.contact-form-champ textarea:focus {
+  border-color: var(--color-text);
+}
+
+.contact-form-champ textarea {
+  resize: vertical;
+}
+
+.contact-erreur {
+  font-size: 0.78rem;
+  color: #c0392b;
+}
+
+.contact-btn {
+  align-self: flex-start;
+  padding: 14px 40px;
+  background: var(--color-text);
+  color: white;
+  border: none;
+  cursor: pointer;
+  font-family: var(--font-title);
+  font-size: 0.85rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  transition: background 0.2s;
+}
+
+.contact-btn:hover {
+  background: var(--color-background);
+}
+
+.contact-succes {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.contact-succes p {
+  font-size: 1.1rem;
+  color: var(--color-secondary);
+}
+
+.contact-succes button {
+  align-self: flex-start;
+  padding: 12px 32px;
+  background: none;
+  border: 2px solid var(--color-text);
+  color: var(--color-text);
+  cursor: pointer;
+  font-family: var(--font-title);
+  font-size: 0.8rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  transition: all 0.2s;
+}
+
+.contact-succes button:hover {
+  background: var(--color-text);
+  color: white;
+}
+
+.contact-infos {
+  border-left: 2px solid var(--color-text);
+  padding-left: 40px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.contact-infos h2 {
+  font-size: 1.2rem;
+}
+
+.contact-infos p {
+  color: var(--color-secondary);
+  font-size: 0.9rem;
+  font-weight: 200;
+  line-height: 1.6;
+}
+
+.contact-email {
+  color: var(--color-text) !important;
+  font-weight: 400 !important;
+}
