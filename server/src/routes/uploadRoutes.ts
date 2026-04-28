@@ -11,7 +11,7 @@ router.post(
 	verifierToken,
 	verifierAdmin,
 	(req, res, next) => {
-		upload.single("image")(req, res, (err) => {
+		upload.single("image")(req, res, (err: any) => {
 			if (err) {
 				res.status(400).json({ message: err.message });
 				return;

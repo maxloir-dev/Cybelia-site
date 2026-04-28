@@ -12,6 +12,7 @@ import commandeRoutes from "./routes/commandeRoutes"; // Routes /api/commandes
 import utilisateurRoutes from "./routes/utilisateurRoutes"; // Routes /api/utilisateurs
 import categorieRoutes from "./routes/categorieRoutes"; // Routes /api/categories
 import uploadRoutes from "./routes/uploadRoutes"; // Routes /api/upload
+import contactRoutes from "./routes/contactRoutes"; // Routes /api/contact
 
 // Chargement des variables d'environnement
 dotenv.config();
@@ -33,6 +34,7 @@ app.use("/api/commandes", commandeRoutes);
 app.use("/api/utilisateurs", utilisateurRoutes);
 app.use("/api/categories", categorieRoutes);
 app.use("/api/upload", uploadRoutes);
+app.use("/api/contact", contactRoutes);
 
 // Route de vérification que le serveur tourne
 app.get("/health", (req, res) => {
