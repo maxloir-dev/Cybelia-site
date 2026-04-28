@@ -375,3 +375,10 @@
 	gap: 12px;
 	margin-top: 8px;
 }
+.admin-form__preview {
+	width: 200px;
+	height: 200px;
+	object-fit: cover;
+	margin-top: 12px;
+	border: 1px solid rgba(150, 88, 70, 0.2);
+}
