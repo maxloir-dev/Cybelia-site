@@ -13,7 +13,6 @@ type Form = {
   nom: string;
   description: string;
   prix: string;
-  image_url: string;
   categorie_id: number;
 };
 
@@ -21,7 +20,6 @@ const formVide: Form = {
   nom: "",
   description: "",
   prix: "",
-  image_url: "",
   categorie_id: 1,
 };
 
@@ -38,7 +36,10 @@ export default function Show({ categorieId, titre }: Props) {
   const [formEdition, setFormEdition] = useState<Form>({ ...formVide, categorie_id: categorieId });
   const [erreurs, setErreurs] = useState<Partial<Form>>({});
   const [erreursEdition, setErreursEdition] = useState<Partial<Form>>({});
-
+  const [imageFile, setImageFile] = useState<File | null>(null);
+  const [imageFileEdition, setImageFileEdition] = useState<File | null>(null);
+  const [produitDetail, setProduitDetail] = useState<Produit | null>(null);
+  const [recherche, setRecherche] = useState("");
   const fetchProduits = () => {
     fetch(`http://localhost:3000/api/produits?categorie_id=${categorieId}`)
       .then((res) => res.json())
@@ -55,28 +56,51 @@ export default function Show({ categorieId, titre }: Props) {
   };
 
   const valider = (f: Form) => {
-    const e: Partial<Form> = {};
-    if (!f.nom.trim())                          e.nom = "Le nom est obligatoire";
-    if (!f.prix.trim())                         e.prix = "Le prix est obligatoire";
-    else if (isNaN(Number(f.prix)) || Number(f.prix) < 0) e.prix = "Le prix doit être un nombre positif";
-    if (!f.image_url.trim())                    e.image_url = "L'image est obligatoire";
-    return e;
-  };
+  const e: Partial<Form> = {};
+
+  if (!f.nom.trim()) {
+    e.nom = "Le nom est obligatoire";
+  }
+
+  if (!f.prix.trim()) {
+    e.prix = "Le prix est obligatoire";
+  } else if (isNaN(Number(f.prix)) || Number(f.prix) < 0) {
+    e.prix = "Le prix doit être un nombre positif";
+  }
+
+  return e;
+};
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     const e_ = valider(form);
     if (Object.keys(e_).length > 0) { setErreurs(e_); return; }
     setErreurs({});
-    fetch("http://localhost:3000/api/produits", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ ...form, prix: Number(form.prix) }),
-    }).then(() => {
+
+    const uploadEtCreer = async () => {
+      let image_url = "";
+      if (imageFile) {
+        const formData = new FormData();
+        formData.append("image", imageFile);
+        const res = await fetch("http://localhost:3000/api/upload", {
+          method: "POST",
+          body: formData,
+        });
+        const data = await res.json();
+        image_url = data.url;
+      }
+      await fetch("http://localhost:3000/api/produits", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ ...form, prix: Number(form.prix), image_url }),
+      });
       setForm({ ...formVide, categorie_id: categorieId });
+      setImageFile(null);
       setModalOuverte(false);
       fetchProduits();
-    });
+    };
+
+    uploadEtCreer();
   };
 
   const ouvrirEdition = (p: Produit) => {
@@ -85,7 +109,6 @@ export default function Show({ categorieId, titre }: Props) {
       nom: p.nom,
       description: p.description,
       prix: String(p.prix),
-      image_url: p.image_url,
       categorie_id: categorieId,
     });
   };
@@ -99,14 +122,30 @@ export default function Show({ categorieId, titre }: Props) {
     const e_ = valider(formEdition);
     if (Object.keys(e_).length > 0) { setErreursEdition(e_); return; }
     setErreursEdition({});
-    fetch(`http://localhost:3000/api/produits/${produitEnEdition!.id}`, {
-      method: "PUT",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ ...formEdition, prix: Number(formEdition.prix) }),
-    }).then(() => {
+
+    const uploadEtModifier = async () => {
+      let image_url = produitEnEdition!.image_url;
+      if (imageFileEdition) {
+        const formData = new FormData();
+        formData.append("image", imageFileEdition);
+        const res = await fetch("http://localhost:3000/api/upload", {
+          method: "POST",
+          body: formData,
+        });
+        const data = await res.json();
+        image_url = data.url;
+      }
+      await fetch(`http://localhost:3000/api/produits/${produitEnEdition!.id}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ ...formEdition, prix: Number(formEdition.prix), image_url }),
+      });
       setProduitEnEdition(null);
+      setImageFileEdition(null);
       fetchProduits();
-    });
+    };
+
+    uploadEtModifier();
   };
 
   const handleDelete = (id: number) => {
@@ -114,21 +153,34 @@ export default function Show({ categorieId, titre }: Props) {
       .then(() => fetchProduits());
   };
 
+  const produitsFiltres = produits.filter((p) =>
+    p.nom.toLowerCase().includes(recherche.toLowerCase()) ||
+    p.description.toLowerCase().includes(recherche.toLowerCase())
+  );
+
   return (
-    <div className="shop-page">
-      <h1 className="shop-title">{titre}</h1>
-      <p className="shop-count">{produits.length} résultats affichés</p>
+      <div className="shop-page">
+        <div className="shop-top">
+          <h1 className="shop-title">{titre}</h1>
+          <input
+            className="shop-recherche"
+            type="text"
+            placeholder=" Rechercher..."
+            value={recherche}
+            onChange={(e) => setRecherche(e.target.value)}/>
+        </div>
+      <p className="shop-count">{produitsFiltres.length} résultats affichés</p>
 
       <div className="shop-grid">
-        {produits.map((p) => (
-          <div key={p.id} className="shop-card">
+        {produitsFiltres.map((p) => (
+          <div key={p.id} className="shop-card" onClick={() => setProduitDetail(p)}>
             <img src={p.image_url} alt={p.nom} className="shop-card-img" />
             <h3 className="shop-card-nom">{p.nom}</h3>
             <p className="shop-card-prix">{p.prix} €</p>
             <button className="shop-card-btn">Ajouter au panier</button>
             <div className="shop-card-actions">
-              <button className="shop-card-edit" onClick={() => ouvrirEdition(p)}>Modifier</button>
-              <button className="shop-card-delete" onClick={() => handleDelete(p.id)}>Supprimer</button>
+              <button className="shop-card-edit" onClick={(e) => { e.stopPropagation(); ouvrirEdition(p); }}>Modifier</button>
+              <button className="shop-card-delete" onClick={(e) => { e.stopPropagation(); handleDelete(p.id); }}>Supprimer</button>
             </div>
           </div>
         ))}
@@ -152,8 +204,7 @@ export default function Show({ categorieId, titre }: Props) {
                 {erreurs.prix && <span className="form-erreur">{erreurs.prix}</span>}
               </div>
               <div>
-                <input name="image_url" placeholder="URL de l'image *" value={form.image_url} onChange={handleChange} />
-                {erreurs.image_url && <span className="form-erreur">{erreurs.image_url}</span>}
+                  <input type="file" accept="image/*" onChange={(e) => setImageFile(e.target.files?.[0] || null)} />
               </div>
               <button type="submit">Ajouter</button>
             </form>
@@ -177,11 +228,28 @@ export default function Show({ categorieId, titre }: Props) {
                 {erreursEdition.prix && <span className="form-erreur">{erreursEdition.prix}</span>}
               </div>
               <div>
-                <input name="image_url" placeholder="URL de l'image *" value={formEdition.image_url} onChange={handleChangeEdition} />
-                {erreursEdition.image_url && <span className="form-erreur">{erreursEdition.image_url}</span>}
+                <input type="file" accept="image/*" onChange={(e) => setImageFileEdition(e.target.files?.[0] || null)} />
               </div>
               <button type="submit">Enregistrer</button>
             </form>
+          </div>
+        </div>
+      )}
+      {produitDetail && (
+        <div className="modal-overlay" onClick={() => setProduitDetail(null)}>
+          <div className="modal-detail" onClick={(e) => e.stopPropagation()}>
+            <button className="modal-fermer" onClick={() => setProduitDetail(null)}>✕</button>
+            <div className="detail-contenu">
+              <div className="detail-image">
+                <img src={produitDetail.image_url} alt={produitDetail.nom} />
+              </div>
+              <div className="detail-info">
+                <h2>{produitDetail.nom}</h2>
+                <p className="detail-prix">{produitDetail.prix} €</p>
+                <p className="detail-description">{produitDetail.description}</p>
+                <button className="btn-panier">Ajouter au panier</button>
+              </div>
+            </div>
           </div>
         </div>
       )}
