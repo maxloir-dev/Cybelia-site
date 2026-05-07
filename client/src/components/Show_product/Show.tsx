@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
-import "./show.css"
+import "./show.css";
+import { useCart } from "../../store/CartContext";
 
 type Produit = {
   id: number;
@@ -149,6 +150,8 @@ export default function Show({ categorieId, titre }: Props) {
       .then(() => fetchProduits());
   };
 
+  const { ajouterAuPanier } = useCart();
+
   const produitsFiltres = produits.filter((p) =>
     p.nom.toLowerCase().includes(recherche.toLowerCase()) ||
     p.description.toLowerCase().includes(recherche.toLowerCase())
@@ -179,7 +182,7 @@ export default function Show({ categorieId, titre }: Props) {
             <img src={p.image_url} alt={p.nom} className="shop-card-img" />
             <h3 className="shop-card-nom">{p.nom}</h3>
             <p className="shop-card-prix">{p.prix} €</p>
-            <button className="shop-card-btn">Ajouter au panier</button>
+            <button className="shop-card-btn" onClick={(e) => { e.stopPropagation(); ajouterAuPanier({ id: p.id, nom: p.nom, prix: Number(p.prix), image_url: p.image_url }); }}>Ajouter au panier</button>
             <div className="shop-card-actions">
               <button className="shop-card-edit" onClick={(e) => { e.stopPropagation(); ouvrirEdition(p); }}>Modifier</button>
               <button className="shop-card-delete" onClick={(e) => { e.stopPropagation(); handleDelete(p.id); }}>Supprimer</button>
@@ -280,7 +283,7 @@ export default function Show({ categorieId, titre }: Props) {
                 <h2>{produitDetail.nom}</h2>
                 <p className="detail-prix">{produitDetail.prix} €</p>
                 <p className="detail-description">{produitDetail.description}</p>
-                <button className="btn-panier">Ajouter au panier</button>
+                <button className="btn-panier" onClick={() => ajouterAuPanier({ id: produitDetail.id, nom: produitDetail.nom, prix: produitDetail.prix, image_url: produitDetail.image_url })}>Ajouter au panier</button>
               </div>
             </div>
           </div>
