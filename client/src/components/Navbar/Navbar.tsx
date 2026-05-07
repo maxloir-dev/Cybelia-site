@@ -3,10 +3,12 @@ import { useState } from "react";
 import "./Navbar.css";
 import cybeliaLogo from "../../assets/CybeliaLogoCouleur.svg";
 import { useAuth } from "../../store/AuthContext";
+import { useCart } from "../../store/CartContext";
 
 function Navbar() {
 	const [searchOpen, setSearchOpen] = useState(false);
 	const { estConnecte, estAdmin, deconnexion } = useAuth();
+	const { nombreArticles } = useCart();
 
 	return (
 		<nav className="navbar">
@@ -109,7 +111,7 @@ function Navbar() {
 					</button>
 				)}
 
-				<Link to="/panier" className="navbar-icon" aria-label="Panier">
+				<Link to="/panier" className="navbar-icon navbar-icon--panier" aria-label="Panier">
 					<svg
 						width="20"
 						height="20"
@@ -122,6 +124,9 @@ function Navbar() {
 						<line x1="3" y1="6" x2="21" y2="6" />
 						<path d="M16 10a4 4 0 0 1-8 0" />
 					</svg>
+					{nombreArticles > 0 && (
+						<span className="navbar-panier-badge">{nombreArticles}</span>
+					)}
 				</Link>
 			</div>
 			{searchOpen && (

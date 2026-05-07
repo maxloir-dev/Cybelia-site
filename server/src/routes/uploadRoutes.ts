@@ -1,17 +1,16 @@
 import { Router } from "express";
-import { uploadImage, upload } from "../controllers/uploadController";
+import { uploadMultipleImages, upload } from "../controllers/uploadController";
 import { verifierToken, verifierAdmin } from "../middlewares/authMiddleware";
 
 const router = Router();
 
-// Route d'upload d'image (gérante uniquement)
-
+// Route upload 2 images (principale + mockup)
 router.post(
-	"/",
-	verifierToken,
-	verifierAdmin,
+	"/multiple",
+	// verifierToken,
+	// verifierAdmin,
 	(req, res, next) => {
-		upload.single("image")(req, res, (err: any) => {
+		upload.array("images", 2)(req, res, (err: any) => {
 			if (err) {
 				res.status(400).json({ message: err.message });
 				return;
@@ -19,7 +18,7 @@ router.post(
 			next();
 		});
 	},
-	uploadImage,
+	uploadMultipleImages,
 );
 
 export default router;

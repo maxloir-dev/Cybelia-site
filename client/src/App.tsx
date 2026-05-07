@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { CartProvider } from "./store/CartContext";
 import Navbar from "./components/Navbar/Navbar";
 import Footer from "./components/Footer/Footer";
 import Home from "./pages/Home/Home";
@@ -24,6 +25,7 @@ function App() {
 	);
 
 	return (
+		<CartProvider>
 		<BrowserRouter>
 			{introPlayed && <Navbar />}
 			<Routes>
@@ -43,14 +45,8 @@ function App() {
 				<Route path="/personnalise" element={<Personnalise />} />
 
 				{/* Routes client connecté */}
-				<Route
-					path="/panier"
-					element={
-						<ProtectedRoute>
-							<Panier />
-						</ProtectedRoute>
-					}
-				/>
+				{/* <Route path="/panier" element={<ProtectedRoute><Panier /></ProtectedRoute>} /> */}
+				<Route path="/panier" element={<Panier />} />
 
 				{/* Routes gérante uniquement */}
 				<Route
@@ -64,6 +60,7 @@ function App() {
 			</Routes>
 			{introPlayed && <Footer />}
 		</BrowserRouter>
+		</CartProvider>
 	);
 }
 

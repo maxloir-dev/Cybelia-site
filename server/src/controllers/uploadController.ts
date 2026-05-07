@@ -7,7 +7,7 @@ import multer from "multer";
 const storage = multer.memoryStorage();
 
 const fileFilter = (
-	req: any,
+	_req: any,
 	file: Express.Multer.File,
 	cb: multer.FileFilterCallback,
 ) => {
@@ -25,30 +25,29 @@ export const upload = multer({
 	limits: { fileSize: 5 * 1024 * 1024 }, // 5MB max
 });
 
-// Upload une image vers Cloudinary
+const uploadVersCloudinary = async (file: Express.Multer.File): Promise<string> => {
+	const base64 = `data:${file.mimetype};base64,${file.buffer.toString("base64")}`;
+	const result = await cloudinary.uploader.upload(base64, {
+		folder: "cybelia",
+		transformation: [{ quality: "auto" }, { fetch_format: "auto" }],
+	});
+	return result.secure_url;
+};
 
-export const uploadImage = async (req: Request, res: Response) => {
+// Upload jusqu'à 2 images (image principale + mockup)
+export const uploadMultipleImages = async (req: Request, res: Response) => {
 	try {
-		if (!req.file) {
+		const files = req.files as Express.Multer.File[];
+		if (!files || files.length === 0) {
 			res.status(400).json({ message: "Aucune image fournie" });
 			return;
 		}
-
-		// Conversion du buffer en base64
-		const base64 = `data:${req.file.mimetype};base64,${req.file.buffer.toString("base64")}`;
-
-		// Envoi à Cloudinary
-		const result = await cloudinary.uploader.upload(base64, {
-			folder: "cybelia", // Dossier dans Cloudinary
-			transformation: [
-				{ quality: "auto" }, // Compression automatique
-				{ fetch_format: "auto" }, // Format optimal selon le navigateur
-			],
+		const urls = await Promise.all(files.map(uploadVersCloudinary));
+		res.json({
+			image_url: urls[0] ?? null,
+			mockup_url: urls[1] ?? null,
 		});
-
-		// On retourne l'URL de l'image
-		res.json({ url: result.secure_url });
 	} catch (error) {
-		res.status(500).json({ message: "Erreur lors de l'upload de l'image" });
+		res.status(500).json({ message: "Erreur lors de l'upload des images" });
 	}
 };
