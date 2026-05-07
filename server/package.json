@@ -6,7 +6,10 @@
 	"scripts": {
 		"dev": "nodemon --watch src --ext ts --exec ts-node src/index.ts",
 		"build": "tsc",
-		"start": "node dist/index.js"
+		"start": "node dist/index.js",
+		"db:migrate": "knex --knexfile knexfile.ts migrate:latest",
+		"db:rollback": "knex --knexfile knexfile.ts migrate:rollback",
+		"db:status": "knex --knexfile knexfile.ts migrate:status"
 	},
 	"keywords": [],
 	"author": "",
@@ -19,6 +22,7 @@
 		"dotenv": "^17.4.2",
 		"express": "^5.2.1",
 		"jsonwebtoken": "^9.0.3",
+		"knex": "^3.2.10",
 		"multer": "^2.1.1",
 		"mysql2": "^3.22.0"
 	},
@@ -27,6 +31,7 @@
 		"@types/cors": "^2.8.19",
 		"@types/express": "^5.0.6",
 		"@types/jsonwebtoken": "^9.0.10",
+		"@types/knex": "^0.15.2",
 		"@types/multer": "^2.1.0",
 		"@types/node": "^25.5.2",
 		"nodemon": "^3.1.14",

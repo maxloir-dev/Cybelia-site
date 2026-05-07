@@ -52,6 +52,8 @@ function Admin() {
 	});
 	const [fichierImage, setFichierImage] = useState<File | null>(null);
 	const [previewImage, setPreviewImage] = useState<string>("");
+	const [fichierImageEdit, setFichierImageEdit] = useState<File | null>(null);
+	const [previewImageEdit, setPreviewImageEdit] = useState<string>("");
 
 	// Navigation vers les vues
 
@@ -455,23 +457,64 @@ function Admin() {
 							)}
 						</p>
 
+						{/* Image */}
+						<div className="admin-form__field">
+							<label
+								style={{
+									fontSize: "0.85rem",
+									letterSpacing: "1px",
+									textTransform: "uppercase",
+									color: "var(--color-secondary)",
+								}}
+							>
+								Changer l'image
+							</label>
+							<input
+								type="file"
+								accept="image/jpeg, image/png, image/webp"
+								className="admin-edit-input"
+								onChange={(e) => {
+									const file = e.target.files?.[0];
+									if (file) {
+										setFichierImageEdit(file);
+										setPreviewImageEdit(URL.createObjectURL(file));
+									}
+								}}
+							/>
+							{previewImageEdit && (
+								<img
+									src={previewImageEdit}
+									alt="Prévisualisation"
+									className="admin-form__preview"
+								/>
+							)}
+						</div>
+
 						{/* Boutons */}
 						{modeEdition ? (
 							<div className="admin-item__actions">
 								<button
 									className="admin-btn admin-btn--modifier"
 									onClick={async () => {
-										// Trouver le categorie_id selon le nom
+										let image_url = produitEdite.image_url;
+
+										// Si une nouvelle image a été sélectionnée on l'upload
+										if (fichierImageEdit) {
+											image_url = await uploadImage(fichierImageEdit);
+										}
+
 										const categorie_id =
 											produitEdite.categorie === "Carte postale" ? 1 : 2;
 										const formData = new FormData();
 										formData.append("nom", produitEdite.nom);
 										formData.append("description", produitEdite.description);
 										formData.append("prix", String(produitEdite.prix));
-										formData.append("image_url", produitEdite.image_url);
+										formData.append("image_url", image_url);
 										formData.append("categorie_id", String(categorie_id));
 										await updateProduit(produitSelectionne.id, formData);
-										setProduitSelectionne(produitEdite);
+										setProduitSelectionne({ ...produitEdite, image_url });
+										setFichierImageEdit(null);
+										setPreviewImageEdit("");
 										setModeEdition(false);
 									}}
 								>
