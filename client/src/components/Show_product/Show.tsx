@@ -7,6 +7,7 @@ type Produit = {
   description: string;
   prix: number;
   image_url: string;
+  mockup_url?: string;
 };
 
 type Form = {
@@ -37,9 +38,13 @@ export default function Show({ categorieId, titre }: Props) {
   const [erreurs, setErreurs] = useState<Partial<Form>>({});
   const [erreursEdition, setErreursEdition] = useState<Partial<Form>>({});
   const [imageFile, setImageFile] = useState<File | null>(null);
+  const [mockupFile, setMockupFile] = useState<File | null>(null);
   const [imageFileEdition, setImageFileEdition] = useState<File | null>(null);
+  const [mockupFileEdition, setMockupFileEdition] = useState<File | null>(null);
   const [produitDetail, setProduitDetail] = useState<Produit | null>(null);
+  const [slideIndex, setSlideIndex] = useState(0);
   const [recherche, setRecherche] = useState("");
+
   const fetchProduits = () => {
     fetch(`http://localhost:3000/api/produits?categorie_id=${categorieId}`)
       .then((res) => res.json())
@@ -56,20 +61,24 @@ export default function Show({ categorieId, titre }: Props) {
   };
 
   const valider = (f: Form) => {
-  const e: Partial<Form> = {};
+    const e: Partial<Form> = {};
+    if (!f.nom.trim()) e.nom = "Le nom est obligatoire";
+    if (!f.prix.trim()) e.prix = "Le prix est obligatoire";
+    else if (isNaN(Number(f.prix)) || Number(f.prix) < 0) e.prix = "Le prix doit être un nombre positif";
+    return e;
+  };
 
-  if (!f.nom.trim()) {
-    e.nom = "Le nom est obligatoire";
-  }
-
-  if (!f.prix.trim()) {
-    e.prix = "Le prix est obligatoire";
-  } else if (isNaN(Number(f.prix)) || Number(f.prix) < 0) {
-    e.prix = "Le prix doit être un nombre positif";
-  }
-
-  return e;
-};
+  const uploadImages = async (principale: File | null, mockup: File | null) => {
+    const formData = new FormData();
+    if (principale) formData.append("images", principale);
+    if (mockup) formData.append("images", mockup);
+    const res = await fetch("http://localhost:3000/api/upload/multiple", {
+      method: "POST",
+      body: formData,
+    });
+    if (!res.ok) throw new Error("Échec de l'upload des images");
+    return res.json() as Promise<{ image_url: string; mockup_url: string | null }>;
+  };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -77,40 +86,31 @@ export default function Show({ categorieId, titre }: Props) {
     if (Object.keys(e_).length > 0) { setErreurs(e_); return; }
     setErreurs({});
 
-    const uploadEtCreer = async () => {
+    const run = async () => {
       let image_url = "";
-      if (imageFile) {
-        const formData = new FormData();
-        formData.append("image", imageFile);
-        const res = await fetch("http://localhost:3000/api/upload", {
-          method: "POST",
-          body: formData,
-        });
-        const data = await res.json();
-        image_url = data.url;
+      let mockup_url = null;
+      if (imageFile || mockupFile) {
+        const urls = await uploadImages(imageFile, mockupFile);
+        image_url = urls.image_url;
+        mockup_url = urls.mockup_url;
       }
       await fetch("http://localhost:3000/api/produits", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ ...form, prix: Number(form.prix), image_url }),
+        body: JSON.stringify({ ...form, prix: Number(form.prix), image_url, mockup_url }),
       });
       setForm({ ...formVide, categorie_id: categorieId });
       setImageFile(null);
+      setMockupFile(null);
       setModalOuverte(false);
       fetchProduits();
     };
-
-    uploadEtCreer();
+    run();
   };
 
   const ouvrirEdition = (p: Produit) => {
     setProduitEnEdition(p);
-    setFormEdition({
-      nom: p.nom,
-      description: p.description,
-      prix: String(p.prix),
-      categorie_id: categorieId,
-    });
+    setFormEdition({ nom: p.nom, description: p.description, prix: String(p.prix), categorie_id: categorieId });
   };
 
   const handleChangeEdition = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -123,29 +123,25 @@ export default function Show({ categorieId, titre }: Props) {
     if (Object.keys(e_).length > 0) { setErreursEdition(e_); return; }
     setErreursEdition({});
 
-    const uploadEtModifier = async () => {
+    const run = async () => {
       let image_url = produitEnEdition!.image_url;
-      if (imageFileEdition) {
-        const formData = new FormData();
-        formData.append("image", imageFileEdition);
-        const res = await fetch("http://localhost:3000/api/upload", {
-          method: "POST",
-          body: formData,
-        });
-        const data = await res.json();
-        image_url = data.url;
+      let mockup_url = produitEnEdition!.mockup_url ?? null;
+      if (imageFileEdition || mockupFileEdition) {
+        const urls = await uploadImages(imageFileEdition, mockupFileEdition);
+        image_url = urls.image_url;
+        mockup_url = urls.mockup_url;
       }
       await fetch(`http://localhost:3000/api/produits/${produitEnEdition!.id}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ ...formEdition, prix: Number(formEdition.prix), image_url }),
+        body: JSON.stringify({ ...formEdition, prix: Number(formEdition.prix), image_url, mockup_url }),
       });
       setProduitEnEdition(null);
       setImageFileEdition(null);
+      setMockupFileEdition(null);
       fetchProduits();
     };
-
-    uploadEtModifier();
+    run();
   };
 
   const handleDelete = (id: number) => {
@@ -158,22 +154,28 @@ export default function Show({ categorieId, titre }: Props) {
     p.description.toLowerCase().includes(recherche.toLowerCase())
   );
 
+  const ouvrirDetail = (p: Produit) => {
+    setProduitDetail(p);
+    setSlideIndex(0);
+  };
+
   return (
-      <div className="shop-page">
-        <div className="shop-top">
-          <h1 className="shop-title">{titre}</h1>
-          <input
-            className="shop-recherche"
-            type="text"
-            placeholder=" Rechercher..."
-            value={recherche}
-            onChange={(e) => setRecherche(e.target.value)}/>
-        </div>
+    <div className="shop-page">
+      <div className="shop-top">
+        <h1 className="shop-title">{titre}</h1>
+        <input
+          className="shop-recherche"
+          type="text"
+          placeholder=" Rechercher..."
+          value={recherche}
+          onChange={(e) => setRecherche(e.target.value)}
+        />
+      </div>
       <p className="shop-count">{produitsFiltres.length} résultats affichés</p>
 
       <div className="shop-grid">
         {produitsFiltres.map((p) => (
-          <div key={p.id} className="shop-card" onClick={() => setProduitDetail(p)}>
+          <div key={p.id} className="shop-card" onClick={() => ouvrirDetail(p)}>
             <img src={p.image_url} alt={p.nom} className="shop-card-img" />
             <h3 className="shop-card-nom">{p.nom}</h3>
             <p className="shop-card-prix">{p.prix} €</p>
@@ -188,6 +190,7 @@ export default function Show({ categorieId, titre }: Props) {
 
       <button className="btn-ouvrir-modal" onClick={() => setModalOuverte(true)}>+</button>
 
+      {/* Modale ajout */}
       {modalOuverte && (
         <div className="modal-overlay" onClick={() => setModalOuverte(false)}>
           <div className="modal-contenu" onClick={(e) => e.stopPropagation()}>
@@ -204,7 +207,12 @@ export default function Show({ categorieId, titre }: Props) {
                 {erreurs.prix && <span className="form-erreur">{erreurs.prix}</span>}
               </div>
               <div>
-                  <input type="file" accept="image/*" onChange={(e) => setImageFile(e.target.files?.[0] || null)} />
+                <label className="form-label">Image principale *</label>
+                <input type="file" accept="image/*" onChange={(e) => setImageFile(e.target.files?.[0] ?? null)} />
+              </div>
+              <div>
+                <label className="form-label">Image mockup (optionnel)</label>
+                <input type="file" accept="image/*" onChange={(e) => setMockupFile(e.target.files?.[0] ?? null)} />
               </div>
               <button type="submit">Ajouter</button>
             </form>
@@ -212,6 +220,7 @@ export default function Show({ categorieId, titre }: Props) {
         </div>
       )}
 
+      {/* Modale édition */}
       {produitEnEdition && (
         <div className="modal-overlay" onClick={() => setProduitEnEdition(null)}>
           <div className="modal-contenu" onClick={(e) => e.stopPropagation()}>
@@ -228,20 +237,44 @@ export default function Show({ categorieId, titre }: Props) {
                 {erreursEdition.prix && <span className="form-erreur">{erreursEdition.prix}</span>}
               </div>
               <div>
-                <input type="file" accept="image/*" onChange={(e) => setImageFileEdition(e.target.files?.[0] || null)} />
+                <label className="form-label">Image principale (laisser vide pour garder l'actuelle)</label>
+                <input type="file" accept="image/*" onChange={(e) => setImageFileEdition(e.target.files?.[0] ?? null)} />
+              </div>
+              <div>
+                <label className="form-label">Image mockup (laisser vide pour garder l'actuelle)</label>
+                <input type="file" accept="image/*" onChange={(e) => setMockupFileEdition(e.target.files?.[0] ?? null)} />
               </div>
               <button type="submit">Enregistrer</button>
             </form>
           </div>
         </div>
       )}
+
+      {/* Modale détail avec slider */}
       {produitDetail && (
         <div className="modal-overlay" onClick={() => setProduitDetail(null)}>
           <div className="modal-detail" onClick={(e) => e.stopPropagation()}>
             <button className="modal-fermer" onClick={() => setProduitDetail(null)}>✕</button>
             <div className="detail-contenu">
               <div className="detail-image">
-                <img src={produitDetail.image_url} alt={produitDetail.nom} />
+                <img
+                  src={slideIndex === 0 ? produitDetail.image_url : (produitDetail.mockup_url ?? produitDetail.image_url)}
+                  alt={produitDetail.nom}
+                />
+                {produitDetail.mockup_url && (
+                  <div className="slider-controls">
+                    <button
+                      className="slider-btn"
+                      onClick={() => setSlideIndex(slideIndex === 0 ? 1 : 0)}
+                    >
+                      {slideIndex === 0 ? "›" : "‹"}
+                    </button>
+                    <span className="slider-dots">
+                      <span className={slideIndex === 0 ? "dot actif" : "dot"} onClick={() => setSlideIndex(0)} />
+                      <span className={slideIndex === 1 ? "dot actif" : "dot"} onClick={() => setSlideIndex(1)} />
+                    </span>
+                  </div>
+                )}
               </div>
               <div className="detail-info">
                 <h2>{produitDetail.nom}</h2>

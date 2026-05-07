@@ -6,7 +6,7 @@ import pool from "../config/database";
 export const getAllProduits = async (categorieId?: number) => {
 	if (categorieId) {
 		const [rows] = await pool.query(
-			`SELECT p.id, p.nom, p.description, p.prix, p.image_url, p.created_at,
+			`SELECT p.id, p.nom, p.description, p.prix, p.image_url, p.mockup_url, p.created_at,
 			        c.nom AS categorie
 			 FROM produits p
 			 JOIN categories c ON p.categorie_id = c.id
@@ -16,7 +16,7 @@ export const getAllProduits = async (categorieId?: number) => {
 		return rows;
 	}
 	const [rows] = await pool.query(`
-        SELECT p.id, p.nom, p.description, p.prix, p.image_url, p.created_at,
+        SELECT p.id, p.nom, p.description, p.prix, p.image_url, p.mockup_url, p.created_at,
                c.nom AS categorie
         FROM produits p
         JOIN categories c ON p.categorie_id = c.id
@@ -28,7 +28,7 @@ export const getAllProduits = async (categorieId?: number) => {
 export const getProduitById = async (id: number) => {
 	const [rows]: any = await pool.query(
 		`
-        SELECT p.id, p.nom, p.description, p.prix, p.image_url, p.created_at,
+        SELECT p.id, p.nom, p.description, p.prix, p.image_url, p.mockup_url, p.created_at,
                c.nom AS categorie
         FROM produits p
         JOIN categories c ON p.categorie_id = c.id
@@ -46,13 +46,13 @@ export const createProduit = async (
 	prix: number,
 	image_url: string,
 	categorie_id: number,
+	mockup_url?: string,
 ) => {
 	const [result]: any = await pool.query(
-		// Le ? est remplacé par les valeurs du tableau — protège contre les injections SQL
-		"INSERT INTO produits (nom, description, prix, image_url, categorie_id) VALUES (?, ?, ?, ?, ?)",
-		[nom, description, prix, image_url, categorie_id],
+		"INSERT INTO produits (nom, description, prix, image_url, categorie_id, mockup_url) VALUES (?, ?, ?, ?, ?, ?)",
+		[nom, description, prix, image_url, categorie_id, mockup_url ?? null],
 	);
-	return result.insertId; // Retourne l'id du produit nouvellement créé
+	return result.insertId;
 };
 
 // Met à jour un produit existant par son id
@@ -63,10 +63,11 @@ export const updateProduit = async (
 	prix: number,
 	image_url: string,
 	categorie_id: number,
+	mockup_url?: string,
 ) => {
 	await pool.query(
-		"UPDATE produits SET nom = ?, description = ?, prix = ?, image_url = ?, categorie_id = ? WHERE id = ?",
-		[nom, description, prix, image_url, categorie_id, id],
+		"UPDATE produits SET nom = ?, description = ?, prix = ?, image_url = ?, categorie_id = ?, mockup_url = ? WHERE id = ?",
+		[nom, description, prix, image_url, categorie_id, mockup_url ?? null, id],
 	);
 };
 

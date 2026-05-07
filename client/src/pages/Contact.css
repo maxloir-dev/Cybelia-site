@@ -90,6 +90,7 @@
   letter-spacing: 0.2em;
   text-transform: uppercase;
   transition: background 0.2s;
+  border-radius: 4px;
 }
 
 .contact-btn:hover {
@@ -119,6 +120,7 @@
   letter-spacing: 0.15em;
   text-transform: uppercase;
   transition: all 0.2s;
+  border-radius: 4px;
 }
 
 .contact-succes button:hover {

@@ -66,6 +66,7 @@
   height: 250px;
   object-fit: cover;
   margin-bottom: 12px;
+  border-radius: 6px;
 }
 
 /* Nom du produit affiché sous l'image */
@@ -90,6 +91,7 @@
   font-size: 0.8rem;
   letter-spacing: 1px;
   text-transform: uppercase;
+  border-radius: 4px;
 }
 
 /* Au survol : fond coloré pour signaler l'interactivité */
@@ -122,6 +124,7 @@
   text-transform: uppercase;
   cursor: pointer;
   border: none;
+  border-radius: 4px;
 }
 
 /* Bouton "Modifier" — ouvre le formulaire pré-rempli pour modifier le produit */
@@ -252,6 +255,7 @@
   border: none;
   cursor: pointer;
   font-size: 1rem;
+  border-radius: 4px;
 }
 
 /* Message d'erreur rouge affiché sous un champ mal rempli */
@@ -290,6 +294,7 @@
 /* Colonne gauche : photo du produit en grand format */
 .detail-image {
   flex: 1;
+  position: relative;
 }
 
 /* L'image prend toute la largeur de sa colonne, recadrée sans déformation */
@@ -333,6 +338,65 @@
 
 .btn-panier:hover {
   background: #333;
+}
+
+.slider-controls {
+  position: absolute;
+  top: 50%;
+  right: 12px;
+  transform: translateY(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+.slider-btn {
+  background: rgba(255, 255, 255, 0.45);
+  backdrop-filter: blur(4px);
+  border: none;
+  color: white;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  font-size: 1.4rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.2s;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+.slider-btn:hover {
+  background: rgba(255, 255, 255, 0.7);
+  color: var(--color-text);
+}
+
+.slider-dots {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.5);
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.dot.actif {
+  background: white;
+}
+
+.form-label {
+  display: block;
+  font-size: 0.8rem;
+  color: var(--color-secondary);
+  margin-bottom: 6px;
 }
 
 .shop-top {

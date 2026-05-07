@@ -57,13 +57,14 @@ export const getProduitsByCategorieid = async (req: Request, res: Response) => {
 // Ajoute un nouveau produit
 export const addProduit = async (req: Request, res: Response) => {
 	try {
-		const { nom, description, prix, image_url, categorie_id } = req.body;
+		const { nom, description, prix, image_url, mockup_url, categorie_id } = req.body;
 		const id = await createProduit(
 			nom,
 			description,
 			prix,
 			image_url,
 			categorie_id,
+			mockup_url,
 		);
 		res.status(201).json({ message: "Produit créé avec succès", id });
 	} catch (error) {
@@ -74,7 +75,7 @@ export const addProduit = async (req: Request, res: Response) => {
 // Modifie un produit existant par son id
 export const editProduit = async (req: Request, res: Response) => {
 	try {
-		const { nom, description, prix, image_url, categorie_id } = req.body;
+		const { nom, description, prix, image_url, mockup_url, categorie_id } = req.body;
 		await updateProduit(
 			Number(req.params.id),
 			nom,
@@ -82,6 +83,7 @@ export const editProduit = async (req: Request, res: Response) => {
 			prix,
 			image_url,
 			categorie_id,
+			mockup_url,
 		);
 		res.json({ message: "Produit modifié avec succès" });
 	} catch (error) {
