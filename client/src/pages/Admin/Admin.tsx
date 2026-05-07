@@ -47,7 +47,6 @@ function Admin() {
 		nom: "",
 		description: "",
 		prix: 0,
-		image_url: "",
 		categorie_id: 1,
 	});
 	const [fichierImage, setFichierImage] = useState<File | null>(null);
@@ -126,7 +125,6 @@ function Admin() {
 				nom: "",
 				description: "",
 				prix: 0,
-				image_url: "",
 				categorie_id: 1,
 			});
 			setFichierImage(null);
