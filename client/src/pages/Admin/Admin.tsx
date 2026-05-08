@@ -148,23 +148,82 @@ function Admin() {
 					<p className="subtitle">Espace de gestion Cybelia</p>
 				</div>
 				<div className="admin-cards">
+					{/* Commandes */}
 					<div className="admin-card" onClick={allerCommandes}>
-						<div className="admin-card__icon">📦</div>
+						<svg
+							width="64"
+							height="64"
+							viewBox="0 0 24 24"
+							fill="none"
+							stroke="#fff"
+							strokeWidth="1.2"
+							strokeLinecap="round"
+							strokeLinejoin="round"
+						>
+							<path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z" />
+							<line x1="3" y1="6" x2="21" y2="6" />
+							<path d="M16 10a4 4 0 0 1-8 0" />
+						</svg>
 						<h2>Commandes</h2>
 						<p>Voir toutes les commandes</p>
 					</div>
+
+					{/* Clients */}
 					<div className="admin-card" onClick={allerClients}>
-						<div className="admin-card__icon">👥</div>
+						<svg
+							width="64"
+							height="64"
+							viewBox="0 0 24 24"
+							fill="none"
+							stroke="#fff"
+							strokeWidth="1.2"
+							strokeLinecap="round"
+							strokeLinejoin="round"
+						>
+							<circle cx="12" cy="8" r="4" />
+							<path d="M4 20c0-4 3.6-7 8-7s8 3 8 7" />
+						</svg>
 						<h2>Clients</h2>
 						<p>Gérer les clients</p>
 					</div>
+
+					{/* Produits */}
 					<div className="admin-card" onClick={() => allerProduits(1)}>
-						<div className="admin-card__icon">🖼️</div>
+						<svg
+							width="64"
+							height="64"
+							viewBox="0 0 24 24"
+							fill="none"
+							stroke="#fff"
+							strokeWidth="1.2"
+							strokeLinecap="round"
+							strokeLinejoin="round"
+						>
+							<rect x="3" y="3" width="18" height="18" rx="2" />
+							<line x1="3" y1="9" x2="21" y2="9" />
+							<line x1="3" y1="15" x2="21" y2="15" />
+							<line x1="9" y1="9" x2="9" y2="21" />
+							<line x1="15" y1="9" x2="15" y2="21" />
+						</svg>
 						<h2>Produits</h2>
 						<p>Gérer les produits</p>
 					</div>
+
+					{/* Ajouter */}
 					<div className="admin-card" onClick={() => setVue("ajouter-produit")}>
-						<div className="admin-card__icon">➕</div>
+						<svg
+							width="64"
+							height="64"
+							viewBox="0 0 24 24"
+							fill="none"
+							stroke="#fff"
+							strokeWidth="1.2"
+							strokeLinecap="round"
+							strokeLinejoin="round"
+						>
+							<path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
+							<path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
+						</svg>
 						<h2>Ajouter</h2>
 						<p>Nouveau produit</p>
 					</div>
