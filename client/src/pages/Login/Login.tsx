@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { login } from "../../api/authService";
 import { useAuth } from "../../store/AuthContext";
+import confetti from "canvas-confetti";
 import "./Login.css";
 
 // Page de connexion
@@ -22,13 +23,24 @@ function Login() {
 
 		try {
 			const data = await login(email, motDePasse);
+
+			confetti({
+				particleCount: 150,
+				spread: 70,
+				origin: { y: 0.6 },
+				zIndex: 1000,
+			});
+
 			// On stocke le token et les infos dans le contexte
 			connexion(data.token, data.role_id, data.id);
+
+			setTimeout(() => {
+				navigate("/");
+			}, 1500);
+
 			// Redirige vers l'accueil après connexion
-			navigate("/");
 		} catch {
 			setErreur("Email ou mot de passe incorrect");
-		} finally {
 			setChargement(false);
 		}
 	};

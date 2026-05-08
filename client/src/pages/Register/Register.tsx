@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { register } from "../../api/authService";
 import { useAuth } from "../../store/AuthContext";
+import confetti from "canvas-confetti";
 import "./Register.css";
 
 // ============================================
@@ -38,8 +39,19 @@ function Register() {
 			const data = await import("../../api/authService").then((s) =>
 				s.login(email, motDePasse),
 			);
-			connexion(data.token, data.role_id, data.id);
-			navigate("/");
+			//  LANCEMENT DES CONFETTIS
+			confetti({
+				particleCount: 150,
+				spread: 70,
+				origin: { y: 0.6 },
+				zIndex: 1000,
+			});
+
+			//  MISE EN PLACE DU DÉLAI AVANT REDIRECTION
+			setTimeout(() => {
+				connexion(data.token, data.role_id, data.id);
+				navigate("/");
+			}, 1500);
 		} catch {
 			setErreur("Cet email est déjà utilisé");
 		} finally {

@@ -15,6 +15,7 @@ import Panier from "./pages/Panier";
 import Show from "./components/Show_product/Show";
 import ProtectedRoute from "./components/ProtectedRoute";
 import Profil from "./pages/Profil/Profil";
+import "tailwindcss";
 
 function App() {
 	const [introPlayed, setIntroPlayed] = useState(
