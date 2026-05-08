@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+import ActionButton from "../ActionButton/ActionButton";
 import "./Hero.css";
 
 function Hero() {
@@ -16,12 +17,10 @@ function Hero() {
 					avec élégance et authenticité.
 				</p>
 				<div className="hero-buttons">
-					<Link to="/shop" className="hero-btn hero-btn--primary">
-						Découvrir la collection
-					</Link>
-					<Link to="/about" className="hero-btn hero-btn--secondary">
+					<ActionButton to="/shop">Découvrir la collection</ActionButton>
+					<ActionButton to="/about" className="hero-btn--secondary-style">
 						En savoir plus
-					</Link>
+					</ActionButton>
 				</div>
 			</div>
 		</section>

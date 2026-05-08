@@ -1,0 +1,56 @@
+:root {
+	/* Le terracotta classique est souvent autour de ce code */
+	--color-background: #9e7b65;
+}
+
+.custom-button {
+	position: relative;
+	padding: 12px 28px;
+	background-color: #ffffff;
+	color: var(--color-background);
+	border: 2px solid var(--color-background);
+	border-radius: 12px; /* Rectangle bien arrondi */
+	font-weight: 600;
+	font-family: inherit;
+	cursor: pointer;
+	overflow: hidden;
+	transition: color 0.4s ease-in-out;
+	z-index: 1;
+	text-decoration: none;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	outline: none;
+}
+
+/* Couche terracotta qui glisse */
+.custom-button::before {
+	content: "";
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	background-color: var(--color-background);
+
+	/* On réduit la largeur à 0 via scaleX et on fixe l'origine à gauche */
+	transform: scaleX(0);
+	transform-origin: left;
+
+	transition: transform 0.4s ease-in-out;
+	z-index: -1;
+}
+
+/* État au survol */
+.custom-button:hover {
+	color: #ffffff; /* Le texte passe en blanc */
+}
+
+.custom-button:hover::before {
+	transform: scaleX(1); /* Le fond s'étire jusqu'à 100% */
+}
+
+.button-text {
+	position: relative;
+	z-index: 2; /* S'assure que le texte reste au-dessus du fond qui glisse */
+}
