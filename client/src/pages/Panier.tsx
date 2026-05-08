@@ -4,6 +4,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { useCart } from "../store/CartContext";
 import { useAuth } from "../store/AuthContext";
 import { passerCommande } from "../api/commandeService";
+import ActionButton from "../components/ActionButton/ActionButton";
 import "./Panier.css";
 
 function Panier() {
@@ -97,76 +98,97 @@ function Panier() {
 
 	return (
 		<div className="panier-page">
-			<h1 className="panier-titre">Mon panier</h1>
+			<h1 className="panier-titre">
+				Mon panier <span className="panier-count">({items.length})</span>
+			</h1>
 
-			<div className="panier-liste">
-				{items.map((item) => (
-					<div key={item.id} className="panier-item">
-						<img
-							src={item.image_url}
-							alt={item.nom}
-							className="panier-item-img"
-						/>
-						<div className="panier-item-info">
-							<p className="panier-item-nom">{item.nom}</p>
-							<p className="panier-item-prix">
-								{item.prix.toFixed(2)} € / unité
-							</p>
-							<div className="panier-quantite">
-								<button
-									onClick={() => modifierQuantite(item.id, item.quantite - 1)}
-								>
-									−
-								</button>
-								<span>{item.quantite}</span>
-								<button
-									onClick={() => modifierQuantite(item.id, item.quantite + 1)}
-								>
-									+
-								</button>
+			<div className="panier-layout">
+				{/* Colonne gauche — articles */}
+				<div className="panier-gauche">
+					<div className="panier-liste">
+						{items.map((item) => (
+							<div key={item.id} className="panier-item">
+								<img
+									src={item.image_url}
+									alt={item.nom}
+									className="panier-item-img"
+								/>
+								<div className="panier-item-info">
+									<p className="panier-item-nom">{item.nom}</p>
+									<p className="panier-item-prix">
+										{item.prix.toFixed(2)} € / unité
+									</p>
+									<div className="panier-quantite">
+										<button
+											onClick={() =>
+												modifierQuantite(item.id, item.quantite - 1)
+											}
+										>
+											−
+										</button>
+										<span>{item.quantite}</span>
+										<button
+											onClick={() =>
+												modifierQuantite(item.id, item.quantite + 1)
+											}
+										>
+											+
+										</button>
+									</div>
+									<button
+										className="panier-item-supprimer"
+										onClick={() => supprimerDuPanier(item.id)}
+									>
+										Supprimer
+									</button>
+								</div>
+								<span className="panier-item-sous-total">
+									{(item.prix * item.quantite).toFixed(2)} €
+								</span>
 							</div>
+						))}
+					</div>
+				</div>
+
+				{/* Colonne droite — récap */}
+				<div className="panier-droite">
+					<div className="panier-recap">
+						<h2 className="panier-recap__titre">Récapitulatif</h2>
+
+						<div className="panier-recap__ligne">
+							<span>Sous-total</span>
+							<span>{total.toFixed(2)} €</span>
 						</div>
-						<div className="panier-item-droite">
-							<span className="panier-item-sous-total">
-								{(item.prix * item.quantite).toFixed(2)} €
-							</span>
-							<button
-								className="panier-item-supprimer"
-								onClick={() => supprimerDuPanier(item.id)}
-							>
-								Supprimer
+						<div className="panier-recap__ligne">
+							<span>Livraison</span>
+							<span>À définir</span>
+						</div>
+						<div className="panier-recap__ligne panier-recap__ligne--total">
+							<span>Total</span>
+							<span>{total.toFixed(2)} €</span>
+						</div>
+
+						{erreur && <p className="panier-erreur">{erreur}</p>}
+
+						<div className="panier-actions">
+							<ActionButton onClick={handleCommander} disabled={chargement}>
+								{chargement
+									? "Commande en cours..."
+									: estConnecte
+										? "Passer commande"
+										: "Se connecter pour commander"}
+							</ActionButton>
+							<ActionButton to="/shop" inverse={true} onClick={() => {}}>
+								Continuer mes achats
+							</ActionButton>
+							<button className="panier-btn-vider" onClick={viderPanier}>
+								Vider le panier
 							</button>
 						</div>
 					</div>
-				))}
-			</div>
-
-			{erreur && <p className="panier-erreur">{erreur}</p>}
-
-			<div className="panier-recap">
-				<p className="panier-total">Total : {total.toFixed(2)} €</p>
-				<div className="panier-actions">
-					<button className="panier-btn-vider" onClick={viderPanier}>
-						Vider le panier
-					</button>
-					<Link to="/shop" className="panier-btn-shop">
-						Continuer les achats
-					</Link>
-					<button
-						className="panier-btn-commander"
-						onClick={handleCommander}
-						disabled={chargement}
-					>
-						{chargement
-							? "Commande en cours..."
-							: estConnecte
-								? "Passer commande"
-								: "Se connecter pour commander"}
-					</button>
 				</div>
 			</div>
 		</div>
 	);
 }
-
 export default Panier;
