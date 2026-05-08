@@ -1,0 +1,212 @@
+/* ============================================
+   Overlay
+============================================ */
+.mini-panier-overlay {
+	position: fixed;
+	inset: 0;
+	background: rgba(0, 0, 0, 0.4);
+	z-index: 200;
+	animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+	from {
+		opacity: 0;
+	}
+	to {
+		opacity: 1;
+	}
+}
+
+/* ============================================
+   Drawer
+============================================ */
+.mini-panier {
+	position: fixed;
+	top: 15vh;
+	right: 0;
+	width: 420px;
+	height: 70vh;
+	background: #fff;
+	z-index: 201;
+	display: flex;
+	flex-direction: column;
+	gap: 24px;
+	padding: 40px 32px;
+	transform: translateX(100%);
+	transition: transform 0.4s cubic-bezier(0.77, 0, 0.175, 1);
+	box-shadow: -8px 0 32px rgba(0, 0, 0, 0.12);
+	border-radius: 16px 0 0 16px;
+}
+
+.mini-panier--ouvert {
+	transform: translateX(0);
+}
+
+/* ============================================
+   Header
+============================================ */
+.mini-panier__header {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+}
+
+.mini-panier__header h2 {
+	font-family: var(--font-title);
+	font-size: 1.2rem;
+	letter-spacing: 2px;
+	color: var(--color-primary);
+}
+
+.mini-panier__fermer {
+	background: none;
+	border: none;
+	cursor: pointer;
+	font-size: 1.2rem;
+	color: var(--color-secondary);
+	transition: opacity 0.2s;
+}
+
+.mini-panier__fermer:hover {
+	opacity: 0.6;
+}
+
+/* ============================================
+   Produit ajouté
+============================================ */
+.mini-panier__produit {
+	display: flex;
+	gap: 16px;
+	align-items: center;
+	padding: 20px 0;
+	border-top: 1px solid #eee;
+	border-bottom: 1px solid #eee;
+}
+
+.mini-panier__image {
+	width: 100px;
+	height: 100px;
+	object-fit: cover;
+}
+
+.mini-panier__info {
+	display: flex;
+	flex-direction: column;
+	gap: 8px;
+}
+
+.mini-panier__nom {
+	font-family: var(--font-title);
+	font-size: 1rem;
+	letter-spacing: 1px;
+	color: var(--color-primary);
+}
+
+.mini-panier__prix {
+	font-size: 0.95rem;
+	color: var(--color-text);
+}
+
+/* ============================================
+   Récap
+============================================ */
+.mini-panier__recap {
+	display: flex;
+	justify-content: space-between;
+	font-size: 0.9rem;
+	color: var(--color-secondary);
+}
+
+/* ============================================
+   Boutons
+============================================ */
+.mini-panier__actions {
+	display: flex;
+	flex-direction: column;
+	gap: 12px;
+	margin-top: auto;
+}
+
+.mini-panier__btn {
+	padding: 16px;
+	text-align: center;
+	font-family: var(--font-title);
+	font-size: 0.85rem;
+	letter-spacing: 2px;
+	text-transform: uppercase;
+	cursor: pointer;
+	transition: opacity 0.2s;
+	text-decoration: none;
+	border-radius: 0;
+}
+
+.mini-panier__btn--commander {
+	background: var(--color-primary);
+	color: #fff;
+	border: none;
+}
+
+.mini-panier__btn--continuer {
+	background: none;
+	color: var(--color-primary);
+	border: 1px solid var(--color-primary);
+}
+
+.mini-panier__btn:hover {
+	opacity: 0.8;
+}
+
+.mini-panier__produit--nouveau {
+	border-left: 3px solid var(--color-text);
+	padding-left: 12px;
+}
+
+.mini-panier__badge {
+	display: inline-block;
+	background: var(--color-text);
+	color: #fff;
+	font-size: 0.7rem;
+	letter-spacing: 1px;
+	text-transform: uppercase;
+	padding: 2px 8px;
+	border-radius: 4px;
+	margin-top: 4px;
+}
+
+.mini-panier__autres {
+	display: flex;
+	flex-direction: column;
+	gap: 12px;
+	overflow-y: auto;
+	max-height: 200px;
+}
+
+.mini-panier__autres-titre {
+	font-size: 0.8rem;
+	letter-spacing: 1px;
+	text-transform: uppercase;
+	color: var(--color-secondary);
+}
+
+.mini-panier__liste {
+	display: flex;
+	flex-direction: column;
+	gap: 12px;
+}
+
+.mini-panier__image--small {
+	width: 70px;
+	height: 70px;
+}
+
+.mini-panier__quantite {
+	font-size: 0.8rem;
+	color: var(--color-secondary);
+}
+
+.mini-panier__total {
+	font-family: var(--font-title);
+	font-size: 1.1rem;
+	color: var(--color-text);
+}

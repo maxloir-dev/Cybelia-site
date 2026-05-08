@@ -8,6 +8,7 @@ interface ActionButtonProps {
 	onClick?: () => void;
 	type?: "button" | "submit" | "reset";
 	className?: string;
+	inverse?: boolean;
 }
 
 const ActionButton = ({
@@ -16,25 +17,22 @@ const ActionButton = ({
 	onClick,
 	type = "button",
 	className = "",
+	inverse = false,
 }: ActionButtonProps) => {
 	const content = <span className="button-text">{children}</span>;
+	const classes = `custom-button ${inverse ? "custom-button--inverse" : ""} ${className}`;
 
 	// Si une destination est fournie, on utilise Link de react-router
 	if (to) {
 		return (
-			<Link to={to} className={`custom-button ${className}`}>
+			<Link to={to} className={classes}>
 				{content}
 			</Link>
 		);
 	}
 
-	// Sinon on utilise un bouton classique
 	return (
-		<button
-			className={`custom-button ${className}`}
-			onClick={onClick}
-			type={type}
-		>
+		<button className={classes} onClick={onClick} type={type}>
 			{content}
 		</button>
 	);

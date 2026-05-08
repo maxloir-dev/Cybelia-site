@@ -54,3 +54,15 @@
 	position: relative;
 	z-index: 2; /* S'assure que le texte reste au-dessus du fond qui glisse */
 }
+.custom-button--inverse {
+	background-color: var(--color-background);
+	color: #ffffff;
+}
+
+.custom-button--inverse::before {
+	background-color: #ffffff;
+}
+
+.custom-button--inverse:hover {
+	color: var(--color-background);
+}

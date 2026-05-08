@@ -16,6 +16,7 @@ import Show from "./components/Show_product/Show";
 import ProtectedRoute from "./components/ProtectedRoute";
 import Profil from "./pages/Profil/Profil";
 import "tailwindcss";
+import MiniPanier from "./components/MiniPanier/MiniPanier";
 
 function App() {
 	const [introPlayed, setIntroPlayed] = useState(
@@ -26,6 +27,7 @@ function App() {
 		<CartProvider>
 			<BrowserRouter>
 				{introPlayed && <Navbar />}
+				<MiniPanier />
 				<Routes>
 					{/* Routes publiques */}
 					<Route

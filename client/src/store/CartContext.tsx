@@ -1,4 +1,10 @@
-import { createContext, useContext, useState, useEffect } from "react";
+import {
+	createContext,
+	useContext,
+	useState,
+	useEffect,
+	useCallback,
+} from "react";
 import type { ReactNode } from "react";
 
 interface CartItem {
@@ -13,10 +19,13 @@ interface CartContextType {
 	items: CartItem[];
 	nombreArticles: number;
 	total: number;
+	dernierProduitAjoute: Omit<CartItem, "quantite"> | null;
+	miniPanierOuvert: boolean;
 	ajouterAuPanier: (produit: Omit<CartItem, "quantite">) => void;
 	supprimerDuPanier: (id: number) => void;
 	modifierQuantite: (id: number, quantite: number) => void;
 	viderPanier: () => void;
+	fermerMiniPanier: () => void;
 }
 
 const CartContext = createContext<CartContextType | null>(null);
@@ -26,6 +35,11 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
 		const saved = localStorage.getItem("panier");
 		return saved ? JSON.parse(saved) : [];
 	});
+	const [miniPanierOuvert, setMiniPanierOuvert] = useState(false);
+	const [dernierProduitAjoute, setDernierProduitAjoute] = useState<Omit<
+		CartItem,
+		"quantite"
+	> | null>(null);
 
 	useEffect(() => {
 		localStorage.setItem("panier", JSON.stringify(items));
@@ -43,6 +57,9 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
 			}
 			return [...prev, { ...produit, quantite: 1 }];
 		});
+		// Ouvre le mini panier
+		setDernierProduitAjoute(produit);
+		setMiniPanierOuvert(true);
 	};
 
 	const supprimerDuPanier = (id: number) => {
@@ -57,6 +74,7 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
 	};
 
 	const viderPanier = () => setItems([]);
+	const fermerMiniPanier = useCallback(() => setMiniPanierOuvert(false), []);
 
 	const nombreArticles = items.reduce((acc, item) => acc + item.quantite, 0);
 	const total = items.reduce((acc, item) => acc + item.prix * item.quantite, 0);
@@ -67,10 +85,13 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
 				items,
 				nombreArticles,
 				total,
+				dernierProduitAjoute,
+				miniPanierOuvert,
 				ajouterAuPanier,
 				supprimerDuPanier,
 				modifierQuantite,
 				viderPanier,
+				fermerMiniPanier,
 			}}
 		>
 			{children}
@@ -80,6 +101,7 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
 
 export const useCart = () => {
 	const context = useContext(CartContext);
-	if (!context) throw new Error("useCart doit être utilisé dans un CartProvider");
+	if (!context)
+		throw new Error("useCart doit être utilisé dans un CartProvider");
 	return context;
 };
