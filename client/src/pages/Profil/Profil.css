@@ -1,0 +1,315 @@
+/* ============================================
+   Layout principal
+============================================ */
+.profil-main {
+	margin: 0 auto;
+	padding: 140px 40px 40px 40px;
+	min-height: 100vh;
+	display: flex;
+	flex-direction: column;
+}
+
+/* ============================================
+   En-tête profil
+============================================ */
+.profil-header {
+	text-align: center;
+	margin-bottom: 60px;
+}
+
+.profil-header h1 {
+	font-size: 3rem;
+	margin-bottom: 12px;
+}
+
+/* ============================================
+   Cartes d'accueil — effet verre flottant
+============================================ */
+.profil-cards {
+	display: grid;
+	grid-template-columns: repeat(3, 1fr);
+	gap: 24px;
+	margin-top: 60px;
+}
+
+.profil-card {
+	background: var(--color-text);
+	backdrop-filter: blur(16px);
+	-webkit-backdrop-filter: blur(16px);
+	border: 1px solid transparent;
+	box-shadow:
+		0 8px 32px rgba(150, 88, 70, 0.2),
+		0 2px 8px rgba(0, 0, 0, 0.1),
+		inset 0 1px 0 rgba(255, 255, 255, 0.08);
+	cursor: pointer;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	gap: 28px;
+	text-align: center;
+	border-radius: 24px;
+	height: 420px;
+	transition: border-color 0.4s ease;
+	opacity: 0;
+	animation:
+		cardAppear 1.6s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards,
+		respiration 4s ease-in-out infinite;
+}
+
+.profil-card:nth-child(1) {
+	animation-delay: 0.2s, 1.8s;
+	animation-duration: 1.6s, 4s;
+}
+
+.profil-card:nth-child(2) {
+	animation-delay: 0.45s, 2.05s;
+	animation-duration: 1.6s, 4s;
+}
+
+.profil-card:nth-child(3) {
+	animation-delay: 0.7s, 2.3s;
+	animation-duration: 1.6s, 4s;
+}
+
+.profil-card:hover {
+	border-color: rgba(255, 255, 255, 0.6);
+	animation-play-state: paused;
+	box-shadow:
+		0 32px 64px rgba(150, 88, 70, 0.3),
+		0 8px 20px rgba(0, 0, 0, 0.15),
+		inset 0 1px 0 rgba(255, 255, 255, 0.12);
+}
+
+@keyframes cardAppear {
+	0% {
+		opacity: 0;
+		transform: translateY(80px);
+	}
+	100% {
+		opacity: 1;
+		transform: translateY(0);
+	}
+}
+@keyframes respiration {
+	0%,
+	100% {
+		transform: scale(1);
+		background: var(--color-text);
+		box-shadow:
+			0 8px 32px rgba(150, 88, 70, 0.2),
+			0 2px 8px rgba(0, 0, 0, 0.1);
+	}
+	50% {
+		transform: scale(1.015);
+		background: #c4785e;
+		box-shadow:
+			0 12px 40px rgba(150, 88, 70, 0.4),
+			0 4px 12px rgba(0, 0, 0, 0.15);
+	}
+}
+
+.profil-card:hover {
+	transform: translateY(-8px) scale(1.02);
+	border-color: rgba(255, 255, 255, 0.6);
+	box-shadow:
+		0 32px 64px rgba(150, 88, 70, 0.3),
+		0 8px 20px rgba(0, 0, 0, 0.15),
+		inset 0 1px 0 rgba(255, 255, 255, 0.12);
+	animation-play-state: paused;
+}
+
+.profil-card__icon {
+	font-size: 4rem;
+	filter: drop-shadow(0 2px 6px rgba(0, 0, 0, 0.3));
+	transition: transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.profil-card svg {
+	transition: transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+	filter: drop-shadow(0 2px 6px rgba(0, 0, 0, 0.3));
+}
+
+.profil-card:hover svg {
+	transform: scale(1.15);
+}
+
+.profil-card h2 {
+	color: #fff;
+	font-size: 1.4rem;
+	letter-spacing: 3px;
+}
+
+.profil-card p {
+	color: rgba(255, 255, 255, 0.6);
+	font-size: 0.95rem;
+	line-height: 1.6;
+	padding: 0 24px;
+}
+
+/* ============================================
+   Bouton retour
+============================================ */
+.profil-retour {
+	background: none;
+	border: none;
+	color: var(--color-text);
+	font-family: var(--font-body);
+	font-size: 0.9rem;
+	letter-spacing: 1px;
+	cursor: pointer;
+	margin-bottom: 32px;
+	padding: 0;
+	transition: opacity 0.2s;
+}
+
+.profil-retour:hover {
+	opacity: 0.7;
+}
+
+/* ============================================
+   Liste des commandes
+============================================ */
+.profil-liste {
+	display: flex;
+	flex-direction: column;
+	gap: 12px;
+	margin-top: 32px;
+}
+
+.profil-item {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	padding: 20px 24px;
+	border: 1px solid rgba(150, 88, 70, 0.2);
+	transition: border-color 0.2s;
+}
+
+.profil-item:hover {
+	border-color: var(--color-text);
+}
+
+.profil-item__info {
+	display: flex;
+	flex-direction: column;
+	gap: 4px;
+}
+
+.profil-item__titre {
+	font-family: var(--font-title);
+	font-size: 1rem;
+	color: var(--color-primary);
+	letter-spacing: 1px;
+}
+
+.profil-item__detail {
+	font-size: 0.85rem;
+	color: var(--color-secondary);
+}
+
+.profil-item__prix {
+	font-family: var(--font-title);
+	font-size: 1.1rem;
+	color: var(--color-text);
+}
+
+/* ============================================
+   Formulaires
+============================================ */
+.profil-form {
+	display: flex;
+	flex-direction: column;
+	gap: 24px;
+	margin-top: 32px;
+	max-width: 600px;
+}
+
+.profil-form__row {
+	display: grid;
+	grid-template-columns: 1fr 1fr;
+	gap: 24px;
+}
+
+.profil-form__field {
+	display: flex;
+	flex-direction: column;
+	gap: 8px;
+}
+
+.profil-form__field label {
+	font-family: var(--font-body);
+	font-size: 0.85rem;
+	letter-spacing: 1px;
+	text-transform: uppercase;
+	color: var(--color-secondary);
+}
+
+.profil-form__field input {
+	padding: 12px 16px;
+	border: none;
+	border-bottom: 2px solid var(--color-text);
+	outline: none;
+	font-family: var(--font-body);
+	font-size: 1rem;
+	color: var(--color-primary);
+	transition: border-color 0.2s;
+	background: transparent;
+}
+
+.profil-form__field input:focus {
+	border-bottom-color: var(--color-background);
+}
+
+.profil-btn {
+	margin-top: 8px;
+	padding: 14px;
+	background-color: var(--color-text);
+	color: #fff;
+	border: none;
+	font-family: var(--font-title);
+	font-size: 0.9rem;
+	letter-spacing: 2px;
+	text-transform: uppercase;
+	cursor: pointer;
+	transition: background-color 0.2s;
+	max-width: 300px;
+}
+
+.profil-btn:hover {
+	background-color: var(--color-background);
+}
+
+/* ============================================
+   Messages
+============================================ */
+.profil-message {
+	color: #27ae60;
+	font-size: 0.9rem;
+	padding: 10px;
+	border: 1px solid #27ae60;
+	margin-top: 16px;
+	max-width: 600px;
+}
+
+.profil-erreur {
+	color: #c0392b;
+	font-size: 0.9rem;
+	padding: 10px;
+	border: 1px solid #c0392b;
+	margin-top: 16px;
+	max-width: 600px;
+}
+
+/* ============================================
+   Chargement
+============================================ */
+.profil-chargement {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	min-height: 100vh;
+	font-family: var(--font-title);
+	letter-spacing: 2px;
+	color: var(--color-text);
+}

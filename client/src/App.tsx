@@ -14,10 +14,7 @@ import Contact from "./pages/Contact";
 import Panier from "./pages/Panier";
 import Show from "./components/Show_product/Show";
 import ProtectedRoute from "./components/ProtectedRoute";
-
-// ============================================
-// Configuration des routes de l'application
-// ============================================
+import Profil from "./pages/Profil/Profil";
 
 function App() {
 	const [introPlayed, setIntroPlayed] = useState(
@@ -26,40 +23,59 @@ function App() {
 
 	return (
 		<CartProvider>
-		<BrowserRouter>
-			{introPlayed && <Navbar />}
-			<Routes>
-				{/* Routes publiques */}
-				<Route
-					path="/"
-					element={<Home onIntroComplete={() => setIntroPlayed(true)} />}
-				/>
-				<Route path="/login" element={<Login />} />
-				<Route path="/register" element={<Register />} />
-<Route path="/shop/cartes" element={<Show categorieId={1} titre="Cartes postales" />} />
-				<Route path="/shop/affiches" element={<Show categorieId={2} titre="Affiches" />} />
-				<Route path="/admin" element={<Admin />} />
-				<Route path="/shop" element={<Shop />} />
-				<Route path="/about" element={<About />} />
-				<Route path="/contact" element={<Contact />} />
-				<Route path="/personnalise" element={<Personnalise />} />
+			<BrowserRouter>
+				{introPlayed && <Navbar />}
+				<Routes>
+					{/* Routes publiques */}
+					<Route
+						path="/"
+						element={<Home onIntroComplete={() => setIntroPlayed(true)} />}
+					/>
+					<Route path="/login" element={<Login />} />
+					<Route path="/register" element={<Register />} />
+					<Route path="/shop" element={<Shop />} />
+					<Route
+						path="/shop/cartes"
+						element={<Show categorieId={1} titre="Cartes postales" />}
+					/>
+					<Route
+						path="/shop/affiches"
+						element={<Show categorieId={2} titre="Affiches" />}
+					/>
+					<Route path="/about" element={<About />} />
+					<Route path="/contact" element={<Contact />} />
+					<Route path="/personnalise" element={<Personnalise />} />
 
-				{/* Routes client connecté */}
-				{/* <Route path="/panier" element={<ProtectedRoute><Panier /></ProtectedRoute>} /> */}
-				<Route path="/panier" element={<Panier />} />
+					{/* Routes client connecté */}
+					<Route
+						path="/panier"
+						element={
+							<ProtectedRoute>
+								<Panier />
+							</ProtectedRoute>
+						}
+					/>
+					<Route
+						path="/profil"
+						element={
+							<ProtectedRoute>
+								<Profil />
+							</ProtectedRoute>
+						}
+					/>
 
-				{/* Routes gérante uniquement */}
-				<Route
-					path="/admin"
-					element={
-						<ProtectedRoute adminSeulement={true}>
-							<Admin />
-						</ProtectedRoute>
-					}
-				/>
-			</Routes>
-			{introPlayed && <Footer />}
-		</BrowserRouter>
+					{/* Routes gérante uniquement */}
+					<Route
+						path="/admin"
+						element={
+							<ProtectedRoute adminSeulement={true}>
+								<Admin />
+							</ProtectedRoute>
+						}
+					/>
+				</Routes>
+				{introPlayed && <Footer />}
+			</BrowserRouter>
 		</CartProvider>
 	);
 }

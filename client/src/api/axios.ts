@@ -27,7 +27,11 @@ api.interceptors.response.use(
 	(response) => response,
 	(error) => {
 		// Si le token est expiré ou invalide → on déconnecte l'utilisateur
-		if (error.response?.status === 401) {
+		// Sauf si c'est une erreur de mot de passe incorrect
+		if (
+			error.response?.status === 401 &&
+			!error.config.url.includes("/auth/mot-de-passe")
+		) {
 			localStorage.removeItem("token");
 			window.location.href = "/login";
 		}

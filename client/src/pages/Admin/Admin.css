@@ -22,24 +22,105 @@
 
 .admin-cards {
 	display: grid;
-	grid-template-columns: repeat(3, 1fr);
+	grid-template-columns: repeat(4, 1fr);
 	gap: 24px;
-	margin-top: 40px;
+	margin-top: 60px;
 }
 
 .admin-card {
-	background: #060010;
-	border: 1px solid rgba(150, 88, 70, 0.2);
-	padding: 48px 32px;
+	background: var(--color-text);
+	backdrop-filter: blur(16px);
+	-webkit-backdrop-filter: blur(16px);
+	border: 1px solid transparent;
+	box-shadow:
+		0 8px 32px rgba(150, 88, 70, 0.2),
+		0 2px 8px rgba(0, 0, 0, 0.1),
+		inset 0 1px 0 rgba(255, 255, 255, 0.08);
 	cursor: pointer;
 	display: flex;
 	flex-direction: column;
 	align-items: center;
-	gap: 16px;
+	justify-content: center;
+	gap: 28px;
 	text-align: center;
-	transition:
-		border-color 0.3s,
-		transform 0.3s;
+	border-radius: 24px;
+	height: 420px;
+	opacity: 0;
+	transition: border-color 0.4s ease;
+	animation:
+		adminCardAppear 1.6s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards,
+		adminRespiration 4s ease-in-out infinite;
+}
+
+.admin-card:nth-child(1) {
+	animation-delay: 0.2s, 1.8s;
+	animation-duration: 1.6s, 4s;
+}
+
+.admin-card:nth-child(2) {
+	animation-delay: 0.45s, 2.05s;
+	animation-duration: 1.6s, 4s;
+}
+
+.admin-card:nth-child(3) {
+	animation-delay: 0.7s, 2.3s;
+	animation-duration: 1.6s, 4s;
+}
+
+.admin-card:nth-child(4) {
+	animation-delay: 0.95s, 2.55s;
+	animation-duration: 1.6s, 4s;
+}
+
+.admin-card:hover {
+	border-color: rgba(255, 255, 255, 0.6);
+}
+
+.admin-card__icon {
+	font-size: 3.5rem;
+	filter: drop-shadow(0 2px 6px rgba(0, 0, 0, 0.3));
+}
+
+.admin-card h2 {
+	color: #fff;
+	font-size: 1.4rem;
+	letter-spacing: 3px;
+}
+
+.admin-card p {
+	color: rgba(255, 255, 255, 0.6);
+	font-size: 0.95rem;
+	line-height: 1.6;
+	padding: 0 24px;
+}
+
+@keyframes adminCardAppear {
+	0% {
+		opacity: 0;
+		transform: translateY(80px);
+	}
+	100% {
+		opacity: 1;
+		transform: translateY(0);
+	}
+}
+
+@keyframes adminRespiration {
+	0%,
+	100% {
+		transform: scale(1);
+		background: var(--color-text);
+		box-shadow:
+			0 8px 32px rgba(150, 88, 70, 0.2),
+			0 2px 8px rgba(0, 0, 0, 0.1);
+	}
+	50% {
+		transform: scale(1.015);
+		background: #c4785e;
+		box-shadow:
+			0 12px 40px rgba(150, 88, 70, 0.4),
+			0 4px 12px rgba(0, 0, 0, 0.15);
+	}
 }
 
 .admin-card:hover {
