@@ -206,3 +206,12 @@
 .navbar-dropdown li a:hover {
 	opacity: 0.5;
 }
+
+.navbar-greeting {
+	/* On force une largeur pour bloquer la position des icônes à droite */
+	min-width: 150px;
+	text-align: right;
+	font-size: 0.9rem;
+	font-weight: 500;
+	/* Optionnel : cacher sur mobile si la barre est trop pleine */
+}

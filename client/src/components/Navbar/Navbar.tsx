@@ -4,10 +4,11 @@ import "./Navbar.css";
 import cybeliaLogo from "../../assets/CybeliaLogoCouleur.svg";
 import { useAuth } from "../../store/AuthContext";
 import { useCart } from "../../store/CartContext";
+import { UserGreeting } from "../UserGreeting";
 
 function Navbar() {
 	const [searchOpen, setSearchOpen] = useState(false);
-	const { estConnecte, estAdmin, deconnexion } = useAuth();
+	const { estConnecte, estAdmin, deconnexion, utilisateur } = useAuth();
 	const { nombreArticles } = useCart();
 
 	return (
@@ -24,13 +25,24 @@ function Navbar() {
 				<li className="navbar-dropdown-wrapper">
 					<span className="navbar-dropdown-trigger">
 						Shop
-						<svg width="10" height="6" viewBox="0 0 10 6" fill="none" stroke="currentColor" strokeWidth="1.5">
+						<svg
+							width="10"
+							height="6"
+							viewBox="0 0 10 6"
+							fill="none"
+							stroke="currentColor"
+							strokeWidth="1.5"
+						>
 							<path d="M1 1l4 4 4-4" />
 						</svg>
 					</span>
 					<ul className="navbar-dropdown">
-						<li><Link to="/shop/affiches">Affiches</Link></li>
-						<li><Link to="/shop/cartes">Cartes postales</Link></li>
+						<li>
+							<Link to="/shop/affiches">Affiches</Link>
+						</li>
+						<li>
+							<Link to="/shop/cartes">Cartes postales</Link>
+						</li>
 					</ul>
 				</li>
 				<li>
@@ -52,6 +64,9 @@ function Navbar() {
 				)}
 			</ul>
 			<div className="navbar-icons">
+				{estConnecte && utilisateur?.prenom && (
+					<UserGreeting prenom={utilisateur.prenom} nom={utilisateur.nom} />
+				)}
 				<button
 					className="navbar-icon"
 					aria-label="Recherche"
@@ -111,7 +126,11 @@ function Navbar() {
 					</button>
 				)}
 
-				<Link to="/panier" className="navbar-icon navbar-icon--panier" aria-label="Panier">
+				<Link
+					to="/panier"
+					className="navbar-icon navbar-icon--panier"
+					aria-label="Panier"
+				>
 					<svg
 						width="20"
 						height="20"

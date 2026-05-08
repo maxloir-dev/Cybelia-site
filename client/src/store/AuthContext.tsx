@@ -1,11 +1,20 @@
-import { createContext, useContext, useState, useEffect } from "react";
+import {
+	createContext,
+	useContext,
+	useState,
+	useEffect,
+	useCallback,
+} from "react";
 import type { ReactNode } from "react";
+import { getProfil } from "../api/authService";
 
 // Types
 
 interface Utilisateur {
 	id: number;
 	role_id: number;
+	nom: string;
+	prenom: string;
 }
 
 interface AuthContextType {
@@ -29,28 +38,35 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 	);
 	const [utilisateur, setUtilisateur] = useState<Utilisateur | null>(null);
 
-	// Au chargement — on récupère les infos du localStorage
-	useEffect(() => {
-		const tokenStocke = localStorage.getItem("token");
-		const roleStocke = localStorage.getItem("role_id");
-		const idStocke = localStorage.getItem("id");
-
-		if (tokenStocke && roleStocke && idStocke) {
-			setToken(tokenStocke);
-			setUtilisateur({
-				id: Number(idStocke),
-				role_id: Number(roleStocke),
-			});
+	// Fonction pour aller chercher les infos réelles (nom/prénom) sur l'API
+	const chargerProfilComplet = useCallback(async () => {
+		try {
+			const data = await getProfil();
+			setUtilisateur(data);
+		} catch (error) {
+			console.error("Erreur lors du chargement du profil:", error);
+			// Optionnel : deconnexion();
 		}
 	}, []);
 
+	// Au chargement — on récupère les infos du localStorage
+	useEffect(() => {
+		const tokenStocke = localStorage.getItem("token");
+
+		if (tokenStocke) {
+			setToken(tokenStocke);
+			// Au lieu de juste mettre l'ID, on va chercher tout le profil sur l'API
+			chargerProfilComplet();
+		}
+	}, [chargerProfilComplet]);
+
 	// Connexion — stocke le token et les infos dans localStorage
-	const connexion = (token: string, role_id: number, id: number) => {
+	const connexion = async (token: string, role_id: number, id: number) => {
 		localStorage.setItem("token", token);
 		localStorage.setItem("role_id", String(role_id));
 		localStorage.setItem("id", String(id));
 		setToken(token);
-		setUtilisateur({ id, role_id });
+		await chargerProfilComplet();
 	};
 
 	// Déconnexion — supprime tout du localStorage
