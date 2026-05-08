@@ -1,0 +1,29 @@
+.greeting-container {
+	position: absolute; /* Sort du flux pour ne pas créer de micro-mouvements */
+	left: 0; /* Aligné au début de la boîte .navbar-greeting */
+	white-space: nowrap;
+	display: flex;
+	align-items: baseline;
+	gap: 4px;
+	z-index: 1010;
+	padding-left: 120px;
+	pointer-events: none;
+	font-weight: 600;
+	font-size: 1.2rem;
+	font-family: var(--font-title);
+}
+
+.flip-wrapper {
+	display: inline-flex;
+	position: relative;
+	height: 1.2em;
+	overflow: hidden;
+	pointer-events: none;
+}
+.flip-word {
+	/* Absolu permet au mot de "flotter" dans la boîte sans la déformer */
+	position: absolute;
+	left: 0;
+	font-weight: 600;
+	color: #8b5e3c;
+}

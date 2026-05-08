@@ -1,12 +1,14 @@
 "use client";
 import { useState, useEffect } from "react";
-import { LayoutTextFlip } from "./ui/layout-text-flip";
+import { LayoutTextFlip } from "./Ui/layout-text-flip";
+import "./UserGreeting.css";
+
 interface UserGreetingProps {
 	prenom: string;
 	nom: string;
 }
 
-export function UserGreeting({ prenom, nom }: UserGreetingProps) {
+export function UserGreeting({ prenom }: UserGreetingProps) {
 	const [salutation, setSalutation] = useState("Bonjour");
 
 	useEffect(() => {
@@ -21,13 +23,17 @@ export function UserGreeting({ prenom, nom }: UserGreetingProps) {
 		}
 	}, []);
 
+	const displayWords = [
+		`${prenom || "à vous"}`,
+		"des idées ?", //
+		"besoin d'aide ?",
+	];
+
 	return (
-		<div className="navbar-greeting">
-			<LayoutTextFlip
-				text={`${salutation}, `}
-				// L'effet va alterner entre ces trois valeurs
-				words={[prenom, nom, `${prenom} ${nom}`]}
-			/>
+		<div className="greeting-container">
+			<span>{salutation},</span>
+			{/* On passe la constante au composant enfant */}
+			<LayoutTextFlip words={displayWords} />
 		</div>
 	);
 }

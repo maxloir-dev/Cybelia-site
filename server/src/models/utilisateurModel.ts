@@ -60,7 +60,7 @@ export const getCommandesByUtilisateur = async (id: number) => {
 // Récupère le profil d'un utilisateur par son id
 export const getUserById = async (id: number) => {
 	const [rows]: any = await pool.query(
-		"SELECT id, nom, prenom, email, created_at FROM utilisateurs WHERE id = ?",
+		"SELECT id, nom, prenom, email, role_id, created_at FROM utilisateurs WHERE id = ?",
 		[id],
 	);
 	return rows[0];
