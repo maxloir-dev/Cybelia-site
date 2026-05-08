@@ -1,6 +1,13 @@
-import { useEffect, useState } from "react";
 import "./show.css";
+import ActionButton from "../ActionButton/ActionButton";
 import { useCart } from "../../store/CartContext";
+import {
+	type ChangeEvent,
+	type FormEvent,
+	type MouseEvent,
+	useEffect,
+	useState,
+} from "react";
 
 type Produit = {
 	id: number;
@@ -54,19 +61,21 @@ export default function Show({ categorieId, titre }: Props) {
 	const [slideIndex, setSlideIndex] = useState(0);
 	const [recherche, setRecherche] = useState("");
 
+	const { ajouterAuPanier } = useCart();
+
 	const fetchProduits = () => {
 		fetch(`http://localhost:3001/api/produits?categorie_id=${categorieId}`)
 			.then((res) => res.json())
 			.then((data) => setProduits(data));
 	};
 
+	// biome-ignore lint/correctness/useExhaustiveDependencies: fetchProduits est stable
 	useEffect(() => {
 		fetchProduits();
-		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [categorieId]);
 
 	const handleChange = (
-		e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
+		e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
 	) => {
 		setForm({ ...form, [e.target.name]: e.target.value });
 	};
@@ -95,7 +104,7 @@ export default function Show({ categorieId, titre }: Props) {
 		}>;
 	};
 
-	const handleSubmit = (e: React.FormEvent) => {
+	const handleSubmit = (e: FormEvent) => {
 		e.preventDefault();
 		const e_ = valider(form);
 		if (Object.keys(e_).length > 0) {
@@ -142,12 +151,12 @@ export default function Show({ categorieId, titre }: Props) {
 	};
 
 	const handleChangeEdition = (
-		e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
+		e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
 	) => {
 		setFormEdition({ ...formEdition, [e.target.name]: e.target.value });
 	};
 
-	const handleEdition = (e: React.FormEvent) => {
+	const handleEdition = (e: FormEvent) => {
 		e.preventDefault();
 		const e_ = valider(formEdition);
 		if (Object.keys(e_).length > 0) {
@@ -191,8 +200,6 @@ export default function Show({ categorieId, titre }: Props) {
 		}).then(() => fetchProduits());
 	};
 
-	const { ajouterAuPanier } = useCart();
-
 	const produitsFiltres = produits.filter(
 		(p) =>
 			p.nom.toLowerCase().includes(recherche.toLowerCase()) ||
@@ -220,13 +227,20 @@ export default function Show({ categorieId, titre }: Props) {
 
 			<div className="shop-grid">
 				{produitsFiltres.map((p) => (
-					<div key={p.id} className="shop-card" onClick={() => ouvrirDetail(p)}>
+					<div
+						key={p.id}
+						className="shop-card"
+						onClick={() => ouvrirDetail(p)}
+						onKeyUp={(e) => e.key === "Enter" && ouvrirDetail(p)}
+					>
 						<img src={p.image_url} alt={p.nom} className="shop-card-img" />
 						<h3 className="shop-card-nom">{p.nom}</h3>
 						<p className="shop-card-prix">{p.prix} €</p>
-						<button
+
+						{/* UTILISATION DU BOUTON RÉUTILISABLE */}
+						<ActionButton
 							className="shop-card-btn"
-							onClick={(e) => {
+							onClick={(e: MouseEvent) => {
 								e.stopPropagation();
 								ajouterAuPanier({
 									id: p.id,
@@ -237,9 +251,11 @@ export default function Show({ categorieId, titre }: Props) {
 							}}
 						>
 							Ajouter au panier
-						</button>
+						</ActionButton>
+
 						<div className="shop-card-actions">
 							<button
+								type="button"
 								className="shop-card-edit"
 								onClick={(e) => {
 									e.stopPropagation();
@@ -249,6 +265,7 @@ export default function Show({ categorieId, titre }: Props) {
 								Modifier
 							</button>
 							<button
+								type="button"
 								className="shop-card-delete"
 								onClick={(e) => {
 									e.stopPropagation();
@@ -263,6 +280,7 @@ export default function Show({ categorieId, titre }: Props) {
 			</div>
 
 			<button
+				type="button"
 				className="btn-ouvrir-modal"
 				onClick={() => setModalOuverte(true)}
 			>
@@ -272,8 +290,13 @@ export default function Show({ categorieId, titre }: Props) {
 			{/* Modale ajout */}
 			{modalOuverte && (
 				<div className="modal-overlay" onClick={() => setModalOuverte(false)}>
-					<div className="modal-contenu" onClick={(e) => e.stopPropagation()}>
+					<div
+						className="modal-contenu"
+						onClick={(e) => e.stopPropagation()}
+						onKeyUp={(e) => e.stopPropagation()}
+					>
 						<button
+							type="button"
 							className="modal-fermer"
 							onClick={() => setModalOuverte(false)}
 						>
@@ -310,16 +333,22 @@ export default function Show({ categorieId, titre }: Props) {
 								)}
 							</div>
 							<div>
-								<label className="form-label">Image principale *</label>
+								<label className="form-label" htmlFor="image-main">
+									Image principale *
+								</label>
 								<input
+									id="image-main"
 									type="file"
 									accept="image/*"
 									onChange={(e) => setImageFile(e.target.files?.[0] ?? null)}
 								/>
 							</div>
 							<div>
-								<label className="form-label">Image mockup (optionnel)</label>
+								<label className="form-label" htmlFor="image-mockup">
+									Image mockup (optionnel)
+								</label>
 								<input
+									id="image-mockup"
 									type="file"
 									accept="image/*"
 									onChange={(e) => setMockupFile(e.target.files?.[0] ?? null)}
@@ -337,8 +366,13 @@ export default function Show({ categorieId, titre }: Props) {
 					className="modal-overlay"
 					onClick={() => setProduitEnEdition(null)}
 				>
-					<div className="modal-contenu" onClick={(e) => e.stopPropagation()}>
+					<div
+						className="modal-contenu"
+						onClick={(e) => e.stopPropagation()}
+						onKeyUp={(e) => e.stopPropagation()}
+					>
 						<button
+							type="button"
 							className="modal-fermer"
 							onClick={() => setProduitEnEdition(null)}
 						>
@@ -375,10 +409,11 @@ export default function Show({ categorieId, titre }: Props) {
 								)}
 							</div>
 							<div>
-								<label className="form-label">
+								<label className="form-label" htmlFor="edit-main">
 									Image principale (laisser vide pour garder l'actuelle)
 								</label>
 								<input
+									id="edit-main"
 									type="file"
 									accept="image/*"
 									onChange={(e) =>
@@ -387,10 +422,11 @@ export default function Show({ categorieId, titre }: Props) {
 								/>
 							</div>
 							<div>
-								<label className="form-label">
+								<label className="form-label" htmlFor="edit-mockup">
 									Image mockup (laisser vide pour garder l'actuelle)
 								</label>
 								<input
+									id="edit-mockup"
 									type="file"
 									accept="image/*"
 									onChange={(e) =>
@@ -407,8 +443,13 @@ export default function Show({ categorieId, titre }: Props) {
 			{/* Modale détail avec slider */}
 			{produitDetail && (
 				<div className="modal-overlay" onClick={() => setProduitDetail(null)}>
-					<div className="modal-detail" onClick={(e) => e.stopPropagation()}>
+					<div
+						className="modal-detail"
+						onClick={(e) => e.stopPropagation()}
+						onKeyUp={(e) => e.stopPropagation()}
+					>
 						<button
+							type="button"
 							className="modal-fermer"
 							onClick={() => setProduitDetail(null)}
 						>
@@ -427,19 +468,24 @@ export default function Show({ categorieId, titre }: Props) {
 								{produitDetail.mockup_url && (
 									<div className="slider-controls">
 										<button
+											type="button"
 											className="slider-btn"
 											onClick={() => setSlideIndex(slideIndex === 0 ? 1 : 0)}
 										>
 											{slideIndex === 0 ? "›" : "‹"}
 										</button>
 										<span className="slider-dots">
-											<span
+											<button
+												type="button"
 												className={slideIndex === 0 ? "dot actif" : "dot"}
 												onClick={() => setSlideIndex(0)}
+												aria-label="Slide 1"
 											/>
-											<span
+											<button
+												type="button"
 												className={slideIndex === 1 ? "dot actif" : "dot"}
 												onClick={() => setSlideIndex(1)}
+												aria-label="Slide 2"
 											/>
 										</span>
 									</div>
@@ -451,7 +497,9 @@ export default function Show({ categorieId, titre }: Props) {
 								<p className="detail-description">
 									{produitDetail.description}
 								</p>
-								<button
+
+								{/* UTILISATION DU BOUTON RÉUTILISABLE DANS LE DÉTAIL */}
+								<ActionButton
 									className="btn-panier"
 									onClick={() =>
 										ajouterAuPanier({
@@ -463,7 +511,7 @@ export default function Show({ categorieId, titre }: Props) {
 									}
 								>
 									Ajouter au panier
-								</button>
+								</ActionButton>
 							</div>
 						</div>
 					</div>
