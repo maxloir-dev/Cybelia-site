@@ -5,6 +5,9 @@ import "./Home.css";
 import Hero from "../../components/Hero/Hero";
 import Features from "../../components/Features/Features";
 import CircularGallery from "../../components/CircularGallery/CircularGallery";
+import { getProduits } from "../../api/produitService";
+import type { Produit } from "../../types";
+import Carousel from "../../components/Carousel/Carousel";
 
 interface HomeProps {
 	onIntroComplete: () => void;
@@ -14,6 +17,25 @@ function Home({ onIntroComplete }: HomeProps) {
 	const [stage, setStage] = useState<"intro" | "exiting" | "content">(() => {
 		return sessionStorage.getItem("introPlayed") ? "content" : "intro";
 	});
+	const [galerie, setGalerie] = useState<{ image: string; text: string }[]>([]);
+
+	// Récupère les derniers produits pour la galerie
+	useEffect(() => {
+		const chargerProduits = async () => {
+			const produits: Produit[] = await getProduits();
+			// On prend les 8 derniers produits ajoutés
+			const derniersProduits = produits
+				.slice(-8)
+				.reverse()
+				.map((p) => ({
+					image: p.image_url,
+					text: p.nom,
+				}))
+				.filter((p) => p.image); // On exclut les produits sans image
+			setGalerie(derniersProduits);
+		};
+		chargerProduits();
+	}, []);
 
 	useEffect(() => {
 		if (stage === "content") return;
@@ -28,6 +50,8 @@ function Home({ onIntroComplete }: HomeProps) {
 		onIntroComplete();
 		return (
 			<main className="home-sections">
+				<Carousel />
+				<main className="home-sections"></main>
 				<div className="section">
 					<Hero />
 					<Features />
@@ -46,6 +70,7 @@ function Home({ onIntroComplete }: HomeProps) {
 					</div>
 					<div className="gallery-wrapper">
 						<CircularGallery
+							items={galerie.length > 0 ? galerie : undefined}
 							bend={0}
 							textColor="#965846"
 							borderRadius={0.1}
