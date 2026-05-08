@@ -50,10 +50,15 @@ function Home({ onIntroComplete }: HomeProps) {
 		onIntroComplete();
 		return (
 			<main className="home-sections">
-				<Carousel />
-				<main className="home-sections"></main>
-				<div className="section">
+				{/* Conteneur groupé pour la superposition */}
+				<div
+					className="hero-container"
+					style={{ position: "relative", width: "100%" }}
+				>
+					<Carousel />
 					<Hero />
+				</div>
+				<div className="features-container">
 					<Features />
 				</div>
 				<div className="section">
