@@ -53,6 +53,8 @@ function Admin() {
 	const [previewImage, setPreviewImage] = useState<string>("");
 	const [fichierImageEdit, setFichierImageEdit] = useState<File | null>(null);
 	const [previewImageEdit, setPreviewImageEdit] = useState<string>("");
+	const [fichierMockup, setFichierMockup] = useState<File | null>(null);
+	const [previewMockup, setPreviewMockup] = useState<string>("");
 
 	// Navigation vers les vues
 
@@ -106,10 +108,15 @@ function Admin() {
 	const ajouterProduit = async () => {
 		try {
 			let image_url = "";
+			let mockup_url = null;
 
-			// Si une image a été sélectionnée on l'upload d'abord
 			if (fichierImage) {
-				image_url = await uploadImage(fichierImage);
+				const urls = await uploadImage(
+					fichierImage,
+					fichierMockup ?? undefined,
+				);
+				image_url = urls.image_url;
+				mockup_url = urls.mockup_url;
 			}
 
 			const formData = new FormData();
@@ -117,14 +124,15 @@ function Admin() {
 			formData.append("description", nouveauProduit.description);
 			formData.append("prix", String(nouveauProduit.prix));
 			formData.append("image_url", image_url);
+			formData.append("mockup_url", mockup_url ?? "");
 			formData.append("categorie_id", String(nouveauProduit.categorie_id));
 			await addProduit(formData);
 
-			// Réinitialise le formulaire
 			setNouveauProduit({
 				nom: "",
 				description: "",
 				prix: 0,
+				image_url: "",
 				categorie_id: 1,
 			});
 			setFichierImage(null);
@@ -557,7 +565,8 @@ function Admin() {
 
 										// Si une nouvelle image a été sélectionnée on l'upload
 										if (fichierImageEdit) {
-											image_url = await uploadImage(fichierImageEdit);
+											const urls = await uploadImage(fichierImageEdit);
+											image_url = urls.image_url; // On récupère image_url depuis l'objet retourné
 										}
 
 										const categorie_id =
@@ -704,6 +713,28 @@ function Admin() {
 							<img
 								src={previewImage}
 								alt="Prévisualisation"
+								className="admin-form__preview"
+							/>
+						)}
+					</div>
+					<div className="admin-form__field">
+						<label>Image mockup (optionnel)</label>
+						<input
+							type="file"
+							accept="image/jpeg, image/png, image/webp"
+							className="admin-edit-input"
+							onChange={(e) => {
+								const file = e.target.files?.[0];
+								if (file) {
+									setFichierMockup(file);
+									setPreviewMockup(URL.createObjectURL(file));
+								}
+							}}
+						/>
+						{previewMockup && (
+							<img
+								src={previewMockup}
+								alt="Prévisualisation mockup"
 								className="admin-form__preview"
 							/>
 						)}

@@ -1,17 +1,21 @@
 import api from "./axios";
 
-// Upload d'une image vers Cloudinary
-
-export const uploadImage = async (file: File): Promise<string> => {
+// ============================================
+// Upload d'images vers Cloudinary
+// ============================================
+export const uploadImage = async (
+	file: File,
+	mockup?: File,
+): Promise<{ image_url: string; mockup_url: string | null }> => {
 	const formData = new FormData();
-	formData.append("image", file);
+	formData.append("images", file);
+	if (mockup) formData.append("images", mockup);
 
-	const response = await api.post("/upload", formData, {
+	const response = await api.post("/upload/multiple", formData, {
 		headers: {
 			"Content-Type": "multipart/form-data",
 		},
 	});
 
-	// Retourne l'URL de l'image sur Cloudinary
-	return response.data.url;
+	return response.data;
 };
