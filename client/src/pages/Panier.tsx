@@ -64,6 +64,7 @@ function Panier() {
 						strokeLinecap="round"
 						strokeLinejoin="round"
 					>
+						<title>Succès de la commande</title>
 						<path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
 						<polyline points="22 4 12 14.01 9 11.01" />
 					</svg>
@@ -120,6 +121,7 @@ function Panier() {
 									</p>
 									<div className="panier-quantite">
 										<button
+											type="button"
 											onClick={() =>
 												modifierQuantite(item.id, item.quantite - 1)
 											}
@@ -128,6 +130,7 @@ function Panier() {
 										</button>
 										<span>{item.quantite}</span>
 										<button
+											type="button"
 											onClick={() =>
 												modifierQuantite(item.id, item.quantite + 1)
 											}
@@ -136,6 +139,7 @@ function Panier() {
 										</button>
 									</div>
 									<button
+										type="button"
 										className="panier-item-supprimer"
 										onClick={() => supprimerDuPanier(item.id)}
 									>
@@ -181,9 +185,111 @@ function Panier() {
 							<ActionButton to="/shop" inverse={true} onClick={() => {}}>
 								Continuer mes achats
 							</ActionButton>
-							<button className="panier-btn-vider" onClick={viderPanier}>
+							<button
+								type="button"
+								className="panier-btn-vider"
+								onClick={viderPanier}
+							>
 								Vider le panier
 							</button>
+						</div>
+					</div>
+
+					<div className="panier-reassurance">
+						<div className="reassurance-item">
+							<svg
+								width="20"
+								height="20"
+								viewBox="0 0 24 24"
+								fill="none"
+								stroke="currentColor"
+								strokeWidth="1.5"
+								strokeLinecap="round"
+								strokeLinejoin="round"
+							>
+								<title>Icône paiement sécurisé</title>
+								<rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+								<path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+							</svg>
+							<div className="reassurance-texte">
+								<span className="reassurance-titre">Paiement sécurisé</span>
+								<span className="reassurance-desc">
+									Par carte bancaire ou PayPal
+								</span>
+							</div>
+						</div>
+
+						<div className="reassurance-item">
+							<svg
+								width="20"
+								height="20"
+								viewBox="0 0 24 24"
+								fill="none"
+								stroke="currentColor"
+								strokeWidth="1.5"
+								strokeLinecap="round"
+								strokeLinejoin="round"
+							>
+								<title>Icône livraison</title>
+								<rect x="1" y="3" width="15" height="13"></rect>
+								<polygon points="16 8 20 8 23 11 23 16 16 16 16 8"></polygon>
+								<circle cx="5.5" cy="18.5" r="2.5"></circle>
+								<circle cx="18.5" cy="18.5" r="2.5"></circle>
+							</svg>
+							<div className="reassurance-texte">
+								<span className="reassurance-titre">Livraison offerte</span>
+								<span className="reassurance-desc">
+									À partir de 80€ d'achat
+								</span>
+							</div>
+						</div>
+
+						<div className="reassurance-item">
+							<svg
+								width="20"
+								height="20"
+								viewBox="0 0 24 24"
+								fill="none"
+								stroke="currentColor"
+								strokeWidth="1.5"
+								strokeLinecap="round"
+								strokeLinejoin="round"
+							>
+								<title>Icône échange ou retour</title>
+								<path d="M2.5 2v6h6M2.5 8l4.22-4.22A9 9 0 1 1 3.31 14.9"></path>
+							</svg>
+							<div className="reassurance-texte">
+								<span className="reassurance-titre">
+									Échange ou retour sans frais
+								</span>
+								<span className="reassurance-desc">Sous 14 jours</span>
+							</div>
+						</div>
+
+						<div className="reassurance-item">
+							<svg
+								width="20"
+								height="20"
+								viewBox="0 0 24 24"
+								fill="none"
+								stroke="currentColor"
+								strokeWidth="1.5"
+								strokeLinecap="round"
+								strokeLinejoin="round"
+							>
+								<title>Icône retrait en magasin</title>
+								<path d="M21 10V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l2-1.14"></path>
+								<path d="M16.5 9.4 7.5 4.21"></path>
+								<path d="M21 16V8"></path>
+								<path d="M3 8v8"></path>
+								<path d="m12 12 8.5-4.9"></path>
+								<path d="M12 22v-10"></path>
+								<path d="m12 12-8.5-4.9"></path>
+							</svg>
+							<div className="reassurance-texte">
+								<span className="reassurance-titre">Retrait en magasin</span>
+								<span className="reassurance-desc">Disponible sous 2h</span>
+							</div>
 						</div>
 					</div>
 				</div>
@@ -191,4 +297,5 @@ function Panier() {
 		</div>
 	);
 }
+
 export default Panier;

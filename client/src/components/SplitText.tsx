@@ -51,7 +51,7 @@ function SplitText({
 		});
 
 		return () => splitRef.current?.revert();
-	}, [fontsLoaded, text]);
+	}, [fontsLoaded, duration, delay]);
 
 	// 3. Gérer la sortie
 	useGSAP(
@@ -69,7 +69,7 @@ function SplitText({
 				});
 			}
 		},
-		{ dependencies: [animateOut], scope: containerRef },
+		{ dependencies: [animateOut, duration, delay], scope: containerRef },
 	);
 
 	return (

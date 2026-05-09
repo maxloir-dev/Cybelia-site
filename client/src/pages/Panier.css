@@ -329,3 +329,56 @@
 		padding: 120px 20px 40px 20px;
 	}
 }
+
+/* ============================================
+   Bloc Réassurance
+============================================ */
+.panier-reassurance {
+	margin-top: 24px;
+	display: flex;
+	flex-direction: column;
+}
+
+.reassurance-item {
+	display: flex;
+	align-items: center;
+	gap: 16px;
+	padding: 16px 0;
+	border-bottom: 1px solid rgba(150, 88, 70, 0.15);
+}
+
+.reassurance-item:last-child {
+	border-bottom: none;
+}
+
+.reassurance-item svg {
+	color: var(--color-primary);
+	flex-shrink: 0;
+	opacity: 0.8;
+}
+
+.reassurance-texte {
+	display: flex;
+	flex-direction: column;
+}
+
+.reassurance-titre {
+	font-family: var(--font-title);
+	font-size: 0.8rem; /* Un peu plus petit pour le côté chic */
+	letter-spacing: 1px;
+	text-transform: uppercase;
+	color: var(--color-text);
+	margin-bottom: 2px;
+}
+
+.reassurance-desc {
+	font-size: 0.75rem;
+	color: var(--color-secondary);
+	line-height: 1.2;
+}
+
+/* On s'assure que la colonne de droite ne bouge pas */
+.panier-droite {
+	position: sticky;
+	top: 140px;
+}

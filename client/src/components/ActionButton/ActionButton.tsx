@@ -9,6 +9,7 @@ interface ActionButtonProps {
 	type?: "button" | "submit" | "reset";
 	className?: string;
 	inverse?: boolean;
+	disabled?: boolean;
 }
 
 const ActionButton = ({

@@ -28,6 +28,7 @@ function Navbar() {
 					<span className="navbar-dropdown-trigger">
 						Shop
 						<svg
+							aria-hidden="true"
 							width="10"
 							height="6"
 							viewBox="0 0 10 6"
@@ -76,6 +77,7 @@ function Navbar() {
 					aria-label="Compte"
 				>
 					<svg
+						aria-hidden="true"
 						width="20"
 						height="20"
 						viewBox="0 0 24 24"
@@ -91,11 +93,13 @@ function Navbar() {
 				{/* Bouton déconnexion si connecté */}
 				{estConnecte && (
 					<button
+						type="button"
 						className="navbar-icon"
 						aria-label="Déconnexion"
 						onClick={deconnexion}
 					>
 						<svg
+							aria-hidden="true"
 							width="20"
 							height="20"
 							viewBox="0 0 24 24"
@@ -116,6 +120,7 @@ function Navbar() {
 					aria-label="Panier"
 				>
 					<svg
+						aria-hidden="true"
 						width="20"
 						height="20"
 						viewBox="0 0 24 24"
@@ -138,11 +143,12 @@ function Navbar() {
 						type="text"
 						placeholder="Rechercher..."
 						className="navbar-search-input"
-						autoFocus
 					/>
 					<button
+						type="button"
 						className="navbar-search-close"
 						onClick={() => setSearchOpen(false)}
+						aria-label="Fermer la recherche"
 					>
 						✕
 					</button>

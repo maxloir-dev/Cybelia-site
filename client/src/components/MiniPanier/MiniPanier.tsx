@@ -1,4 +1,3 @@
-import { Link } from "react-router-dom";
 import { useCart } from "../../store/CartContext";
 import ActionButton from "../ActionButton/ActionButton";
 import "./MiniPanier.css";
@@ -18,16 +17,24 @@ function MiniPanier() {
 	return (
 		<>
 			{/* Overlay */}
-			<div className="mini-panier-overlay" onClick={fermerMiniPanier} />
-
+			<button
+				className="mini-panier-overlay"
+				onClick={fermerMiniPanier}
+				aria-label="Fermer le menu"
+				type="button"
+			/>
 			{/* Drawer */}
 			<div
 				className={`mini-panier ${miniPanierOuvert ? "mini-panier--ouvert" : ""}`}
 			>
-				{/* Header */}
 				<div className="mini-panier__header">
 					<h2>Produit ajouté</h2>
-					<button className="mini-panier__fermer" onClick={fermerMiniPanier}>
+					{/* Correction 2 : Ajout de type="button" sur la croix de fermeture */}
+					<button
+						type="button"
+						className="mini-panier__fermer"
+						onClick={fermerMiniPanier}
+					>
 						✕
 					</button>
 				</div>

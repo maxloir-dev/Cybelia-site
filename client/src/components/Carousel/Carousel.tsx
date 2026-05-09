@@ -1,61 +1,52 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react"; // Ajout de useCallback
 import "./Carousel.css";
 
-// ============================================
-// Images du carousel — à remplacer par les
-// photos envoyées par la cliente
-// ============================================
 const slides = [
-	{
-		image: "https://picsum.photos/seed/11/1600/800",
-		alt: "Slide 1",
-	},
-	{
-		image: "https://picsum.photos/seed/22/1600/800",
-		alt: "Slide 2",
-	},
-	{
-		image: "https://picsum.photos/seed/33/1600/800",
-		alt: "Slide 3",
-	},
-	{
-		image: "https://picsum.photos/seed/44/1600/800",
-		alt: "Slide 4",
-	},
+	{ image: "https://picsum.photos/seed/11/1600/800", alt: "Slide 1" },
+	{ image: "https://picsum.photos/seed/22/1600/800", alt: "Slide 2" },
+	{ image: "https://picsum.photos/seed/33/1600/800", alt: "Slide 3" },
+	{ image: "https://picsum.photos/seed/44/1600/800", alt: "Slide 4" },
 ];
 
-const INTERVAL = 5000; // 5 secondes entre chaque slide
+const INTERVAL = 5000;
 
 function Carousel() {
 	const [current, setCurrent] = useState(0);
 	const [transitioning, setTransitioning] = useState(false);
 
-	const goTo = (index: number) => {
-		if (transitioning) return;
-		setTransitioning(true);
-		setTimeout(() => {
+	// useCallback permet de stabiliser la fonction pour le useEffect
+	const goTo = useCallback(
+		(index: number) => {
+			if (transitioning) return;
+			setTransitioning(true);
 			setCurrent(index);
-			setTransitioning(false);
-		}, 600);
-	};
+			// On réduit le timeout ou on gère la fin de transition via CSS
+			setTimeout(() => {
+				setTransitioning(false);
+			}, 600);
+		},
+		[transitioning],
+	);
 
-	const next = () => goTo((current + 1) % slides.length);
+	const next = useCallback(() => {
+		goTo((current + 1) % slides.length);
+	}, [current, goTo]);
 
-	// Défilement automatique
 	useEffect(() => {
 		const timer = setInterval(next, INTERVAL);
 		return () => clearInterval(timer);
-	}, [current, transitioning]);
+	}, [next]); // Dépendance plus propre
 
 	return (
 		<div className="carousel">
-			{/* Slides */}
 			<div
 				className="carousel__track"
 				style={{ transform: `translateX(-${current * 100}%)` }}
 			>
-				{slides.map((slide, i) => (
-					<div key={i} className="carousel__slide">
+				{slides.map((slide) => (
+					<div key={slide.image} className="carousel__slide">
+						{" "}
+						{/* Utilise slide.image au lieu de i pour la key */}
 						<img
 							src={slide.image}
 							alt={slide.alt}
@@ -65,15 +56,20 @@ function Carousel() {
 				))}
 			</div>
 
-			{/* Points de navigation */}
 			<div className="carousel__dots">
-				{slides.map((_, i) => (
+				{slides.map((slide, i) => (
 					<button
-						key={i}
+						// On utilise slide.image (unique) au lieu de l'index i
+						key={`dot-${slide.image}`}
+						type="button"
 						className={`carousel__dot ${i === current ? "carousel__dot--actif" : ""}`}
 						onClick={() => goTo(i)}
-						aria-label={`Slide ${i + 1}`}
-					/>
+						aria-label={`Aller à la slide ${i + 1}`}
+					>
+						<span className="sr-only" style={{ display: "none" }}>
+							{i + 1}
+						</span>
+					</button>
 				))}
 			</div>
 		</div>
