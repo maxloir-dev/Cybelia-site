@@ -7,8 +7,8 @@ const router = Router();
 // Route upload 2 images (principale + mockup)
 router.post(
 	"/multiple",
-	// verifierToken,
-	// verifierAdmin,
+	verifierToken,
+	verifierAdmin,
 	(req, res, next) => {
 		upload.array("images", 2)(req, res, (err: any) => {
 			if (err) {

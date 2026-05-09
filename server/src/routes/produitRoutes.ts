@@ -25,14 +25,13 @@ router.get("/categorie/:id", getProduitsByCategorieid);
 // Routes protégées
 
 // Ajoute un nouveau produit
-// router.post("/", verifierToken, verifierAdmin, addProduit);
+router.post("/", verifierToken, verifierAdmin, addProduit);
 
 // Modifie un produit existant
-// router.put("/:id", verifierToken, verifierAdmin, editProduit);
+router.put("/:id", verifierToken, verifierAdmin, editProduit);
 
 // Supprime un produit
-// router.delete("/:id", verifierToken, verifierAdmin, removeProduit);
-
+router.delete("/:id", verifierToken, verifierAdmin, removeProduit);
 
 // --------------------- tester sans auth ---------------------
 // Ajoute un nouveau produit
