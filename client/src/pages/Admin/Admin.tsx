@@ -14,6 +14,7 @@ import {
 import type { Commande, Produit, Utilisateur } from "../../types";
 import "./Admin.css";
 import { uploadImage } from "../../api/uploadService";
+import { image } from "framer-motion/client";
 
 // Types des vues possibles
 
@@ -48,6 +49,7 @@ function Admin() {
 		description: "",
 		prix: 0,
 		categorie_id: 1,
+		image_url: "",
 	});
 	const [fichierImage, setFichierImage] = useState<File | null>(null);
 	const [previewImage, setPreviewImage] = useState<string>("");
@@ -157,7 +159,7 @@ function Admin() {
 				</div>
 				<div className="admin-cards">
 					{/* Commandes */}
-					<div className="admin-card" onClick={allerCommandes}>
+					<button type="button" className="admin-card" onClick={allerCommandes}>
 						<svg
 							width="64"
 							height="64"
@@ -167,6 +169,7 @@ function Admin() {
 							strokeWidth="1.2"
 							strokeLinecap="round"
 							strokeLinejoin="round"
+							aria-hidden="true"
 						>
 							<path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z" />
 							<line x1="3" y1="6" x2="21" y2="6" />
@@ -174,11 +177,12 @@ function Admin() {
 						</svg>
 						<h2>Commandes</h2>
 						<p>Voir toutes les commandes</p>
-					</div>
+					</button>
 
 					{/* Clients */}
-					<div className="admin-card" onClick={allerClients}>
+					<button type="button" className="admin-card" onClick={allerClients}>
 						<svg
+							aria-hidden="true"
 							width="64"
 							height="64"
 							viewBox="0 0 24 24"
@@ -193,11 +197,16 @@ function Admin() {
 						</svg>
 						<h2>Clients</h2>
 						<p>Gérer les clients</p>
-					</div>
+					</button>
 
 					{/* Produits */}
-					<div className="admin-card" onClick={() => allerProduits(1)}>
+					<button
+						type="button"
+						className="admin-card"
+						onClick={() => allerProduits(1)}
+					>
 						<svg
+							aria-hidden="true"
 							width="64"
 							height="64"
 							viewBox="0 0 24 24"
@@ -215,11 +224,16 @@ function Admin() {
 						</svg>
 						<h2>Produits</h2>
 						<p>Gérer les produits</p>
-					</div>
+					</button>
 
 					{/* Ajouter */}
-					<div className="admin-card" onClick={() => setVue("ajouter-produit")}>
+					<button
+						type="button"
+						className="admin-card"
+						onClick={() => setVue("ajouter-produit")}
+					>
 						<svg
+							aria-hidden="true"
 							width="64"
 							height="64"
 							viewBox="0 0 24 24"
@@ -234,7 +248,7 @@ function Admin() {
 						</svg>
 						<h2>Ajouter</h2>
 						<p>Nouveau produit</p>
-					</div>
+					</button>
 				</div>
 			</main>
 		);
@@ -244,7 +258,11 @@ function Admin() {
 	if (vue === "commandes") {
 		return (
 			<main className="admin-main">
-				<button className="admin-retour" onClick={() => setVue("accueil")}>
+				<button
+					type="button"
+					className="admin-retour"
+					onClick={() => setVue("accueil")}
+				>
 					← Retour
 				</button>
 				<h1>Commandes</h1>
@@ -278,14 +296,19 @@ function Admin() {
 	if (vue === "clients") {
 		return (
 			<main className="admin-main">
-				<button className="admin-retour" onClick={() => setVue("accueil")}>
+				<button
+					type="button"
+					className="admin-retour"
+					onClick={() => setVue("accueil")}
+				>
 					← Retour
 				</button>
 				<h1>Clients</h1>
 				<div className="admin-liste">
 					{clients.length === 0 && <p>Aucun client pour le moment.</p>}
 					{clients.map((client) => (
-						<div
+						<button
+							type="button"
 							key={client.id}
 							className="admin-item admin-item--cliquable"
 							onClick={() => allerDetailClient(client)}
@@ -294,14 +317,17 @@ function Admin() {
 								<span className="admin-item__titre">
 									{client.nom} {client.prenom}
 								</span>
+
 								<span className="admin-item__detail">{client.email}</span>
+
 								<span className="admin-item__detail">
 									Inscrit le{" "}
 									{new Date(client.created_at).toLocaleDateString("fr-FR")}
 								</span>
 							</div>
+
 							<span className="admin-item__fleche">→</span>
-						</div>
+						</button>
 					))}
 				</div>
 			</main>
@@ -312,7 +338,11 @@ function Admin() {
 	if (vue === "client-detail" && clientSelectionne) {
 		return (
 			<main className="admin-main">
-				<button className="admin-retour" onClick={() => setVue("clients")}>
+				<button
+					type="button"
+					className="admin-retour"
+					onClick={() => setVue("clients")}
+				>
 					← Retour
 				</button>
 				<h1>
@@ -369,20 +399,31 @@ function Admin() {
 	if (vue === "produits") {
 		return (
 			<main className="admin-main">
-				<button className="admin-retour" onClick={() => setVue("accueil")}>
+				<button
+					type="button"
+					className="admin-retour"
+					onClick={() => setVue("accueil")}
+				>
 					← Retour
 				</button>
 				<h1>Produits</h1>
 
 				<div className="admin-filtres">
 					<button
-						className={`admin-filtre ${categorieFiltre === 1 ? "admin-filtre--actif" : ""}`}
+						type="button"
+						className={`admin-filtre ${
+							categorieFiltre === 1 ? "admin-filtre--actif" : ""
+						}`}
 						onClick={() => allerProduits(1)}
 					>
 						Cartes postales
 					</button>
+
 					<button
-						className={`admin-filtre ${categorieFiltre === 2 ? "admin-filtre--actif" : ""}`}
+						type="button"
+						className={`admin-filtre ${
+							categorieFiltre === 2 ? "admin-filtre--actif" : ""
+						}`}
 						onClick={() => allerProduits(2)}
 					>
 						Affiches
@@ -393,16 +434,18 @@ function Admin() {
 					{produits.length === 0 && <p>Aucun produit dans cette catégorie.</p>}
 					{produits.map((produit) => (
 						<div key={produit.id} className="admin-item">
-							<div
+							<button
+								type="button"
 								className="admin-item__info admin-item--cliquable"
 								onClick={() => allerDetailProduit(produit)}
 							>
 								<span className="admin-item__titre">{produit.nom}</span>
 								<span className="admin-item__detail">{produit.categorie}</span>
 								<span className="admin-item__prix">{produit.prix}€</span>
-							</div>
+							</button>
 							<div className="admin-item__actions">
 								<button
+									type="button"
 									className="admin-btn admin-btn--modifier"
 									onClick={(e) => {
 										e.stopPropagation();
@@ -411,7 +454,9 @@ function Admin() {
 								>
 									Modifier
 								</button>
+
 								<button
+									type="button"
 									className="admin-btn admin-btn--supprimer"
 									onClick={() => supprimerProduit(produit.id)}
 								>
@@ -559,6 +604,7 @@ function Admin() {
 						{modeEdition ? (
 							<div className="admin-item__actions">
 								<button
+									type="button"
 									className="admin-btn admin-btn--modifier"
 									onClick={async () => {
 										let image_url = produitEdite.image_url;
@@ -587,6 +633,7 @@ function Admin() {
 									Enregistrer
 								</button>
 								<button
+									type="button"
 									className="admin-btn admin-btn--supprimer"
 									onClick={() => {
 										setProduitEdite({ ...produitSelectionne });
@@ -599,6 +646,7 @@ function Admin() {
 						) : (
 							<div className="admin-item__actions">
 								<button
+									type="button"
 									className="admin-btn admin-btn--modifier"
 									onClick={() => {
 										setProduitEdite({ ...produitSelectionne });
@@ -608,6 +656,7 @@ function Admin() {
 									Modifier
 								</button>
 								<button
+									type="button"
 									className="admin-btn admin-btn--supprimer"
 									onClick={() => supprimerProduit(produitSelectionne.id)}
 								>
@@ -742,12 +791,14 @@ function Admin() {
 
 					<div className="admin-form__actions">
 						<button
+							type="button"
 							className="admin-btn admin-btn--modifier"
 							onClick={ajouterProduit}
 						>
 							Ajouter le produit
 						</button>
 						<button
+							type="button"
 							className="admin-btn admin-btn--supprimer"
 							onClick={() => setVue("accueil")}
 						>
