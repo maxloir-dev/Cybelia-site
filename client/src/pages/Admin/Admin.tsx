@@ -475,7 +475,11 @@ function Admin() {
 	if (vue === "produit-detail" && produitSelectionne && produitEdite) {
 		return (
 			<main className="admin-main">
-				<button className="admin-retour" onClick={() => setVue("produits")}>
+				<button
+					type="button"
+					className="admin-retour"
+					onClick={() => setVue("produits")}
+				>
 					← Retour
 				</button>
 				<div className="admin-produit-detail">
