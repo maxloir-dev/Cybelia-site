@@ -6,6 +6,8 @@ import {
 	updateProfil,
 	logout,
 	updateMotDePasse,
+	forgotPassword,
+	resetPassword,
 } from "../controllers/authController";
 import { verifierToken } from "../middlewares/authMiddleware";
 
@@ -32,5 +34,11 @@ router.post("/logout", verifierToken, logout);
 
 // Change le mot de passe de l'utilisateur connecté
 router.put("/mot-de-passe", verifierToken, updateMotDePasse);
+
+// Mot de passe oublié — envoie l'email
+router.post("/forgot-password", forgotPassword);
+
+// Réinitialise le mot de passe avec le token
+router.post("/reset-password", resetPassword);
 
 export default router;

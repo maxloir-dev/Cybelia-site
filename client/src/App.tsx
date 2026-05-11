@@ -12,6 +12,8 @@ import About from "./pages/About";
 import Personnalise from "./pages/Personnalise";
 import Contact from "./pages/Contact";
 import Panier from "./pages/Panier";
+import ForgotPassword from "./pages/ForgotPassword/ForgotPassword";
+import ResetPassword from "./pages/ResetPassword/ResetPassword";
 import Show from "./components/Show_product/Show";
 import ProtectedRoute from "./components/ProtectedRoute";
 import Profil from "./pages/Profil/Profil";
@@ -36,6 +38,8 @@ function App() {
 					/>
 					<Route path="/login" element={<Login />} />
 					<Route path="/register" element={<Register />} />
+					<Route path="/forgot-password" element={<ForgotPassword />} />
+					<Route path="/reset-password/:token" element={<ResetPassword />} />
 					<Route path="/shop" element={<Shop />} />
 					<Route
 						path="/shop/cartes"

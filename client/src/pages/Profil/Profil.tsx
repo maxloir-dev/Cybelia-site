@@ -43,6 +43,72 @@ function Profil() {
 		chargerProfil();
 	}, []);
 
+	const telechargerFacture = (commande: Commande) => {
+		const lignesHTML = commande.lignes?.map((l) => `
+			<tr>
+				<td style="padding:10px 0;border-bottom:1px solid #eee;">${l.produit_nom ?? "Produit"}</td>
+				<td style="padding:10px 0;border-bottom:1px solid #eee;text-align:center;">${l.quantite}</td>
+				<td style="padding:10px 0;border-bottom:1px solid #eee;text-align:right;">${Number(l.prix_unitaire).toFixed(2)} €</td>
+				<td style="padding:10px 0;border-bottom:1px solid #eee;text-align:right;">${(l.quantite * Number(l.prix_unitaire)).toFixed(2)} €</td>
+			</tr>
+		`).join("") ?? "";
+
+		const html = `<!DOCTYPE html>
+		<html lang="fr">
+		<head>
+			<meta charset="UTF-8"/>
+			<title>Facture #${commande.id} — Cybelia</title>
+			<style>
+				body { font-family: Arial, sans-serif; color: #111; padding: 60px; max-width: 800px; margin: 0 auto; }
+				h1 { font-size: 2rem; letter-spacing: 0.1em; color: #965846; margin-bottom: 4px; }
+				.sub { color: #777; font-size: 0.85rem; margin-bottom: 40px; }
+				.entete { display: flex; justify-content: space-between; margin-bottom: 40px; }
+				.bloc-titre { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.1em; color: #777; margin-bottom: 6px; }
+				table { width: 100%; border-collapse: collapse; margin-top: 32px; }
+				th { text-align: left; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.1em; color: #777; padding-bottom: 12px; border-bottom: 2px solid #111; }
+				th:not(:first-child) { text-align: right; }
+				.total { text-align: right; margin-top: 24px; font-size: 1.1rem; font-weight: bold; }
+				.footer { margin-top: 60px; font-size: 0.75rem; color: #999; border-top: 1px solid #eee; padding-top: 20px; }
+				@media print { body { padding: 20px; } }
+			</style>
+		</head>
+		<body>
+			<h1>CYBELIA</h1>
+			<p class="sub">Facture</p>
+			<div class="entete">
+				<div>
+					<div class="bloc-titre">Facturé à</div>
+					<div>${utilisateur?.prenom} ${utilisateur?.nom}</div>
+					<div>${utilisateur?.email}</div>
+				</div>
+				<div style="text-align:right;">
+					<div class="bloc-titre">Commande</div>
+					<div>#${commande.id}</div>
+					<div>${new Date(commande.created_at).toLocaleDateString("fr-FR")}</div>
+				</div>
+			</div>
+			<table>
+				<thead>
+					<tr>
+						<th>Produit</th>
+						<th style="text-align:center;">Qté</th>
+						<th style="text-align:right;">Prix unitaire</th>
+						<th style="text-align:right;">Sous-total</th>
+					</tr>
+				</thead>
+				<tbody>${lignesHTML}</tbody>
+			</table>
+			<div class="total">Total : ${Number(commande.montant_total).toFixed(2)} €</div>
+			<div class="footer">Cybelia — cybele.architecture@gmail.com</div>
+			<script>window.onload = () => { window.print(); }</script>
+		</body>
+		</html>`;
+
+		const fenetre = window.open("", "_blank");
+		fenetre?.document.write(html);
+		fenetre?.document.close();
+	};
+
 	const allerCommandes = async () => {
 		setChargement(true);
 		const data = await getMesCommandes();
@@ -209,9 +275,18 @@ function Profil() {
 									</span>
 								))}
 							</div>
-							<span className="profil-item__prix">
-								{commande.montant_total}€
-							</span>
+							<div className="profil-item__actions">
+								<span className="profil-item__prix">
+									{Number(commande.montant_total).toFixed(2)}€
+								</span>
+								<button
+									type="button"
+									className="profil-item__facture"
+									onClick={() => telechargerFacture(commande)}
+								>
+									Télécharger la facture
+								</button>
+							</div>
 						</div>
 					))}
 				</div>
