@@ -33,13 +33,4 @@ router.put("/:id", verifierToken, verifierAdmin, editProduit);
 // Supprime un produit
 router.delete("/:id", verifierToken, verifierAdmin, removeProduit);
 
-// --------------------- tester sans auth ---------------------
-// Ajoute un nouveau produit
-router.post("/", addProduit);
-// Modifie un produit existant
-router.put("/:id", editProduit);
-// Supprime un produit
-router.delete("/:id", removeProduit);
-// -------------------------------------------------------------
-
 export default router;

@@ -87,6 +87,9 @@ function Login() {
 					<p className="login-redirect">
 						Pas encore de compte ? <Link to="/register">S'inscrire</Link>
 					</p>
+					<p className="login-redirect">
+						<Link to="/forgot-password">Mot de passe oublié ?</Link>
+					</p>
 				</div>
 			</div>
 		</main>

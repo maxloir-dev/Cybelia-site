@@ -93,6 +93,31 @@ export const deleteUser = async (id: number) => {
 	await pool.query("DELETE FROM utilisateurs WHERE id = ?", [id]);
 };
 
+// Stocke un token de réinitialisation avec expiration (1h)
+export const setResetToken = async (email: string, token: string, expires: Date) => {
+	await pool.query(
+		"UPDATE utilisateurs SET reset_token = ?, reset_token_expires = ? WHERE email = ?",
+		[token, expires, email],
+	);
+};
+
+// Trouve un utilisateur par son token de réinitialisation (non expiré)
+export const getUserByResetToken = async (token: string) => {
+	const [rows]: any = await pool.query(
+		"SELECT * FROM utilisateurs WHERE reset_token = ? AND reset_token_expires > NOW()",
+		[token],
+	);
+	return rows[0];
+};
+
+// Efface le token après utilisation
+export const clearResetToken = async (id: number) => {
+	await pool.query(
+		"UPDATE utilisateurs SET reset_token = NULL, reset_token_expires = NULL WHERE id = ?",
+		[id],
+	);
+};
+
 // Met à jour le mot de passe d'un utilisateur
 export const updatePassword = async (id: number, mot_de_passe: string) => {
 	await pool.query("UPDATE utilisateurs SET mot_de_passe = ? WHERE id = ?", [

@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
+import crypto from "crypto";
 import {
 	getUserByEmail,
 	createUser,
@@ -8,7 +9,11 @@ import {
 	getUserByIdWithPassword,
 	updateUser,
 	updatePassword,
+	setResetToken,
+	getUserByResetToken,
+	clearResetToken,
 } from "../models/utilisateurModel";
+import { envoyerEmailReinitialisation } from "../config/email";
 import { AuthRequest } from "../middlewares/authMiddleware";
 
 // Authentification
@@ -64,7 +69,7 @@ export const login = async (req: Request, res: Response) => {
 			process.env.JWT_SECRET as string,
 			{ expiresIn: "7d" },
 		);
-		res.json({ token, role_id: utilisateur.role_id });
+		res.json({ token, role_id: utilisateur.role_id, id: utilisateur.id });
 	} catch (error) {
 		res.status(500).json({ message: "Erreur lors de la connexion" });
 	}
@@ -134,10 +139,58 @@ export const updateMotDePasse = async (req: AuthRequest, res: Response) => {
 	}
 };
 
+// Réinitialisation du mot de passe
+
+// Envoie un email avec un lien de réinitialisation
+export const forgotPassword = async (req: Request, res: Response) => {
+	try {
+		const { email } = req.body;
+		const utilisateur = await getUserByEmail(email);
+
+		// On répond toujours OK pour ne pas révéler si l'email existe
+		if (!utilisateur) {
+			res.json({ message: "Si cet email existe, un lien a été envoyé." });
+			return;
+		}
+
+		const token = crypto.randomBytes(32).toString("hex");
+		const expires = new Date(Date.now() + 60 * 60 * 1000); // 1 heure
+
+		await setResetToken(email, token, expires);
+		await envoyerEmailReinitialisation(email, token);
+
+		res.json({ message: "Si cet email existe, un lien a été envoyé." });
+	} catch (error) {
+		console.error("Erreur forgot-password:", error);
+		res.status(500).json({ message: "Erreur lors de l'envoi de l'email." });
+	}
+};
+
+// Réinitialise le mot de passe avec le token reçu par email
+export const resetPassword = async (req: Request, res: Response) => {
+	try {
+		const { token, nouveau_mot_de_passe } = req.body;
+
+		const utilisateur = await getUserByResetToken(token);
+		if (!utilisateur) {
+			res.status(400).json({ message: "Lien invalide ou expiré." });
+			return;
+		}
+
+		const hash = await bcrypt.hash(nouveau_mot_de_passe, 10);
+		await updatePassword(utilisateur.id, hash);
+		await clearResetToken(utilisateur.id);
+
+		res.json({ message: "Mot de passe réinitialisé avec succès." });
+	} catch (error) {
+		res.status(500).json({ message: "Erreur lors de la réinitialisation." });
+	}
+};
+
 // Déconnexion
 
 // Déconnexion de l'utilisateur — le token est supprimé côté client (React)
-export const logout = async (req: AuthRequest, res: Response) => {
+export const logout = async (_req: AuthRequest, res: Response) => {
 	try {
 		res.json({ message: "Déconnexion réussie" });
 	} catch (error) {

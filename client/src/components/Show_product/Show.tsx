@@ -1,6 +1,7 @@
 import "./show.css";
 import ActionButton from "../ActionButton/ActionButton";
 import { useCart } from "../../store/CartContext";
+import { useAuth } from "../../store/AuthContext";
 import {
 	type ChangeEvent,
 	type FormEvent,
@@ -62,6 +63,7 @@ export default function Show({ categorieId, titre }: Props) {
 	const [recherche, setRecherche] = useState("");
 
 	const { ajouterAuPanier } = useCart();
+	const { estAdmin } = useAuth();
 
 	const fetchProduits = () => {
 		fetch(`http://localhost:3001/api/produits?categorie_id=${categorieId}`)
@@ -89,12 +91,16 @@ export default function Show({ categorieId, titre }: Props) {
 		return e;
 	};
 
+	const token = localStorage.getItem("token");
+	const authHeader = { Authorization: `Bearer ${token}` };
+
 	const uploadImages = async (principale: File | null, mockup: File | null) => {
 		const formData = new FormData();
 		if (principale) formData.append("images", principale);
 		if (mockup) formData.append("images", mockup);
 		const res = await fetch("http://localhost:3001/api/upload/multiple", {
 			method: "POST",
+			headers: authHeader,
 			body: formData,
 		});
 		if (!res.ok) throw new Error("Échec de l'upload des images");
@@ -123,7 +129,7 @@ export default function Show({ categorieId, titre }: Props) {
 			}
 			await fetch("http://localhost:3001/api/produits", {
 				method: "POST",
-				headers: { "Content-Type": "application/json" },
+				headers: { "Content-Type": "application/json", ...authHeader },
 				body: JSON.stringify({
 					...form,
 					prix: Number(form.prix),
@@ -177,7 +183,7 @@ export default function Show({ categorieId, titre }: Props) {
 				`http://localhost:3001/api/produits/${produitEnEdition!.id}`,
 				{
 					method: "PUT",
-					headers: { "Content-Type": "application/json" },
+					headers: { "Content-Type": "application/json", ...authHeader },
 					body: JSON.stringify({
 						...formEdition,
 						prix: Number(formEdition.prix),
@@ -197,6 +203,7 @@ export default function Show({ categorieId, titre }: Props) {
 	const handleDelete = (id: number) => {
 		fetch(`http://localhost:3001/api/produits/${id}`, {
 			method: "DELETE",
+			headers: authHeader,
 		}).then(() => fetchProduits());
 	};
 
@@ -253,42 +260,46 @@ export default function Show({ categorieId, titre }: Props) {
 							Ajouter au panier
 						</ActionButton>
 
-						<div className="shop-card-actions">
-							<button
-								type="button"
-								className="shop-card-edit"
-								onClick={(e) => {
-									e.stopPropagation();
-									ouvrirEdition(p);
-								}}
-							>
-								Modifier
-							</button>
-							<button
-								type="button"
-								className="shop-card-delete"
-								onClick={(e) => {
-									e.stopPropagation();
-									handleDelete(p.id);
-								}}
-							>
-								Supprimer
-							</button>
-						</div>
+						{estAdmin && (
+							<div className="shop-card-actions">
+								<button
+									type="button"
+									className="shop-card-edit"
+									onClick={(e) => {
+										e.stopPropagation();
+										ouvrirEdition(p);
+									}}
+								>
+									Modifier
+								</button>
+								<button
+									type="button"
+									className="shop-card-delete"
+									onClick={(e) => {
+										e.stopPropagation();
+										handleDelete(p.id);
+									}}
+								>
+									Supprimer
+								</button>
+							</div>
+						)}
 					</div>
 				))}
 			</div>
 
-			<button
-				type="button"
-				className="btn-ouvrir-modal"
-				onClick={() => setModalOuverte(true)}
-			>
-				+
-			</button>
+			{estAdmin && (
+				<button
+					type="button"
+					className="btn-ouvrir-modal"
+					onClick={() => setModalOuverte(true)}
+				>
+					+
+				</button>
+			)}
 
 			{/* Modale ajout */}
-			{modalOuverte && (
+			{estAdmin && modalOuverte && (
 				<div className="modal-overlay" onClick={() => setModalOuverte(false)}>
 					<div
 						className="modal-contenu"
@@ -361,7 +372,7 @@ export default function Show({ categorieId, titre }: Props) {
 			)}
 
 			{/* Modale édition */}
-			{produitEnEdition && (
+			{estAdmin && produitEnEdition && (
 				<div
 					className="modal-overlay"
 					onClick={() => setProduitEnEdition(null)}
