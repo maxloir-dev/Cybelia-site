@@ -66,3 +66,14 @@
 .custom-button--inverse:hover {
 	color: var(--color-background);
 }
+
+/* Style de base de l'icône */
+.feature-icon-svg {
+	transition: transform 0.3s ease-in-out; /* Animation fluide */
+	display: inline-block; /* Nécessaire pour la transformation */
+}
+
+/* Effet de zoom au survol du parent */
+.feature-item:hover .feature-icon-svg {
+	transform: scale(1.8); /* Zoom de 20% */
+}
