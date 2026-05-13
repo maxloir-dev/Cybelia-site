@@ -75,5 +75,5 @@
 
 /* Effet de zoom au survol du parent */
 .feature-item:hover .feature-icon-svg {
-	transform: scale(1.8); /* Zoom de 20% */
+	transform: scale(1.8); /* Zoom de 80% */
 }
