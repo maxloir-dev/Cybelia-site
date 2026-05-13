@@ -1,5 +1,5 @@
-import api from "./axios";
 import type { Utilisateur } from "../types";
+import api from "./axios";
 
 // Appels API liés à l'authentification
 

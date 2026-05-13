@@ -574,6 +574,7 @@ function Admin() {
 						{/* Image */}
 						<div className="admin-form__field">
 							<label
+								htmlFor="edit-image-produit"
 								style={{
 									fontSize: "0.85rem",
 									letterSpacing: "1px",
@@ -678,15 +679,20 @@ function Admin() {
 	if (vue === "ajouter-produit") {
 		return (
 			<main className="admin-main">
-				<button className="admin-retour" onClick={() => setVue("accueil")}>
+				<button
+					type="button"
+					className="admin-retour"
+					onClick={() => setVue("accueil")}
+				>
 					← Retour
 				</button>
 				<h1>Nouveau produit</h1>
-
 				<div className="admin-form">
 					<div className="admin-form__field">
-						<label>Nom du produit</label>
+						<label htmlFor="nom-produit">Nom du produit</label>
+
 						<input
+							id="nom-produit"
 							type="text"
 							className="admin-edit-input"
 							placeholder="ex: Carte Montagne"
@@ -698,8 +704,9 @@ function Admin() {
 					</div>
 
 					<div className="admin-form__field">
-						<label>Description</label>
+						<label htmlFor="description-produit">Description</label>
 						<textarea
+							id="description-produit"
 							className="admin-edit-input admin-edit-textarea"
 							placeholder="Décrivez le produit..."
 							value={nouveauProduit.description}
@@ -714,8 +721,10 @@ function Admin() {
 
 					<div className="admin-form__row">
 						<div className="admin-form__field">
-							<label>Prix (€)</label>
+							<label htmlFor="prix-produit">Prix (€)</label>
+
 							<input
+								id="prix-produit"
 								type="number"
 								step="0.01"
 								className="admin-edit-input"
@@ -731,8 +740,9 @@ function Admin() {
 						</div>
 
 						<div className="admin-form__field">
-							<label>Catégorie</label>
+							<label htmlFor="categorie-produit">Catégorie</label>
 							<select
+								id="categorie-produit"
 								className="admin-edit-input"
 								value={nouveauProduit.categorie_id}
 								onChange={(e) =>
@@ -749,8 +759,9 @@ function Admin() {
 					</div>
 
 					<div className="admin-form__field">
-						<label>Image du produit</label>
+						<label htmlFor="image-produit">Image du produit</label>
 						<input
+							id="image-produit"
 							type="file"
 							accept="image/jpeg, image/png, image/webp"
 							className="admin-edit-input"
@@ -771,8 +782,9 @@ function Admin() {
 						)}
 					</div>
 					<div className="admin-form__field">
-						<label>Image mockup (optionnel)</label>
+						<label htmlFor="mockup-produit">Image mockup (optionnel)</label>
 						<input
+							id="mockup-produit"
 							type="file"
 							accept="image/jpeg, image/png, image/webp"
 							className="admin-edit-input"

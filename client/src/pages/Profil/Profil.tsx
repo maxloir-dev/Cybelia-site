@@ -44,14 +44,19 @@ function Profil() {
 	}, []);
 
 	const telechargerFacture = (commande: Commande) => {
-		const lignesHTML = commande.lignes?.map((l) => `
+		const lignesHTML =
+			commande.lignes
+				?.map(
+					(l) => `
 			<tr>
 				<td style="padding:10px 0;border-bottom:1px solid #eee;">${l.produit_nom ?? "Produit"}</td>
 				<td style="padding:10px 0;border-bottom:1px solid #eee;text-align:center;">${l.quantite}</td>
 				<td style="padding:10px 0;border-bottom:1px solid #eee;text-align:right;">${Number(l.prix_unitaire).toFixed(2)} €</td>
 				<td style="padding:10px 0;border-bottom:1px solid #eee;text-align:right;">${(l.quantite * Number(l.prix_unitaire)).toFixed(2)} €</td>
 			</tr>
-		`).join("") ?? "";
+		`,
+				)
+				.join("") ?? "";
 
 		const html = `<!DOCTYPE html>
 		<html lang="fr">
@@ -121,9 +126,13 @@ function Profil() {
 		e.preventDefault();
 		setErreur("");
 		setMessage("");
+		if (!utilisateur) {
+			setErreur("Impossible de mettre à jour : utilisateur non chargé.");
+			return;
+		}
 		try {
 			await updateProfil(nom, prenom, email);
-			setUtilisateur({ ...utilisateur!, nom, prenom, email });
+			setUtilisateur({ ...utilisateur, nom, prenom, email });
 			setMessage("Profil mis à jour avec succès !");
 		} catch {
 			setErreur("Erreur lors de la mise à jour du profil");
@@ -166,7 +175,11 @@ function Profil() {
 
 				<div className="profil-cards">
 					{/* Carte Mes commandes */}
-					<div className="profil-card" onClick={allerCommandes}>
+					<button
+						className="profil-card"
+						onClick={allerCommandes}
+						type="button"
+					>
 						<svg
 							width="64"
 							height="64"
@@ -176,7 +189,10 @@ function Profil() {
 							strokeWidth="1.2"
 							strokeLinecap="round"
 							strokeLinejoin="round"
+							role="img"
+							aria-labelledby="title-commandes"
 						>
+							<title id="title-commandes">Icône Commandes</title>
 							<path d="M3 3h2l.4 2M7 13h10l4-8H5.4" />
 							<circle cx="9" cy="21" r="1" />
 							<circle cx="20" cy="21" r="1" />
@@ -184,16 +200,17 @@ function Profil() {
 						</svg>
 						<h2>Mes commandes</h2>
 						<p>Voir mes commandes passées</p>
-					</div>
+					</button>
 
 					{/* Carte Mon profil */}
-					<div
+					<button
 						className="profil-card"
 						onClick={() => {
 							setMessage("");
 							setErreur("");
 							setVue("modifier-profil");
 						}}
+						type="button"
 					>
 						<svg
 							width="64"
@@ -204,22 +221,26 @@ function Profil() {
 							strokeWidth="1.2"
 							strokeLinecap="round"
 							strokeLinejoin="round"
+							role="img"
+							aria-labelledby="title-profil"
 						>
+							<title id="title-profil">Icône Profil</title>
 							<circle cx="12" cy="8" r="4" />
 							<path d="M4 20c0-4 3.6-7 8-7s8 3 8 7" />
 						</svg>
 						<h2>Mon profil</h2>
 						<p>Mettre à jour mes informations</p>
-					</div>
+					</button>
 
 					{/* Carte Mot de passe */}
-					<div
+					<button
 						className="profil-card"
 						onClick={() => {
 							setMessage("");
 							setErreur("");
 							setVue("changer-mdp");
 						}}
+						type="button"
 					>
 						<svg
 							width="64"
@@ -230,7 +251,10 @@ function Profil() {
 							strokeWidth="1.2"
 							strokeLinecap="round"
 							strokeLinejoin="round"
+							role="img"
+							aria-labelledby="title-mdp"
 						>
+							<title id="title-mdp">Icône Mot de passe</title>
 							<rect x="2" y="7" width="20" height="15" rx="2" />
 							<path d="M8 7V5a4 4 0 0 1 8 0v2" />
 							<circle cx="12" cy="15" r="1.5" fill="#fff" />
@@ -241,7 +265,7 @@ function Profil() {
 						</svg>
 						<h2>Mot de passe</h2>
 						<p>Changer mon mot de passe</p>
-					</div>
+					</button>
 				</div>
 			</main>
 		);
@@ -251,7 +275,11 @@ function Profil() {
 	if (vue === "commandes") {
 		return (
 			<main className="profil-main">
-				<button className="profil-retour" onClick={() => setVue("accueil")}>
+				<button
+					className="profil-retour"
+					type="button"
+					onClick={() => setVue("accueil")}
+				>
 					← Retour
 				</button>
 				<h1>Mes commandes</h1>
@@ -268,8 +296,12 @@ function Profil() {
 								<span className="profil-item__detail">
 									{new Date(commande.created_at).toLocaleDateString("fr-FR")}
 								</span>
-								{commande.lignes?.map((ligne, i) => (
-									<span key={i} className="profil-item__detail">
+								{commande.lignes?.map((ligne) => (
+									<span
+										// Utilisez l'ID du produit ou de la ligne plutôt que l'index 'i'
+										key={ligne.produit_id}
+										className="profil-item__detail"
+									>
 										{ligne.quantite}x {ligne.produit_nom} —{" "}
 										{ligne.prix_unitaire}€
 									</span>
@@ -298,7 +330,11 @@ function Profil() {
 	if (vue === "modifier-profil") {
 		return (
 			<main className="profil-main">
-				<button className="profil-retour" onClick={() => setVue("accueil")}>
+				<button
+					className="profil-retour"
+					type="button"
+					onClick={() => setVue("accueil")}
+				>
 					← Retour
 				</button>
 				<h1>Modifier mon profil</h1>
@@ -309,8 +345,9 @@ function Profil() {
 				<form className="profil-form" onSubmit={handleModifierProfil}>
 					<div className="profil-form__row">
 						<div className="profil-form__field">
-							<label>Nom</label>
+							<label htmlFor="nom">Nom</label>
 							<input
+								id="nom"
 								type="text"
 								value={nom}
 								onChange={(e) => setNom(e.target.value)}
@@ -318,8 +355,9 @@ function Profil() {
 							/>
 						</div>
 						<div className="profil-form__field">
-							<label>Prénom</label>
+							<label htmlFor="prenom">Prénom</label>
 							<input
+								id="prenom"
 								type="text"
 								value={prenom}
 								onChange={(e) => setPrenom(e.target.value)}
@@ -328,8 +366,9 @@ function Profil() {
 						</div>
 					</div>
 					<div className="profil-form__field">
-						<label>Email</label>
+						<label htmlFor="email">Email</label>
 						<input
+							id="email"
 							type="email"
 							value={email}
 							onChange={(e) => setEmail(e.target.value)}
@@ -348,7 +387,11 @@ function Profil() {
 	if (vue === "changer-mdp") {
 		return (
 			<main className="profil-main">
-				<button className="profil-retour" onClick={() => setVue("accueil")}>
+				<button
+					className="profil-retour"
+					type="button"
+					onClick={() => setVue("accueil")}
+				>
 					← Retour
 				</button>
 				<h1>Changer mon mot de passe</h1>
@@ -358,8 +401,9 @@ function Profil() {
 
 				<form className="profil-form" onSubmit={handleChangerMdp}>
 					<div className="profil-form__field">
-						<label>Ancien mot de passe</label>
+						<label htmlFor="ancien-mdp">Ancien mot de passe</label>
 						<input
+							id="ancien-mdp"
 							type="password"
 							value={ancienMdp}
 							onChange={(e) => setAncienMdp(e.target.value)}
@@ -368,8 +412,9 @@ function Profil() {
 						/>
 					</div>
 					<div className="profil-form__field">
-						<label>Nouveau mot de passe</label>
+						<label htmlFor="nouveau-mdp">Nouveau mot de passe</label>
 						<input
+							id="nouveau-mdp"
 							type="password"
 							value={nouveauMdp}
 							onChange={(e) => setNouveauMdp(e.target.value)}
@@ -378,8 +423,11 @@ function Profil() {
 						/>
 					</div>
 					<div className="profil-form__field">
-						<label>Confirmer le nouveau mot de passe</label>
+						<label htmlFor="confirmation-mdp">
+							Confirmer le nouveau mot de passe
+						</label>
 						<input
+							id="confirmation-mdp"
 							type="password"
 							value={confirmationMdp}
 							onChange={(e) => setConfirmationMdp(e.target.value)}

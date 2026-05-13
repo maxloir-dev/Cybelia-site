@@ -1,5 +1,5 @@
 "use client";
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import SplitText from "../../components/SplitText";
 import "./Home.css";
 import Hero from "../../components/Hero/Hero";
@@ -44,7 +44,7 @@ function Home({ onIntroComplete }: HomeProps) {
 			setStage("exiting");
 		}, 3000);
 		return () => clearTimeout(timer);
-	}, []);
+	}, [stage]);
 
 	if (stage === "content") {
 		onIntroComplete();

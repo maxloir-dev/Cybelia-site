@@ -1,5 +1,5 @@
-import api from "./axios";
 import type { Produit } from "../types";
+import api from "./axios";
 
 // Appels API liés aux produits
 

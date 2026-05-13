@@ -1,5 +1,5 @@
-import api from "./axios";
 import type { Utilisateur, Commande } from "../types";
+import api from "./axios";
 
 // Appels API liés aux utilisateurs (gérante)
 

@@ -1,7 +1,7 @@
 "use client";
 
-import { useRef, useEffect, useState } from "react";
 import { gsap } from "gsap";
+import { useEffect, useRef, useState } from "react";
 import { useGSAP } from "@gsap/react";
 import SplitType from "split-type";
 

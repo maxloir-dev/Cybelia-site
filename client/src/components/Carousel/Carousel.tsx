@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from "react"; // Ajout de useCallback
+import { useState, useEffect, useCallback } from "react";
 import "./Carousel.css";
 
 const slides = [
@@ -35,7 +35,7 @@ function Carousel() {
 	useEffect(() => {
 		const timer = setInterval(next, INTERVAL);
 		return () => clearInterval(timer);
-	}, [next]); // Dépendance plus propre
+	}, [next]);
 
 	return (
 		<div className="carousel">
@@ -46,7 +46,6 @@ function Carousel() {
 				{slides.map((slide) => (
 					<div key={slide.image} className="carousel__slide">
 						{" "}
-						{/* Utilise slide.image au lieu de i pour la key */}
 						<img
 							src={slide.image}
 							alt={slide.alt}

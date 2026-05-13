@@ -1,5 +1,5 @@
-import { Navigate } from "react-router-dom";
 import { useAuth } from "../store/AuthContext";
+import { Navigate } from "react-router-dom";
 import type { ReactNode } from "react";
 
 // Composant de protection des routes
