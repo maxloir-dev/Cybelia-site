@@ -215,3 +215,45 @@
 	display: flex;
 	align-items: center;
 }
+
+/* Conteneur pour aligner Logo et Admin horizontalement */
+.navbar-left-group {
+	display: flex;
+	align-items: center;
+	gap: 30px; /* Espace entre le logo et le lien Admin */
+	flex: 1; /* Force ce bloc à prendre de l'espace pour aider au centrage du milieu */
+}
+
+/* Style du lien Admin (basé sur tes styles .navbar-links a) */
+.navbar-admin-link {
+	font-size: 0.95rem;
+	font-weight: 700;
+	letter-spacing: 0.2em;
+	text-transform: uppercase;
+	color: var(--color-text);
+	text-decoration: none;
+	transition: opacity 0.2s;
+	font-family: var(--font-title);
+
+	/* Petit badge discret pour le différencier */
+	border: 1px solid var(--color-text);
+	padding: 8px 15px;
+	border-radius: 2px;
+}
+
+.navbar-admin-link:hover {
+	opacity: 0.5;
+	background-color: var(--color-text);
+	color: #fff !important;
+}
+
+/* Ajustements pour garantir que les liens du milieu restent bien au centre */
+.navbar-links {
+	flex: 2;
+	justify-content: center;
+}
+
+.navbar-icons {
+	flex: 1;
+	justify-content: flex-end;
+}

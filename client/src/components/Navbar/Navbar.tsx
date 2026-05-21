@@ -97,19 +97,22 @@ function Navbar() {
 						className="navbar-icon"
 						aria-label="Déconnexion"
 						onClick={deconnexion}
+						style={{
+							background: "none",
+							border: "none",
+							cursor: "pointer",
+							padding: 0,
+						}}
 					>
-						<svg
-							aria-hidden="true"
-							width="20"
-							height="20"
-							viewBox="0 0 24 24"
-							fill="none"
-							stroke="currentColor"
-							strokeWidth="1.5"
-						>
-							<path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
-							<polyline points="16 17 21 12 16 7" />
-							<line x1="21" y1="12" x2="9" y2="12" />
+						<svg width="20" height="20" viewBox="0 0 32 32" aria-hidden="true">
+							<g fill="none" fillRule="evenodd">
+								<path d="m0 0h32v32h-32z" />
+								<path
+									d="m0 32v-2h5v-30h22v30h5v2zm25-30h-18v28h18zm-3 11v8h-2v-8z"
+									fill="currentColor"
+									fillRule="nonzero"
+								/>
+							</g>
 						</svg>
 					</button>
 				)}
