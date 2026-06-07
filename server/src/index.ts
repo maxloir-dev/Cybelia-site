@@ -1,5 +1,7 @@
 import express from "express"; // Framework web
 import cors from "cors"; // Autorise React à communiquer avec le serveur
+import helmet from "helmet"; // Headers HTTP de sécurité
+import rateLimit from "express-rate-limit"; // Protection brute-force
 import dotenv from "dotenv"; // Charge les variables d'environnement (.env)
 
 // Imports de la config
@@ -13,6 +15,8 @@ import utilisateurRoutes from "./routes/utilisateurRoutes"; // Routes /api/utili
 import categorieRoutes from "./routes/categorieRoutes"; // Routes /api/categories
 import uploadRoutes from "./routes/uploadRoutes"; // Routes /api/upload
 import contactRoutes from "./routes/contactRoutes"; // Routes /api/contact
+import dimensionRoutes from "./routes/dimensionRoutes"; // Routes /api/dimensions
+import stripeRoutes from "./routes/stripeRoutes";
 
 // Chargement des variables d'environnement
 dotenv.config();
@@ -23,18 +27,33 @@ const PORT = process.env.PORT || 3001;
 
 // Middlewares globaux
 
-app.use(cors()); // Autorise les requêtes venant de React
+app.use(helmet()); // Headers HTTP de sécurité (CSP, X-Frame-Options, etc.)
+app.use(cors({
+	origin: process.env.CLIENT_URL,
+	methods: ["GET", "POST", "PUT", "DELETE"],
+}));
 app.use(express.json()); // Permet de lire le JSON dans les requêtes
+
+// Rate limiting sur les routes sensibles
+const authLimiter = rateLimit({
+	windowMs: 15 * 60 * 1000, // 15 minutes
+	max: 15,
+	message: { message: "Trop de tentatives, réessayez dans 15 minutes." },
+	standardHeaders: true,
+	legacyHeaders: false,
+});
 
 // Routes
 
 app.use("/api/produits", produitRoutes);
-app.use("/api/auth", authRoutes);
+app.use("/api/auth", authLimiter, authRoutes);
 app.use("/api/commandes", commandeRoutes);
 app.use("/api/utilisateurs", utilisateurRoutes);
 app.use("/api/categories", categorieRoutes);
 app.use("/api/upload", uploadRoutes);
 app.use("/api/contact", contactRoutes);
+app.use("/api/dimensions", dimensionRoutes);
+app.use("/api/stripe", stripeRoutes);
 
 // Route de vérification que le serveur tourne
 app.get("/health", (req, res) => {

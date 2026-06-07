@@ -1,4 +1,7 @@
 import pool from "../config/database";
+import { grouperLignesParCommande } from "../utils/grouperCommandes";
+
+const CHAMPS_LIGNE = ["quantite", "prix_unitaire", "produit_nom", "dimension_label"];
 
 // Crée une nouvelle commande et retourne son id
 export const createCommande = async (
@@ -15,31 +18,46 @@ export const createCommande = async (
 // Crée les lignes de commande associées à une commande
 export const createLignesCommande = async (
 	commande_id: number,
-	lignes: { produit_id: number; quantite: number; prix_unitaire: number }[],
+	lignes: {
+		produit_id: number;
+		quantite: number;
+		prix_unitaire: number;
+		dimension_id?: number | null;
+		produit_nom: string;
+		dimension_label?: string | null;
+	}[],
 ) => {
-	// On insère toutes les lignes en une seule requête
 	const values = lignes.map((l) => [
 		commande_id,
 		l.produit_id,
 		l.quantite,
 		l.prix_unitaire,
+		l.dimension_id ?? null,
+		l.produit_nom,
+		l.dimension_label ?? null,
 	]);
 	await pool.query(
-		"INSERT INTO lignes_commande (commande_id, produit_id, quantite, prix_unitaire) VALUES ?",
+		"INSERT INTO lignes_commande (commande_id, produit_id, quantite, prix_unitaire, dimension_id, produit_nom, dimension_label) VALUES ?",
 		[values],
 	);
 };
 
-// Récupère toutes les commandes avec les infos du client (pour la gérante)
+// Récupère toutes les commandes avec les infos du client et leurs lignes (pour la gérante)
 export const getAllCommandes = async () => {
-	const [rows] = await pool.query(`
+	const [rows]: any = await pool.query(`
         SELECT c.id, c.montant_total, c.created_at,
-               u.nom, u.prenom, u.email
+               u.nom, u.prenom, u.email,
+               lc.quantite, lc.prix_unitaire,
+               COALESCE(lc.produit_nom, p.nom) AS produit_nom,
+               COALESCE(lc.dimension_label, d.label) AS dimension_label
         FROM commandes c
         JOIN utilisateurs u ON c.utilisateur_id = u.id
+        JOIN lignes_commande lc ON c.id = lc.commande_id
+        LEFT JOIN produits p ON lc.produit_id = p.id
+        LEFT JOIN dimensions d ON lc.dimension_id = d.id
         ORDER BY c.created_at DESC
     `);
-	return rows;
+	return grouperLignesParCommande(rows, CHAMPS_LIGNE);
 };
 
 // Récupère le détail d'une commande avec ses lignes et produits
@@ -49,31 +67,35 @@ export const getCommandeById = async (id: number) => {
         SELECT c.id, c.montant_total, c.created_at,
                u.nom, u.prenom, u.email,
                lc.quantite, lc.prix_unitaire,
-               p.nom AS produit_nom
+               COALESCE(lc.produit_nom, p.nom) AS produit_nom,
+               COALESCE(lc.dimension_label, d.label) AS dimension_label
         FROM commandes c
         JOIN utilisateurs u ON c.utilisateur_id = u.id
         JOIN lignes_commande lc ON c.id = lc.commande_id
-        JOIN produits p ON lc.produit_id = p.id
+        LEFT JOIN produits p ON lc.produit_id = p.id
+        LEFT JOIN dimensions d ON lc.dimension_id = d.id
         WHERE c.id = ?
     `,
 		[id],
 	);
-	return rows;
+	return grouperLignesParCommande(rows, CHAMPS_LIGNE);
 };
 // Récupère toutes les commandes d'un client connecté
 export const getCommandesByUserId = async (utilisateur_id: number) => {
-	const [rows] = await pool.query(
+	const [rows]: any = await pool.query(
 		`
         SELECT c.id, c.montant_total, c.created_at,
                lc.quantite, lc.prix_unitaire,
-               p.nom AS produit_nom
+               COALESCE(lc.produit_nom, p.nom) AS produit_nom,
+               COALESCE(lc.dimension_label, d.label) AS dimension_label
         FROM commandes c
         JOIN lignes_commande lc ON c.id = lc.commande_id
-        JOIN produits p ON lc.produit_id = p.id
+        LEFT JOIN produits p ON lc.produit_id = p.id
+        LEFT JOIN dimensions d ON lc.dimension_id = d.id
         WHERE c.utilisateur_id = ?
         ORDER BY c.created_at DESC
     `,
 		[utilisateur_id],
 	);
-	return rows;
+	return grouperLignesParCommande(rows, CHAMPS_LIGNE);
 };

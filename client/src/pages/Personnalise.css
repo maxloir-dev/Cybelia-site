@@ -25,7 +25,7 @@
 .perso-hero-titre {
   font-size: 3rem;
   font-weight: bold;
-  color: var(--color-primary);
+  color: #9F8166;
   line-height: 1.2;
   margin-bottom: 24px;
   letter-spacing: 0.02em;
@@ -62,7 +62,7 @@
 .perso-section-titre {
   font-size: 2rem;
   font-weight: bold;
-  color: var(--color-primary);
+  color: #9F8166;
   margin-bottom: 56px;
   text-align: center;
 }
@@ -90,7 +90,8 @@
 .perso-etape-num {
   font-size: 2.5rem;
   font-weight: bold;
-  color: #eee;
+  color: #9F8166;
+  opacity: 0.25;
   line-height: 1;
   font-family: var(--font-title);
 }
@@ -98,7 +99,7 @@
 .perso-etape h3 {
   font-size: 1rem;
   font-weight: 700;
-  color: var(--color-primary);
+  color: #9F8166;
   letter-spacing: 0.05em;
   text-transform: uppercase;
 }
@@ -112,7 +113,7 @@
 /* ── Pour qui ── */
 
 .perso-pourqui {
-  padding: 80px 40px;
+  padding: 80px 40px 60px 40px;
   background: #f9f6f3;
 }
 
@@ -140,7 +141,104 @@
   font-size: 0.85rem;
   letter-spacing: 0.1em;
   text-transform: uppercase;
-  color: var(--color-primary);
+  color: #9F8166;
+}
+
+/* ── Réalisations ── */
+
+.perso-realisations {
+  padding: 80px 40px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.perso-realisations-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+}
+
+.perso-realisation-item {
+  aspect-ratio: 3 / 4;
+  overflow: hidden;
+}
+
+.perso-realisation-item img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.4s ease;
+}
+
+.perso-realisation-item:hover img {
+  transform: scale(1.04);
+}
+
+/* ── Texte long ── */
+
+.perso-texte-long {
+  padding: 10px 40px 60px 40px;
+  background: #f9f6f3;
+}
+
+.perso-texte-long-content {
+  max-width: 780px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.perso-texte-long-content p {
+  font-size: 0.95rem;
+  color: var(--color-secondary);
+  line-height: 1.9;
+}
+
+/* ── Étapes détaillées ── */
+
+.perso-etapes-detail {
+  padding: 30px 40px;
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.perso-etapes-detail-list {
+  display: flex;
+  flex-direction: column;
+  gap: 48px;
+}
+
+.perso-etape-detail {
+  display: flex;
+  gap: 40px;
+  align-items: flex-start;
+}
+
+.perso-etape-detail-num {
+  font-size: 3rem;
+  font-weight: bold;
+  color: #9F8166;
+  opacity: 0.25;
+  line-height: 1;
+  font-family: var(--font-title);
+  min-width: 60px;
+  flex-shrink: 0;
+}
+
+.perso-etape-detail-content h3 {
+  font-size: 1rem;
+  font-weight: 700;
+  color: #9F8166;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  margin-bottom: 10px;
+}
+
+.perso-etape-detail-content p {
+  font-size: 0.9rem;
+  color: var(--color-secondary);
+  line-height: 1.8;
 }
 
 /* ── CTA final ── */
@@ -157,7 +255,7 @@
 .perso-cta h2 {
   font-size: 1.8rem;
   font-weight: bold;
-  color: var(--color-primary);
+  color: #9F8166;
   max-width: 500px;
   line-height: 1.3;
 }

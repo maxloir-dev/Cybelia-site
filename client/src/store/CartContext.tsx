@@ -8,11 +8,14 @@ import {
 import type { ReactNode } from "react";
 
 interface CartItem {
+	cartKey: string; // "produitId-dimensionId" ou "produitId-sans"
 	id: number;
 	nom: string;
 	prix: number;
 	image_url: string;
 	quantite: number;
+	dimension_id?: number | null;
+	dimension_label?: string | null;
 }
 
 interface CartContextType {
@@ -22,8 +25,8 @@ interface CartContextType {
 	dernierProduitAjoute: Omit<CartItem, "quantite"> | null;
 	miniPanierOuvert: boolean;
 	ajouterAuPanier: (produit: Omit<CartItem, "quantite">) => void;
-	supprimerDuPanier: (id: number) => void;
-	modifierQuantite: (id: number, quantite: number) => void;
+	supprimerDuPanier: (cartKey: string) => void;
+	modifierQuantite: (cartKey: string, quantite: number) => void;
 	viderPanier: () => void;
 	fermerMiniPanier: () => void;
 }
@@ -47,29 +50,28 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
 
 	const ajouterAuPanier = (produit: Omit<CartItem, "quantite">) => {
 		setItems((prev) => {
-			const existant = prev.find((item) => item.id === produit.id);
+			const existant = prev.find((item) => item.cartKey === produit.cartKey);
 			if (existant) {
 				return prev.map((item) =>
-					item.id === produit.id
+					item.cartKey === produit.cartKey
 						? { ...item, quantite: item.quantite + 1 }
 						: item,
 				);
 			}
 			return [...prev, { ...produit, quantite: 1 }];
 		});
-		// Ouvre le mini panier
 		setDernierProduitAjoute(produit);
 		setMiniPanierOuvert(true);
 	};
 
-	const supprimerDuPanier = (id: number) => {
-		setItems((prev) => prev.filter((item) => item.id !== id));
+	const supprimerDuPanier = (cartKey: string) => {
+		setItems((prev) => prev.filter((item) => item.cartKey !== cartKey));
 	};
 
-	const modifierQuantite = (id: number, quantite: number) => {
+	const modifierQuantite = (cartKey: string, quantite: number) => {
 		if (quantite < 1) return;
 		setItems((prev) =>
-			prev.map((item) => (item.id === id ? { ...item, quantite } : item)),
+			prev.map((item) => (item.cartKey === cartKey ? { ...item, quantite } : item)),
 		);
 	};
 

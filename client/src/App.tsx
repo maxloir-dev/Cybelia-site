@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { useState, useEffect, type ReactNode } from "react";
+import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
 import { CartProvider } from "./store/CartContext";
 import Navbar from "./components/Navbar/Navbar";
 import Footer from "./components/Footer/Footer";
@@ -12,6 +12,8 @@ import About from "./pages/About";
 import Personnalise from "./pages/Personnalise";
 import Contact from "./pages/Contact";
 import Panier from "./pages/Panier";
+import Checkout from "./pages/Checkout";
+import Success from "./pages/Success";
 import ForgotPassword from "./pages/ForgotPassword/ForgotPassword";
 import ResetPassword from "./pages/ResetPassword/ResetPassword";
 import Show from "./components/Show_product/Show";
@@ -19,6 +21,36 @@ import ProtectedRoute from "./components/ProtectedRoute";
 import Profil from "./pages/Profil/Profil";
 import "tailwindcss";
 import MiniPanier from "./components/MiniPanier/MiniPanier";
+
+function ScrollToTop() {
+	const { pathname } = useLocation();
+	useEffect(() => {
+		window.scrollTo(0, 0);
+	}, [pathname]);
+	return null;
+}
+
+// Masque la navbar, le mini-panier et le footer pendant le paiement
+// pour ne pas distraire le client en plein paiement
+function Chrome({
+	introPlayed,
+	children,
+}: {
+	introPlayed: boolean;
+	children: ReactNode;
+}) {
+	const { pathname } = useLocation();
+	const masquerChrome = pathname === "/checkout";
+
+	return (
+		<>
+			{introPlayed && !masquerChrome && <Navbar />}
+			{!masquerChrome && <MiniPanier />}
+			{children}
+			{introPlayed && !masquerChrome && <Footer />}
+		</>
+	);
+}
 
 function App() {
 	const [introPlayed, setIntroPlayed] = useState(
@@ -28,9 +60,9 @@ function App() {
 	return (
 		<CartProvider>
 			<BrowserRouter>
-				{introPlayed && <Navbar />}
-				<MiniPanier />
-				<Routes>
+				<ScrollToTop />
+				<Chrome introPlayed={introPlayed}>
+					<Routes>
 					{/* Routes publiques */}
 					<Route
 						path="/"
@@ -70,6 +102,15 @@ function App() {
 							</ProtectedRoute>
 						}
 					/>
+					<Route
+						path="/checkout"
+						element={
+							<ProtectedRoute>
+								<Checkout />
+							</ProtectedRoute>
+						}
+					/>
+					<Route path="/success" element={<Success />} />
 
 					{/* Routes gérante uniquement */}
 					<Route
@@ -80,8 +121,8 @@ function App() {
 							</ProtectedRoute>
 						}
 					/>
-				</Routes>
-				{introPlayed && <Footer />}
+					</Routes>
+				</Chrome>
 			</BrowserRouter>
 		</CartProvider>
 	);

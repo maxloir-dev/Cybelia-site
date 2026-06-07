@@ -1,4 +1,5 @@
 import pool from "../config/database";
+import { grouperLignesParCommande } from "../utils/grouperCommandes";
 
 // Recherche un utilisateur par son email
 // Utilisé lors de la connexion pour vérifier si l'email existe
@@ -54,7 +55,7 @@ export const getCommandesByUtilisateur = async (id: number) => {
     `,
 		[id],
 	);
-	return rows;
+	return grouperLignesParCommande(rows as any[], ["quantite", "prix_unitaire", "produit_nom"]);
 };
 
 // Récupère le profil d'un utilisateur par son id

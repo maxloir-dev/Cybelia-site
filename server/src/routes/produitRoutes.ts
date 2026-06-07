@@ -7,6 +7,11 @@ import {
 	removeProduit,
 	getProduitsByCategorieid,
 } from "../controllers/produitController";
+import {
+	getDimensionsProduit,
+	upsertDimensionProduit,
+	removeDimensionProduit,
+} from "../controllers/dimensionController";
 import { verifierToken, verifierAdmin } from "../middlewares/authMiddleware";
 
 const router = Router();
@@ -16,11 +21,14 @@ const router = Router();
 // Récupère tous les produits
 router.get("/", getProduits);
 
+// Récupère les produits par catégorie (public) — doit être avant /:id
+router.get("/categorie/:id", getProduitsByCategorieid);
+
+// Dimensions d'un produit (public)
+router.get("/:id/dimensions", getDimensionsProduit);
+
 // Récupère un produit par son id
 router.get("/:id", getProduit);
-
-// Récupère les produits par catégorie (public)
-router.get("/categorie/:id", getProduitsByCategorieid);
 
 // Routes protégées
 
@@ -32,5 +40,10 @@ router.put("/:id", verifierToken, verifierAdmin, editProduit);
 
 // Supprime un produit
 router.delete("/:id", verifierToken, verifierAdmin, removeProduit);
+
+
+// Gestion des dimensions par produit (admin)
+router.post("/:id/dimensions", verifierToken, verifierAdmin, upsertDimensionProduit);
+router.delete("/:id/dimensions/:dimensionId", verifierToken, verifierAdmin, removeDimensionProduit);
 
 export default router;

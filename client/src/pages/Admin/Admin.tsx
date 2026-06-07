@@ -1,7 +1,7 @@
 import { useState } from "react";
-import { getAllCommandes, getCommandeById } from "../../api/commandeService";
+import { useLocation } from "react-router-dom";
+import { getAllCommandes } from "../../api/commandeService";
 import {
-	getProduits,
 	getProduitsByCategorie,
 	deleteProduit,
 	updateProduit,
@@ -11,10 +11,16 @@ import {
 	getAllUtilisateurs,
 	getHistoriqueClient,
 } from "../../api/utilisateurService";
-import type { Commande, Produit, Utilisateur } from "../../types";
+import {
+	getAllDimensions,
+	getDimensionsByProduit,
+	upsertDimensionProduit,
+	deleteDimensionProduit,
+} from "../../api/dimensionService";
+import type { Commande, Produit, Utilisateur, Dimension } from "../../types";
 import "./Admin.css";
 import { uploadImage } from "../../api/uploadService";
-import { image } from "framer-motion/client";
+import { GooeyInput } from "../../components/ui/GooeyInput";
 
 // Types des vues possibles
 
@@ -30,7 +36,13 @@ type Vue =
 // Page Admin
 
 function Admin() {
+	const location = useLocation();
 	const [vue, setVue] = useState<Vue>("accueil");
+	const [locationKeyVue, setLocationKeyVue] = useState(location.key);
+	if (location.key !== locationKeyVue) {
+		setLocationKeyVue(location.key);
+		setVue("accueil");
+	}
 	const [commandes, setCommandes] = useState<Commande[]>([]);
 	const [clients, setClients] = useState<Utilisateur[]>([]);
 	const [clientSelectionne, setClientSelectionne] =
@@ -57,6 +69,10 @@ function Admin() {
 	const [previewImageEdit, setPreviewImageEdit] = useState<string>("");
 	const [fichierMockup, setFichierMockup] = useState<File | null>(null);
 	const [previewMockup, setPreviewMockup] = useState<string>("");
+	const [rechercheCommandes, setRechercheCommandes] = useState("");
+	const [tousLesDimensions, setTousLesDimensions] = useState<Dimension[]>([]);
+	const [dimensionsProduit, setDimensionsProduit] = useState<Dimension[]>([]);
+	const [nouveauPrix, setNouveauPrix] = useState<Record<number, string>>({});
 
 	// Navigation vers les vues
 
@@ -94,11 +110,20 @@ function Admin() {
 		setChargement(false);
 	};
 
-	const allerDetailProduit = (produit: Produit, editer: boolean = false) => {
+	const allerDetailProduit = async (produit: Produit, editer: boolean = false) => {
 		setProduitSelectionne(produit);
 		setProduitEdite({ ...produit });
 		setModeEdition(editer);
 		setVue("produit-detail");
+		const [toutes, actives] = await Promise.all([
+			getAllDimensions(),
+			getDimensionsByProduit(produit.id),
+		]);
+		setTousLesDimensions(toutes);
+		setDimensionsProduit(actives);
+		const prixInit: Record<number, string> = {};
+		for (const d of actives) prixInit[d.id] = String(d.prix);
+		setNouveauPrix(prixInit);
 	};
 
 	const supprimerProduit = async (id: number) => {
@@ -265,10 +290,32 @@ function Admin() {
 				>
 					← Retour
 				</button>
-				<h1>Commandes</h1>
+				<div className="admin-top">
+					<h1>Commandes</h1>
+					<GooeyInput
+						placeholder="Rechercher..."
+						value={rechercheCommandes}
+						onValueChange={setRechercheCommandes}
+						collapsedWidth={40}
+						expandedWidth={280}
+						expandedOffset={48}
+					/>
+				</div>
 				<div className="admin-liste">
 					{commandes.length === 0 && <p>Aucune commande pour le moment.</p>}
-					{commandes.map((commande) => (
+					{commandes
+						.filter((c) => {
+							const q = rechercheCommandes.toLowerCase();
+							if (!q) return true;
+							return (
+								String(c.id).includes(q) ||
+								c.nom?.toLowerCase().includes(q) ||
+								c.prenom?.toLowerCase().includes(q) ||
+								c.email?.toLowerCase().includes(q) ||
+								new Date(c.created_at).toLocaleDateString("fr-FR").includes(q)
+							);
+						})
+						.map((commande) => (
 						<div key={commande.id} className="admin-item">
 							<div className="admin-item__info">
 								<span className="admin-item__titre">
@@ -281,10 +328,17 @@ function Admin() {
 								<span className="admin-item__detail">
 									{new Date(commande.created_at).toLocaleDateString("fr-FR")}
 								</span>
+								{commande.lignes?.map((ligne, i) => (
+									<span key={i} className="admin-item__detail">
+										{ligne.quantite}x {ligne.produit_nom}
+										{ligne.dimension_label && ` (${ligne.dimension_label})`} —{" "}
+										{ligne.prix_unitaire}€
+									</span>
+								))}
 							</div>
-							<span className="admin-item__prix">
-								{commande.montant_total}€
-							</span>
+							<div className="admin-item__droite">
+								<span className="admin-item__prix">{commande.montant_total}€</span>
+							</div>
 						</div>
 					))}
 				</div>
@@ -614,10 +668,9 @@ function Admin() {
 									onClick={async () => {
 										let image_url = produitEdite.image_url;
 
-										// Si une nouvelle image a été sélectionnée on l'upload
 										if (fichierImageEdit) {
 											const urls = await uploadImage(fichierImageEdit);
-											image_url = urls.image_url; // On récupère image_url depuis l'objet retourné
+											image_url = urls.image_url;
 										}
 
 										const categorie_id =
@@ -669,6 +722,79 @@ function Admin() {
 								</button>
 							</div>
 						)}
+					</div>
+				</div>
+
+				{/* Section dimensions */}
+				<div className="admin-dimensions">
+					<h2>Dimensions & prix</h2>
+					<div className="admin-dimensions-liste">
+						{tousLesDimensions.map((dim) => {
+							const active = dimensionsProduit.find((d) => d.id === dim.id);
+							return (
+								<div key={dim.id} className="admin-dimension-ligne">
+									<span className="admin-dimension-label">{dim.label}</span>
+									<input
+										type="number"
+										step="0.01"
+										min="0"
+										className="admin-edit-input admin-dimension-prix"
+										placeholder="Prix €"
+										value={nouveauPrix[dim.id] ?? (active ? String(active.prix) : "")}
+										onChange={(e) =>
+											setNouveauPrix({ ...nouveauPrix, [dim.id]: e.target.value })
+										}
+									/>
+									{active ? (
+										<div className="admin-dimension-actions">
+											<button
+												type="button"
+												className="admin-btn admin-btn--modifier"
+												onClick={async () => {
+													const prix = Number(nouveauPrix[dim.id]);
+													if (Number.isNaN(prix) || prix < 0) return;
+													await upsertDimensionProduit(produitSelectionne.id, dim.id, prix);
+													const actives = await getDimensionsByProduit(produitSelectionne.id);
+													setDimensionsProduit(actives);
+												}}
+											>
+												Mettre à jour
+											</button>
+											<button
+												type="button"
+												className="admin-btn admin-btn--supprimer"
+												onClick={async () => {
+													await deleteDimensionProduit(produitSelectionne.id, dim.id);
+													const actives = await getDimensionsByProduit(produitSelectionne.id);
+													setDimensionsProduit(actives);
+													setNouveauPrix((prev) => {
+														const copy = { ...prev };
+														delete copy[dim.id];
+														return copy;
+													});
+												}}
+											>
+												Retirer
+											</button>
+										</div>
+									) : (
+										<button
+											type="button"
+											className="admin-btn admin-btn--modifier"
+											onClick={async () => {
+												const prix = Number(nouveauPrix[dim.id]);
+												if (Number.isNaN(prix) || prix < 0 || !nouveauPrix[dim.id]) return;
+												await upsertDimensionProduit(produitSelectionne.id, dim.id, prix);
+												const actives = await getDimensionsByProduit(produitSelectionne.id);
+												setDimensionsProduit(actives);
+											}}
+										>
+											Ajouter
+										</button>
+									)}
+								</div>
+							);
+						})}
 					</div>
 				</div>
 			</main>
