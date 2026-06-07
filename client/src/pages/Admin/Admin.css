@@ -464,3 +464,88 @@
 	margin-top: 12px;
 	border: 1px solid rgba(150, 88, 70, 0.2);
 }
+
+/* =========================================
+   SECTION DIMENSIONS (vue produit-detail)
+   ========================================= */
+
+.admin-dimensions {
+	margin-top: 40px;
+	padding-top: 32px;
+	border-top: 1px solid rgba(150, 88, 70, 0.15);
+}
+
+.admin-dimensions h2 {
+	font-size: 1.1rem;
+	letter-spacing: 0.08em;
+	text-transform: uppercase;
+	margin-bottom: 20px;
+	color: var(--color-text);
+}
+
+.admin-dimensions-liste {
+	display: flex;
+	flex-direction: column;
+	gap: 12px;
+}
+
+.admin-dimension-ligne {
+	display: flex;
+	align-items: center;
+	gap: 12px;
+	flex-wrap: wrap;
+}
+
+.admin-dimension-label {
+	flex: 1;
+	min-width: 180px;
+	font-size: 0.9rem;
+	color: var(--color-text);
+}
+
+.admin-dimension-prix {
+	width: 110px !important;
+	flex-shrink: 0;
+}
+
+.admin-dimension-actions {
+	display: flex;
+	gap: 8px;
+}
+
+/* Statut commande */
+.admin-item__droite {
+	display: flex;
+	flex-direction: column;
+	align-items: flex-end;
+	gap: 8px;
+}
+
+/* Badge rupture sur la liste produits */
+.admin-badge-rupture {
+	margin-left: 8px;
+	font-size: 0.68rem;
+	letter-spacing: 0.08em;
+	text-transform: uppercase;
+	background: #f5e6e2;
+	color: #a0522d;
+	padding: 2px 6px;
+	border-radius: 3px;
+}
+
+/* Bouton rupture */
+.admin-btn--rupture {
+	padding: 6px 12px;
+	font-size: 0.78rem;
+	letter-spacing: 0.05em;
+	text-transform: uppercase;
+	cursor: pointer;
+	border-radius: 4px;
+	background: #f5e6e2;
+	color: #a0522d;
+	border: 1px solid #d4a090;
+}
+
+.admin-btn--rupture:hover {
+	background: #ead5ce;
+}

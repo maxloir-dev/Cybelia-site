@@ -1,8 +1,9 @@
 import { useState, useEffect, useCallback } from "react";
 import "./Carousel.css";
+import tourLu from "../../assets/photo/photo_banniere/sable_tour_lu_et_pommeraye.webp";
 
 const slides = [
-	{ image: "https://picsum.photos/seed/11/1600/800", alt: "Slide 1" },
+	{ image: tourLu, alt: "Tour Lu et passage sable" },
 	{ image: "https://picsum.photos/seed/22/1600/800", alt: "Slide 2" },
 	{ image: "https://picsum.photos/seed/33/1600/800", alt: "Slide 3" },
 	{ image: "https://picsum.photos/seed/44/1600/800", alt: "Slide 4" },

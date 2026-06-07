@@ -93,14 +93,13 @@ export const editProduit = async (req: Request, res: Response) => {
 	}
 };
 
-// Supprime un produit par son id
+
+// Désactive un produit (soft delete)
 export const removeProduit = async (req: Request, res: Response) => {
 	try {
 		await deleteProduit(Number(req.params.id));
-		res.json({ message: "Produit supprimé avec succès" });
+		res.json({ message: "Produit désactivé avec succès" });
 	} catch (error) {
-		res
-			.status(500)
-			.json({ message: "Erreur lors de la suppression du produit" });
+		res.status(500).json({ message: "Erreur lors de la suppression du produit" });
 	}
 };

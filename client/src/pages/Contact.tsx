@@ -43,7 +43,7 @@ export default function Contact() {
 		}
 
 		// Remplacer par ton URL d'API réelle si nécessaire
-		await fetch("http://localhost:3000/api/contact", {
+		await fetch("http://localhost:3001/api/contact", {
 			method: "POST",
 			headers: { "Content-Type": "application/json" },
 			body: JSON.stringify(form),

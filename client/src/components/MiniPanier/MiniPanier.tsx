@@ -61,9 +61,9 @@ function MiniPanier() {
 						<p className="mini-panier__autres-titre">Aussi dans votre panier</p>
 						<div className="mini-panier__liste">
 							{items
-								.filter((item) => item.id !== dernierProduitAjoute.id)
+								.filter((item) => item.cartKey !== dernierProduitAjoute.cartKey)
 								.map((item) => (
-									<div key={item.id} className="mini-panier__produit">
+									<div key={item.cartKey} className="mini-panier__produit">
 										<img
 											src={item.image_url}
 											alt={item.nom}

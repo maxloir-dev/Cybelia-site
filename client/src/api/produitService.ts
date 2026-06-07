@@ -47,3 +47,4 @@ export const deleteProduit = async (
 	const response = await api.delete(`/produits/${id}`);
 	return response.data;
 };
+

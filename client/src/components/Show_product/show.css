@@ -14,7 +14,6 @@
 .shop-title {
 	font-size: 2rem;
 	font-weight: bold;
-	margin-bottom: 8px;
 }
 
 /* Texte grisé sous le titre indiquant le nombre de produits (ex: "12 produits") */
@@ -84,28 +83,31 @@
 	margin-bottom: 6px;
 }
 
+.shop-card-dimensions {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 6px;
+	margin-bottom: 10px;
+}
+
+.shop-card-dim-tag {
+	font-size: 0.7rem;
+	letter-spacing: 0.05em;
+	color: var(--color-secondary);
+	border: 1px solid var(--color-secondary);
+	padding: 2px 8px;
+	border-radius: 20px;
+}
+
 /* Prix du produit affiché sous le nom */
 .shop-card-prix {
 	font-size: 0.9rem;
 	margin-bottom: 10px;
 }
 
-/* Bouton "Voir le produit" — ouvre la fiche détaillée du produit au clic */
+/* Bouton "Ajouter au panier" — aligné sur le style standard ActionButton */
 .shop-card-btn {
-	/* border: 2px solid var(--color-primary); */
-	background: white;
-	padding: 8px 16px;
-	cursor: pointer;
-	font-size: 0.8rem;
-	letter-spacing: 1px;
-	text-transform: uppercase;
-	/* border-radius: 4px; */
-}
-
-/* Au survol : fond coloré pour signaler l'interactivité */
-.shop-card-btn:hover {
-	/* background: var(--color-background);
-	color: white; */
+	margin-top: 8px;
 }
 
 /* =========================================
@@ -198,7 +200,7 @@
 	display: flex;
 	align-items: center;
 	justify-content: center;
-	z-index: 200;
+	z-index: 1100;
 }
 
 /* Boîte blanche centrée à l'écran qui contient le formulaire d'ajout ou de modification */
@@ -206,7 +208,9 @@
 	background: white;
 	padding: 40px;
 	width: 100%;
-	max-width: 480px;
+	max-width: 600px;
+	max-height: 90vh;
+	overflow-y: auto;
 	position: relative;
 	border-radius: 4px;
 }
@@ -303,12 +307,15 @@
 .detail-image {
 	flex: 1;
 	position: relative;
+	height: 400px;
+	overflow: hidden;
+	border-radius: 8px;
 }
 
-/* L'image prend toute la largeur de sa colonne, recadrée sans déformation */
+/* L'image remplit le conteneur fixe, recadrée sans déformation */
 .detail-image img {
 	width: 100%;
-	border-radius: 8px;
+	height: 100%;
 	object-fit: cover;
 }
 
@@ -332,18 +339,55 @@
 	line-height: 1.6;
 }
 
-/* Bouton "Ajouter au panier" — collé en bas de la colonne grâce à margin-top: auto */
-.btn-panier {
-	color: white;
-	padding: 0.8rem 1.5rem;
-	border: none;
-	cursor: pointer;
-	font-size: 1rem;
-	margin-top: auto;
+.detail-dimensions {
+	margin: 16px 0;
 }
 
-.btn-panier:hover {
-	/* background: var(--color-background); */
+.detail-dimensions-label {
+	font-size: 0.8rem;
+	letter-spacing: 0.12em;
+	text-transform: uppercase;
+	color: var(--color-secondary);
+	margin-bottom: 10px;
+}
+
+.detail-dimensions-grid {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 8px;
+}
+
+.detail-dim-btn {
+	font-size: 0.8rem;
+	padding: 6px 14px;
+	border: 1px solid var(--color-secondary);
+	border-radius: 20px;
+	background: transparent;
+	color: var(--color-text);
+	cursor: pointer;
+	transition: all 0.2s ease;
+}
+
+.detail-dim-btn:hover {
+	border-color: var(--color-primary);
+	color: var(--color-primary);
+}
+
+.detail-dim-btn.actif {
+	background: var(--color-primary);
+	border-color: var(--color-primary);
+	color: #fff;
+}
+
+.detail-dim-erreur {
+	font-size: 0.8rem;
+	color: #c0392b;
+	margin-top: 8px;
+}
+
+/* Bouton "Ajouter au panier" — collé en bas de la colonne grâce à margin-top: auto */
+.btn-panier {
+	margin-top: auto;
 }
 
 .slider-controls {
@@ -406,32 +450,160 @@
 }
 
 .shop-top {
-	position: relative;
 	display: flex;
 	align-items: center;
+	gap: 16px;
 	margin-bottom: 1rem;
 }
 
-.shop-recherche {
-	position: absolute;
-	left: 50%;
-	transform: translateX(-50%);
-	padding: 0.5rem 1rem;
-	border: 1px solid #ccc;
-	border-radius: 20px;
-	font-size: 1rem;
+
+/* =========================================
+   SÉLECTEUR DE DIMENSIONS
+   ========================================= */
+
+.detail-dimensions {
+	margin: 16px 0;
+}
+
+.detail-dimensions-titre {
+	font-size: 0.75rem;
+	letter-spacing: 0.15em;
+	text-transform: uppercase;
+	color: var(--color-secondary);
+	margin-bottom: 10px;
+}
+
+.detail-dimensions-liste {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 8px;
+}
+
+.dimension-btn {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	gap: 2px;
+	padding: 8px 14px;
+	border: 1px solid var(--color-secondary);
+	background: transparent;
+	color: var(--color-text);
+	font-size: 0.8rem;
+	cursor: pointer;
+	transition: border-color 0.2s, background 0.2s, color 0.2s;
+}
+
+.dimension-btn:hover {
+	border-color: var(--color-text);
+}
+
+.dimension-btn--actif {
+	border-color: var(--color-text);
+	background: var(--color-text);
+	color: white;
+}
+
+.dimension-btn-prix {
+	font-size: 0.75rem;
+	opacity: 0.75;
+}
+
+.dimension-btn--actif .dimension-btn-prix {
+	opacity: 0.9;
+}
+
+/* Dimension dans le panier */
+.panier-item-dimension {
+	font-size: 0.78rem;
+	color: var(--color-secondary);
+	margin: 2px 0;
+}
+
+/* Dimensions dans le formulaire d'ajout */
+.form-dimensions {
+	display: flex;
+	flex-direction: column;
+	gap: 0;
+	border: 1px solid rgba(150, 88, 70, 0.2);
+	border-radius: 4px;
+	overflow: hidden;
+}
+
+.form-dimensions-titre {
+	font-size: 0.72rem;
+	letter-spacing: 0.15em;
+	text-transform: uppercase;
+	color: var(--color-secondary);
+	padding: 12px 14px 8px;
+	background: rgba(150, 88, 70, 0.04);
+	border-bottom: 1px solid rgba(150, 88, 70, 0.12);
+}
+
+.form-dimension-ligne {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 16px;
+	padding: 10px 14px;
+	border-bottom: 1px solid rgba(150, 88, 70, 0.08);
+}
+
+.form-dimension-ligne:last-child {
+	border-bottom: none;
+}
+
+.form-dimension-label {
+	font-size: 0.85rem;
+	color: var(--color-text);
+	flex: 1;
+}
+
+.shop-form .form-dimension-prix {
+	width: 100px;
+	padding: 3px 6px;
+	border: 1px solid rgba(150, 88, 70, 0.3);
+	background: transparent;
+	color: var(--color-text);
+	font-size: 0.85rem;
+	text-align: right;
+	border-radius: 2px;
+}
+
+.form-dimension-prix::placeholder {
+	color: rgba(0,0,0,0.3);
+}
+
+.form-dimension-prix:focus {
 	outline: none;
-	width: 250px;
-	transition:
-		border-color 0.2s,
-		width 0.3s;
+	border-color: var(--color-text);
 }
 
-.shop-recherche:focus {
-	border-color: #333;
-	width: 320px;
+/* Badge rupture sur la carte */
+.shop-card-img-wrapper {
+	position: relative;
 }
 
-.shop-recherche::placeholder {
-	color: #aaa;
+.shop-card-rupture {
+	position: absolute;
+	top: 10px;
+	left: 0;
+	background: rgba(0,0,0,0.7);
+	color: white;
+	font-size: 0.7rem;
+	letter-spacing: 0.1em;
+	text-transform: uppercase;
+	padding: 4px 10px;
+}
+
+.shop-card-btn:disabled {
+	opacity: 0.45;
+	cursor: not-allowed;
+}
+
+/* Message rupture dans la modale détail */
+.detail-rupture {
+	font-size: 0.85rem;
+	color: var(--color-secondary);
+	font-style: italic;
+	margin-top: 8px;
 }

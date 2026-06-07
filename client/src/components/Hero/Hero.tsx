@@ -5,11 +5,10 @@ function Hero() {
 	return (
 		<section className="hero">
 			<div className="hero-content">
-				<span className="hero-tag">Nouvelle collection</span>
 				<h1 className="hero-title">
-					L'art de
+					Des illustrations
 					<br />
-					votre espace
+					qui font voyager votre intérieur
 				</h1>
 				<p className="hero-subtitle">
 					Des créations uniques, conçues à la main pour sublimer vos intérieurs

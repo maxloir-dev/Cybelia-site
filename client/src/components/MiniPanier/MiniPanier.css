@@ -24,19 +24,20 @@
 .mini-panier {
 	position: fixed;
 	top: 15vh;
-	right: 0;
+	right: 16px;
 	width: 420px;
-	height: 70vh;
+	max-height: 70vh;
 	background: #fff;
 	z-index: 201;
 	display: flex;
 	flex-direction: column;
 	gap: 24px;
 	padding: 40px 32px;
-	transform: translateX(100%);
+	overflow-y: auto;
+	transform: translateX(calc(100% + 16px));
 	transition: transform 0.4s cubic-bezier(0.77, 0, 0.175, 1);
 	box-shadow: -8px 0 32px rgba(0, 0, 0, 0.12);
-	border-radius: 16px 0 0 16px;
+	border-radius: 16px;
 }
 
 .mini-panier--ouvert {

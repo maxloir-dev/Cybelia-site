@@ -27,12 +27,23 @@ export interface Utilisateur {
 	created_at: string;
 }
 
+// Dimension de format
+export interface Dimension {
+	id: number;
+	label: string;
+	largeur_cm: number;
+	hauteur_cm: number;
+	prix: number;
+}
+
 // Ligne de commande
 export interface LigneCommande {
 	produit_id: number;
 	quantite: number;
 	prix_unitaire: number;
+	dimension_id?: number | null;
 	produit_nom?: string;
+	dimension_label?: string | null;
 }
 
 // Commande

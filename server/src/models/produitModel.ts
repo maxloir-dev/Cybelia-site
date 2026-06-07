@@ -10,7 +10,7 @@ export const getAllProduits = async (categorieId?: number) => {
 			        c.nom AS categorie
 			 FROM produits p
 			 JOIN categories c ON p.categorie_id = c.id
-			 WHERE p.categorie_id = ?`,
+			 WHERE p.categorie_id = ? AND p.actif = true`,
 			[categorieId],
 		);
 		return rows;
@@ -20,6 +20,7 @@ export const getAllProduits = async (categorieId?: number) => {
                c.nom AS categorie
         FROM produits p
         JOIN categories c ON p.categorie_id = c.id
+        WHERE p.actif = true
     `);
 	return rows;
 };
@@ -71,9 +72,23 @@ export const updateProduit = async (
 	);
 };
 
-// Supprime un produit de la base par son id
+// Désactive un produit (soft delete — ne supprime pas la ligne)
 export const deleteProduit = async (id: number) => {
-	await pool.query("DELETE FROM produits WHERE id = ?", [id]);
+	await pool.query("UPDATE produits SET actif = false WHERE id = ?", [id]);
+};
+
+// Bascule la disponibilité d'un produit (rupture / disponible)
+export const toggleDisponibleProduit = async (id: number, disponible: boolean) => {
+	await pool.query("UPDATE produits SET disponible = ? WHERE id = ?", [disponible, id]);
+};
+
+// Retourne les ids de commandes qui contiennent ce produit
+export const getCommandesForProduit = async (id: number) => {
+	const [rows]: any = await pool.query(
+		"SELECT DISTINCT commande_id FROM lignes_commande WHERE produit_id = ?",
+		[id],
+	);
+	return rows.map((r: any) => r.commande_id) as number[];
 };
 
 // Récupère les produits par catégorie
@@ -84,7 +99,7 @@ export const getProduitsByCategorie = async (categorie_id: number) => {
                c.nom AS categorie
         FROM produits p
         JOIN categories c ON p.categorie_id = c.id
-        WHERE p.categorie_id = ?
+        WHERE p.categorie_id = ? AND p.actif = true
     `,
 		[categorie_id],
 	);

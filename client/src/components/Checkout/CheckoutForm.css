@@ -1,0 +1,35 @@
+.checkout-form {
+	display: flex;
+	flex-direction: column;
+	gap: 24px;
+}
+
+.checkout-bouton {
+	font-family: var(--font-title);
+	letter-spacing: 2px;
+	text-transform: uppercase;
+	font-size: 0.85rem;
+	color: #fff;
+	background: var(--color-primary);
+	border: none;
+	padding: 16px;
+	cursor: pointer;
+	transition: opacity 0.2s;
+}
+
+.checkout-bouton:hover:not(:disabled) {
+	opacity: 0.85;
+}
+
+.checkout-bouton:disabled {
+	opacity: 0.5;
+	cursor: not-allowed;
+}
+
+.checkout-erreur {
+	color: #c0392b;
+	font-size: 0.85rem;
+	padding: 10px;
+	border: 1px solid #c0392b;
+	text-align: center;
+}

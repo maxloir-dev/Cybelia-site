@@ -1,6 +1,9 @@
 import { Request, Response } from "express";
 import nodemailer from "nodemailer";
 
+const escapeHtml = (str: string) =>
+	str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+
 const transporter = nodemailer.createTransport({
 	service: "gmail",
 	auth: {
@@ -18,19 +21,24 @@ export const envoyerContact = async (req: Request, res: Response) => {
 			return;
 		}
 
+		const sNom = escapeHtml(nom);
+		const sEmail = escapeHtml(email);
+		const sSujet = escapeHtml(sujet);
+		const sMessage = escapeHtml(message).replace(/\n/g, "<br/>");
+
 		await transporter.sendMail({
-			from: `"${nom}" <${process.env.MAIL_USER}>`,
+			from: `"${sNom}" <${process.env.MAIL_USER}>`,
 			to: process.env.MAIL_DEST,
-			replyTo: email,
-			subject: `[Cybelia] ${sujet}`,
+			replyTo: sEmail,
+			subject: `[Cybelia] ${sSujet}`,
 			html: `
 				<h2>Nouveau message de contact</h2>
-				<p><strong>Nom :</strong> ${nom}</p>
-				<p><strong>Email :</strong> ${email}</p>
-				<p><strong>Sujet :</strong> ${sujet}</p>
+				<p><strong>Nom :</strong> ${sNom}</p>
+				<p><strong>Email :</strong> ${sEmail}</p>
+				<p><strong>Sujet :</strong> ${sSujet}</p>
 				<hr />
 				<p><strong>Message :</strong></p>
-				<p>${message.replace(/\n/g, "<br/>")}</p>
+				<p>${sMessage}</p>
 			`,
 		});
 

@@ -1,11 +1,13 @@
 import "./show.css";
 import ActionButton from "../ActionButton/ActionButton";
+import { GooeyInput } from "../ui/GooeyInput";
 import { useCart } from "../../store/CartContext";
 import { useAuth } from "../../store/AuthContext";
+import { getAllDimensions, getDimensionsByProduit, upsertDimensionProduit } from "../../api/dimensionService";
+import type { Dimension } from "../../types";
 import {
 	type ChangeEvent,
 	type FormEvent,
-	type MouseEvent,
 	useEffect,
 	useState,
 } from "react";
@@ -61,7 +63,10 @@ export default function Show({ categorieId, titre }: Props) {
 	const [produitDetail, setProduitDetail] = useState<Produit | null>(null);
 	const [slideIndex, setSlideIndex] = useState(0);
 	const [recherche, setRecherche] = useState("");
-
+	const [dimensions, setDimensions] = useState<Dimension[]>([]);
+	const [dimensionSelectionnee, setDimensionSelectionnee] = useState<Dimension | null>(null);
+	const [toutesLesDimensions, setToutesLesDimensions] = useState<Dimension[]>([]);
+	const [dimensionsPrixAjout, setDimensionsPrixAjout] = useState<Record<number, string>>({});
 	const { ajouterAuPanier } = useCart();
 	const { estAdmin } = useAuth();
 
@@ -76,6 +81,10 @@ export default function Show({ categorieId, titre }: Props) {
 		fetchProduits();
 	}, [categorieId]);
 
+	useEffect(() => {
+		if (estAdmin) getAllDimensions().then(setToutesLesDimensions).catch(() => {});
+	}, [estAdmin]);
+
 	const handleChange = (
 		e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
 	) => {
@@ -85,9 +94,11 @@ export default function Show({ categorieId, titre }: Props) {
 	const valider = (f: Form) => {
 		const e: Partial<Form> = {};
 		if (!f.nom.trim()) e.nom = "Le nom est obligatoire";
-		if (!f.prix.trim()) e.prix = "Le prix est obligatoire";
-		else if (isNaN(Number(f.prix)) || Number(f.prix) < 0)
-			e.prix = "Le prix doit être un nombre positif";
+		if (categorieId !== 2) {
+			if (!f.prix.trim()) e.prix = "Le prix est obligatoire";
+			else if (isNaN(Number(f.prix)) || Number(f.prix) < 0)
+				e.prix = "Le prix doit être un nombre positif";
+		}
 		return e;
 	};
 
@@ -127,19 +138,41 @@ export default function Show({ categorieId, titre }: Props) {
 				image_url = urls.image_url;
 				mockup_url = urls.mockup_url;
 			}
-			await fetch("http://localhost:3001/api/produits", {
+
+			// Pour les affiches : prix de base = prix du format A4 (21×30 cm)
+			let prixFinal = Number(form.prix);
+			if (categorieId === 2) {
+				const dimA4 = toutesLesDimensions.find((d) => Number(d.largeur_cm) === 21);
+				const prixA4 = dimA4 ? Number(dimensionsPrixAjout[dimA4.id] ?? 0) : 0;
+				prixFinal = prixA4;
+			}
+
+			const res = await fetch("http://localhost:3001/api/produits", {
 				method: "POST",
 				headers: { "Content-Type": "application/json", ...authHeader },
 				body: JSON.stringify({
 					...form,
-					prix: Number(form.prix),
+					prix: prixFinal,
 					image_url,
 					mockup_url,
 				}),
 			});
+			const { id: newId } = await res.json();
+
+			// Sauvegarde des dimensions configurées dans le formulaire
+			const dimensionsARenseigner = Object.entries(dimensionsPrixAjout).filter(
+				([, prix]) => prix.trim() !== "" && !isNaN(Number(prix)) && Number(prix) >= 0,
+			);
+			await Promise.all(
+				dimensionsARenseigner.map(([dimId, prix]) =>
+					upsertDimensionProduit(newId, Number(dimId), Number(prix)),
+				),
+			);
+
 			setForm({ ...formVide, categorie_id: categorieId });
 			setImageFile(null);
 			setMockupFile(null);
+			setDimensionsPrixAjout({});
 			setModalOuverte(false);
 			fetchProduits();
 		};
@@ -200,11 +233,13 @@ export default function Show({ categorieId, titre }: Props) {
 		run();
 	};
 
-	const handleDelete = (id: number) => {
-		fetch(`http://localhost:3001/api/produits/${id}`, {
+	const handleDelete = async (id: number) => {
+		if (!confirm("Supprimer ce produit ?")) return;
+		await fetch(`http://localhost:3001/api/produits/${id}`, {
 			method: "DELETE",
 			headers: authHeader,
-		}).then(() => fetchProduits());
+		});
+		fetchProduits();
 	};
 
 	const produitsFiltres = produits.filter(
@@ -216,18 +251,21 @@ export default function Show({ categorieId, titre }: Props) {
 	const ouvrirDetail = (p: Produit) => {
 		setProduitDetail(p);
 		setSlideIndex(0);
+		setDimensionSelectionnee(null);
+		getDimensionsByProduit(p.id).then(setDimensions).catch(() => setDimensions([]));
 	};
 
 	return (
 		<div className="shop-page">
 			<div className="shop-top">
 				<h1 className="shop-title">{titre}</h1>
-				<input
-					className="shop-recherche"
-					type="text"
-					placeholder=" Rechercher..."
+				<GooeyInput
+					placeholder="Rechercher..."
 					value={recherche}
-					onChange={(e) => setRecherche(e.target.value)}
+					onValueChange={setRecherche}
+					collapsedWidth={40}
+					expandedWidth={280}
+					expandedOffset={48}
 				/>
 			</div>
 			<p className="shop-count">{produitsFiltres.length} résultats affichés</p>
@@ -242,14 +280,15 @@ export default function Show({ categorieId, titre }: Props) {
 					>
 						<img src={p.image_url} alt={p.nom} className="shop-card-img" />
 						<h3 className="shop-card-nom">{p.nom}</h3>
-						<p className="shop-card-prix">{p.prix} €</p>
+						<p className="shop-card-prix">{Number(p.prix).toFixed(2)} €</p>
 
-						{/* UTILISATION DU BOUTON RÉUTILISABLE */}
-						<ActionButton
-							className="shop-card-btn"
-							onClick={(e: MouseEvent) => {
+						<button
+							type="button"
+							className="custom-button shop-card-btn"
+							onClick={(e) => {
 								e.stopPropagation();
 								ajouterAuPanier({
+									cartKey: `${p.id}-sans`,
 									id: p.id,
 									nom: p.nom,
 									prix: Number(p.prix),
@@ -257,8 +296,8 @@ export default function Show({ categorieId, titre }: Props) {
 								});
 							}}
 						>
-							Ajouter au panier
-						</ActionButton>
+							<span className="button-text">Ajouter au panier</span>
+						</button>
 
 						{estAdmin && (
 							<div className="shop-card-actions">
@@ -332,17 +371,23 @@ export default function Show({ categorieId, titre }: Props) {
 								value={form.description}
 								onChange={handleChange}
 							/>
-							<div>
-								<input
-									name="prix"
-									placeholder="Prix *"
-									value={form.prix}
-									onChange={handleChange}
-								/>
-								{erreurs.prix && (
-									<span className="form-erreur">{erreurs.prix}</span>
-								)}
-							</div>
+							{categorieId !== 2 && (
+								<div>
+									<label className="form-label" htmlFor="input-prix">
+										Carte postale (10,5 × 14,8 cm) *
+									</label>
+									<input
+										id="input-prix"
+										name="prix"
+										placeholder="Prix €"
+										value={form.prix}
+										onChange={handleChange}
+									/>
+									{erreurs.prix && (
+										<span className="form-erreur">{erreurs.prix}</span>
+									)}
+								</div>
+							)}
 							<div>
 								<label className="form-label" htmlFor="image-main">
 									Image principale *
@@ -365,6 +410,32 @@ export default function Show({ categorieId, titre }: Props) {
 									onChange={(e) => setMockupFile(e.target.files?.[0] ?? null)}
 								/>
 							</div>
+
+							{categorieId === 2 && toutesLesDimensions.length > 0 && (
+								<div className="form-dimensions">
+									<p className="form-dimensions-titre">Formats disponibles — renseigner uniquement les formats proposés</p>
+									{toutesLesDimensions.filter((d) => d.id !== 1).map((d) => (
+										<div key={d.id} className="form-dimension-ligne">
+											<span className="form-dimension-label">{d.label}</span>
+											<input
+												type="number"
+												step="0.01"
+												min="0"
+												placeholder="Prix €"
+												className="form-dimension-prix"
+												value={dimensionsPrixAjout[d.id] ?? ""}
+												onChange={(e) =>
+													setDimensionsPrixAjout({
+														...dimensionsPrixAjout,
+														[d.id]: e.target.value,
+													})
+												}
+											/>
+										</div>
+									))}
+								</div>
+							)}
+
 							<button type="submit">Ajouter</button>
 						</form>
 					</div>
@@ -504,22 +575,60 @@ export default function Show({ categorieId, titre }: Props) {
 							</div>
 							<div className="detail-info">
 								<h2>{produitDetail.nom}</h2>
-								<p className="detail-prix">{produitDetail.prix} €</p>
+								<p className="detail-prix">
+									{dimensionSelectionnee
+										? Number(dimensionSelectionnee.prix).toFixed(2)
+										: Number(produitDetail.prix).toFixed(2)}{" "}
+									€
+								</p>
 								<p className="detail-description">
 									{produitDetail.description}
 								</p>
 
-								{/* UTILISATION DU BOUTON RÉUTILISABLE DANS LE DÉTAIL */}
+								{dimensions.length > 0 && (
+									<div className="detail-dimensions">
+										<p className="detail-dimensions-titre">Format</p>
+										<div className="detail-dimensions-liste">
+											{dimensions.map((d) => (
+												<button
+													key={d.id}
+													type="button"
+													className={`dimension-btn${dimensionSelectionnee?.id === d.id ? " dimension-btn--actif" : ""}`}
+													onClick={() =>
+														setDimensionSelectionnee(
+															dimensionSelectionnee?.id === d.id ? null : d,
+														)
+													}
+												>
+													{d.label}
+													<span className="dimension-btn-prix">
+														{Number(d.prix).toFixed(2)} €
+													</span>
+												</button>
+											))}
+										</div>
+									</div>
+								)}
+
 								<ActionButton
 									className="btn-panier"
-									onClick={() =>
+									onClick={() => {
+										const prixFinal = dimensionSelectionnee
+											? Number(dimensionSelectionnee.prix)
+											: Number(produitDetail.prix);
+										const cartKey = dimensionSelectionnee
+											? `${produitDetail.id}-${dimensionSelectionnee.id}`
+											: `${produitDetail.id}-sans`;
 										ajouterAuPanier({
+											cartKey,
 											id: produitDetail.id,
 											nom: produitDetail.nom,
-											prix: produitDetail.prix,
+											prix: prixFinal,
 											image_url: produitDetail.image_url,
-										})
-									}
+											dimension_id: dimensionSelectionnee?.id ?? null,
+											dimension_label: dimensionSelectionnee?.label ?? null,
+										});
+									}}
 								>
 									Ajouter au panier
 								</ActionButton>

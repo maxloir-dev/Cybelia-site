@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 import { useState } from "react";
 import "./Navbar.css";
-import cybeliaLogo from "../../assets/CybeliaLogoCouleur.svg";
+import cybeliaLogo from "../../assets/photo/Logo final-cybelearchitecture  terracota.png";
 import { useAuth } from "../../store/AuthContext";
 import { useCart } from "../../store/CartContext";
 import { UserGreeting } from "../UserGreeting";
