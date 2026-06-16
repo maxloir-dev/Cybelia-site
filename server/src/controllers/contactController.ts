@@ -1,8 +1,12 @@
-import { Request, Response } from "express";
+import type { Request, Response } from "express";
 import nodemailer from "nodemailer";
 
 const escapeHtml = (str: string) =>
-	str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+	str
+		.replace(/&/g, "&amp;")
+		.replace(/</g, "&lt;")
+		.replace(/>/g, "&gt;")
+		.replace(/"/g, "&quot;");
 
 const transporter = nodemailer.createTransport({
 	service: "gmail",

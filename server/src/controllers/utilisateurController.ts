@@ -1,19 +1,19 @@
-import { Response } from "express";
+import type { Response } from "express";
+import type { AuthRequest } from "../middlewares/authMiddleware";
 import {
+	deleteUser,
 	getAllUtilisateurs,
 	getCommandesByUtilisateur,
-	deleteUser,
 } from "../models/utilisateurModel";
-import { AuthRequest } from "../middlewares/authMiddleware";
 
 // Routes liées aux utilisateurs (gérante uniquement)
 
 // Récupère tous les clients avec leur nombre de commandes
-export const getUtilisateurs = async (req: AuthRequest, res: Response) => {
+export const getUtilisateurs = async (_req: AuthRequest, res: Response) => {
 	try {
 		const utilisateurs = await getAllUtilisateurs();
 		res.json(utilisateurs);
-	} catch (error) {
+	} catch {
 		res
 			.status(500)
 			.json({ message: "Erreur lors de la récupération des clients" });
@@ -34,7 +34,7 @@ export const getHistoriqueCommandes = async (
 		} else {
 			res.json(commandes);
 		}
-	} catch (error) {
+	} catch {
 		res
 			.status(500)
 			.json({ message: "Erreur lors de la récupération de l'historique" });
@@ -45,7 +45,7 @@ export const deleteUtilisateur = async (req: AuthRequest, res: Response) => {
 	try {
 		await deleteUser(Number(req.params.id));
 		res.json({ message: "Client supprimé avec succès" });
-	} catch (error) {
+	} catch {
 		res
 			.status(500)
 			.json({ message: "Erreur lors de la suppression du client" });
