@@ -82,6 +82,8 @@ function Admin() {
 	const [dimensionsPrixAjout, setDimensionsPrixAjout] = useState<
 		Record<number, string>
 	>({});
+	const [commandeSelectionnee, setCommandeSelectionnee] =
+		useState<Commande | null>(null);
 
 	// Navigation vers les vues
 
@@ -312,7 +314,12 @@ function Admin() {
 	if (vue === "commandes") {
 		return (
 			<main className="admin-main">
-				<button className="admin-retour" onClick={() => setVue("accueil")}>
+				<button
+					type="button"
+					className="admin-retour"
+					onClick={() => setVue("accueil")}
+					aria-label="Retour à l'accueil"
+				>
 					<svg
 						width="36"
 						height="20"
@@ -322,6 +329,7 @@ function Admin() {
 						strokeWidth="1.5"
 						strokeLinecap="round"
 						strokeLinejoin="round"
+						aria-hidden="true"
 					>
 						<line x1="34" y1="10" x2="2" y2="10" />
 						<polyline points="10 18 2 10 10 2" />
@@ -338,7 +346,7 @@ function Admin() {
 						expandedOffset={48}
 					/>
 				</div>
-				<div className="admin-liste">
+				<div className="admin-commandes-grid">
 					{commandes.length === 0 && <p>Aucune commande pour le moment.</p>}
 					{commandes
 						.filter((c) => {
@@ -397,7 +405,12 @@ function Admin() {
 	if (vue === "clients") {
 		return (
 			<main className="admin-main">
-				<button className="admin-retour" onClick={() => setVue("accueil")}>
+				<button
+					type="button"
+					className="admin-retour"
+					onClick={() => setVue("accueil")}
+					aria-label="Retour à l'accueil"
+				>
 					<svg
 						width="36"
 						height="20"
@@ -407,6 +420,7 @@ function Admin() {
 						strokeWidth="1.5"
 						strokeLinecap="round"
 						strokeLinejoin="round"
+						aria-hidden="true"
 					>
 						<line x1="34" y1="10" x2="2" y2="10" />
 						<polyline points="10 18 2 10 10 2" />
@@ -447,7 +461,12 @@ function Admin() {
 	if (vue === "client-detail" && clientSelectionne) {
 		return (
 			<main className="admin-main">
-				<button className="admin-retour" onClick={() => setVue("accueil")}>
+				<button
+					type="button"
+					className="admin-retour"
+					onClick={() => setVue("accueil")}
+					aria-label="Retour à l'accueil"
+				>
 					<svg
 						width="36"
 						height="20"
@@ -457,6 +476,7 @@ function Admin() {
 						strokeWidth="1.5"
 						strokeLinecap="round"
 						strokeLinejoin="round"
+						aria-hidden="true"
 					>
 						<line x1="34" y1="10" x2="2" y2="10" />
 						<polyline points="10 18 2 10 10 2" />
@@ -465,7 +485,6 @@ function Admin() {
 				<h1>
 					{clientSelectionne.nom} {clientSelectionne.prenom}
 				</h1>
-
 				<div className="admin-profil">
 					<h2>Profil</h2>
 					<div className="admin-profil__info">
@@ -480,33 +499,93 @@ function Admin() {
 						</p>
 					</div>
 				</div>
-
 				<div className="admin-historique">
 					<h2>Historique des commandes</h2>
 					{historiqueClient.length === 0 && (
 						<p>Aucune commande pour ce client.</p>
 					)}
-					{historiqueClient.map((commande) => (
-						<div key={commande.id} className="admin-item">
-							<div className="admin-item__info">
-								<span className="admin-item__titre">
+
+					{/* Grille de Post-it */}
+					<div className="admin-postit-grille">
+						{historiqueClient.map((commande) => (
+							<button
+								type="button"
+								key={commande.id}
+								className="admin-postit"
+								onClick={() => setCommandeSelectionnee(commande)}
+								aria-label={`Ouvrir la commande numéro ${commande.id}`}
+							>
+								<span className="admin-postit__punaise"></span>
+								<div className="admin-postit__titre">
 									Commande #{commande.id}
-								</span>
-								<span className="admin-item__detail">
+								</div>
+								<div className="admin-postit__date">
 									{new Date(commande.created_at).toLocaleDateString("fr-FR")}
-								</span>
-								{commande.lignes?.map((ligne, i) => (
-									<span key={i} className="admin-item__detail">
-										{ligne.quantite}x {ligne.produit_nom} —{" "}
-										{ligne.prix_unitaire}€
-									</span>
-								))}
+								</div>
+								<div className="admin-postit__prix">
+									{commande.montant_total}€
+								</div>
+								<div className="admin-postit__cliquez">Cliquez pour voir</div>
+							</button>
+						))}
+					</div>
+
+					{/* POP-IN (MODALE) : S'affiche uniquement si une commande est sélectionnée */}
+					{commandeSelectionnee && (
+						<button
+							type="button"
+							className="admin-popin-overlay"
+							onClick={() => setCommandeSelectionnee(null)}
+							aria-label="Fermer la fenêtre de détail"
+						>
+							<div
+								className="admin-popin"
+								role="document"
+								onClick={(e) => e.stopPropagation()}
+								onKeyDown={(e) => e.stopPropagation()} // Évite de fermer la pop-in si on clique/tape dedans
+							>
+								<button
+									type="button"
+									className="admin-popin__fermer"
+									onClick={() => setCommandeSelectionnee(null)}
+								>
+									&times;
+								</button>
+
+								<h3>Détails de la Commande #{commandeSelectionnee.id}</h3>
+								<p className="admin-popin__date">
+									Faite le :{" "}
+									{new Date(commandeSelectionnee.created_at).toLocaleDateString(
+										"fr-FR",
+									)}
+								</p>
+
+								<hr />
+
+								<div className="admin-popin__lignes">
+									<h4>Articles commandés :</h4>
+									{commandeSelectionnee.lignes?.map((ligne, index) => (
+										<div
+											key={`${commandeSelectionnee.id}-${ligne.produit_id || index}`}
+											className="admin-popin__ligne"
+										>
+											<span>
+												{ligne.quantite}x <strong>{ligne.produit_nom}</strong>
+											</span>
+											<span>{ligne.prix_unitaire}€ / u</span>
+										</div>
+									))}
+								</div>
+
+								<hr />
+
+								<div className="admin-popin__total">
+									<span>Montant Total :</span>
+									<strong>{commandeSelectionnee.montant_total}€</strong>
+								</div>
 							</div>
-							<span className="admin-item__prix">
-								{commande.montant_total}€
-							</span>
-						</div>
-					))}
+						</button>
+					)}
 				</div>
 			</main>
 		);
@@ -516,7 +595,12 @@ function Admin() {
 	if (vue === "produits") {
 		return (
 			<main className="admin-main">
-				<button className="admin-retour" onClick={() => setVue("accueil")}>
+				<button
+					type="button"
+					className="admin-retour"
+					onClick={() => setVue("accueil")}
+					aria-label="Retour à l'accueil"
+				>
 					<svg
 						width="36"
 						height="20"
@@ -526,6 +610,7 @@ function Admin() {
 						strokeWidth="1.5"
 						strokeLinecap="round"
 						strokeLinejoin="round"
+						aria-hidden="true"
 					>
 						<line x1="34" y1="10" x2="2" y2="10" />
 						<polyline points="10 18 2 10 10 2" />
@@ -599,7 +684,12 @@ function Admin() {
 	if (vue === "produit-detail" && produitSelectionne && produitEdite) {
 		return (
 			<main className="admin-main">
-				<button className="admin-retour" onClick={() => setVue("accueil")}>
+				<button
+					type="button"
+					className="admin-retour"
+					onClick={() => setVue("accueil")}
+					aria-label="Retour à l'accueil"
+				>
 					<svg
 						width="36"
 						height="20"
@@ -609,6 +699,7 @@ function Admin() {
 						strokeWidth="1.5"
 						strokeLinecap="round"
 						strokeLinejoin="round"
+						aria-hidden="true"
 					>
 						<line x1="34" y1="10" x2="2" y2="10" />
 						<polyline points="10 18 2 10 10 2" />
@@ -910,7 +1001,12 @@ function Admin() {
 	if (vue === "ajouter-produit") {
 		return (
 			<main className="admin-main">
-				<button className="admin-retour" onClick={() => setVue("accueil")}>
+				<button
+					type="button"
+					className="admin-retour"
+					onClick={() => setVue("accueil")}
+					aria-label="Retour à l'accueil"
+				>
 					<svg
 						width="36"
 						height="20"
@@ -920,6 +1016,7 @@ function Admin() {
 						strokeWidth="1.5"
 						strokeLinecap="round"
 						strokeLinejoin="round"
+						aria-hidden="true"
 					>
 						<line x1="34" y1="10" x2="2" y2="10" />
 						<polyline points="10 18 2 10 10 2" />
@@ -978,9 +1075,10 @@ function Admin() {
 
 					{tousLesDimensions.length > 0 && (
 						<div className="admin-form__field">
-							<label>
+							<p className="admin-form__section-title">
 								Formats et prix — renseigner au moins le format principal
-							</label>
+							</p>
+
 							{tousLesDimensions.map((d) => {
 								const estBase =
 									(nouveauProduit.categorie_id === 1 && d.id === 1) ||
