@@ -1,3 +1,4 @@
+@import url("https://fonts.googleapis.com/css2?family=Caveat:wght@400..700&display=swap");
 /* ==========================================================================
    LAYOUT PRINCIPAL
    ========================================================================== */
@@ -52,7 +53,7 @@
 	opacity: 0;
 	transition:
 		border-color 0.4s ease,
-		transform 0.4s ease; /* Fusion des transitions */
+		transform 0.4s ease;
 	animation:
 		adminCardAppear 1.6s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards,
 		adminRespiration 4s ease-in-out infinite;
@@ -78,7 +79,7 @@
 }
 
 .admin-card__icon {
-	font-size: 2.5rem; /* Ajusté selon ton deuxième bloc */
+	font-size: 2.5rem;
 	filter: drop-shadow(0 2px 6px rgba(0, 0, 0, 0.3));
 }
 
@@ -89,7 +90,7 @@
 }
 
 .admin-card p {
-	color: rgba(255, 255, 255, 0.5); /* Ajusté à 0.5 */
+	color: rgba(255, 255, 255, 0.5);
 	font-size: 0.9rem;
 	line-height: 1.6;
 	padding: 0 24px;
@@ -266,7 +267,6 @@
 	border-radius: 10px !important;
 }
 
-/* Fusion complète de admin-filtre et admin-pill-btn qui étaient identiques */
 .admin-filtre,
 .admin-pill-btn {
 	padding: 10px 26px;
@@ -495,7 +495,6 @@
 	gap: 8px;
 }
 
-/* NOTE : Changement ici pour refléter le passage de <label> à <p> dans l'exercice précédent */
 .admin-form__section-title,
 .admin-form__field label {
 	font-family: var(--font-body);
@@ -629,7 +628,7 @@
 
 .admin-postit {
 	position: relative;
-	background: var(--color-background);
+	background: #fef5c1;
 	color: #333;
 	font-family: var(--font-body);
 	padding: 24px 16px 16px 16px;
@@ -649,7 +648,7 @@
 	width: 100%;
 }
 
-/* Effet de rotation aléatoire pour le réalisme */
+/* Effet de rotation aléatoire*/
 .admin-postit:nth-child(even) {
 	transform: rotate(2deg);
 }
@@ -668,13 +667,13 @@
 	transform: translateX(-50%);
 	width: 12px;
 	height: 12px;
-	background: rgba(160, 82, 45, 0.6); /* Couleur rouille/bois */
+	background: rgba(160, 82, 45, 0.6);
 	border-radius: 50%;
 	box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
 }
 
 .admin-postit:hover {
-	transform: scale(1.05) rotate(0deg) !important; /* Devient droit et gros au survol */
+	transform: scale(1.05) rotate(0deg) !important;
 	box-shadow: 10px 10px 20px rgba(0, 0, 0, 0.2);
 	z-index: 10;
 }
@@ -707,7 +706,7 @@
 }
 
 /* ==========================================================================
-   POP-IN (MODALE DE DÉTAIL)
+   POP-IN (MODALE DE DÉTAIL EN MODE POST-IT)
    ========================================================================== */
 
 .admin-popin-overlay {
@@ -716,72 +715,116 @@
 	left: 0;
 	width: 100vw;
 	height: 100vh;
-	background: rgba(0, 0, 0, 0.6); /* Assombrit le fond */
+	background: rgba(0, 0, 0, 0.4);
 	backdrop-filter: blur(4px);
 	display: flex;
 	align-items: center;
 	justify-content: center;
-	z-index: 9999; /* Toujours au premier plan */
+	z-index: 9999;
 	animation: fadeIn 0.25s ease-out;
 }
 
 .admin-popin {
-	background: #fff;
-	color: var(--color-text);
-	padding: 32px;
-	border-radius: 18px;
-	width: 100%;
-	max-width: 500px;
-	box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
 	position: relative;
-	animation: slideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+	background: #fef5c1;
+	color: var(--color-text);
+	padding: 40px 32px 32px 32px;
+	border-radius: 0px;
+	width: 90%;
+	max-width: 500px;
+	box-shadow: 10px 10px 25px rgba(0, 0, 0, 0.25);
+	transform: rotate(-1deg);
+	animation: slideUpPostIt 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+	font-family: "Caveat", "Comic Sans MS", cursive;
+	font-size: 1.25rem;
+}
+
+.admin-popin::before {
+	content: "";
+	position: absolute;
+	top: 12px;
+	left: 50%;
+	transform: translateX(-50%);
+	width: 16px;
+	height: 16px;
+	background: rgba(160, 82, 45, 0.8);
+	border-radius: 50%;
+	box-shadow: 0 2px 4px rgba(0, 0, 0, 0.4);
+	z-index: 2;
 }
 
 .admin-popin h3 {
 	margin-top: 0;
-	font-family: var(--font-title);
+	font-family: inherit;
 	font-size: 1.5rem;
+	text-align: center;
+	border-bottom: 2px dashed rgba(0, 0, 0, 0.15);
+	padding-bottom: 12px;
+}
+
+.admin-popin__date {
+	text-align: center;
+	font-size: 0.9rem;
+	color: var(--color-text);
+	margin-top: 8px;
 }
 
 .admin-popin__fermer {
 	position: absolute;
-	top: 16px;
-	right: 20px;
+	top: 8px;
+	right: 16px;
 	background: none;
 	border: none;
 	font-size: 2rem;
 	cursor: pointer;
-	color: #999;
-	transition: color 0.2s;
+	color: rgba(0, 0, 0, 0.3);
+	transition:
+		color 0.2s,
+		transform 0.2s;
+	z-index: 3;
 }
 
 .admin-popin__fermer:hover {
-	color: #333;
+	color: #000;
+	transform: scale(1.1);
 }
 
 .admin-popin hr {
-	border: none;
-	border-top: 1px solid rgba(0, 0, 0, 0.1);
-	margin: 20px 0;
+	display: none;
 }
 
 .admin-popin__lignes {
 	display: flex;
 	flex-direction: column;
-	gap: 12px;
+	gap: 14px;
+	margin: 24px 0;
+}
+
+.admin-popin__lignes h4 {
+	margin: 0 0 4px 0;
+	font-size: 1rem;
+	text-transform: uppercase;
+	letter-spacing: 1px;
+	color: #444;
 }
 
 .admin-popin__ligne {
 	display: flex;
 	justify-content: space-between;
 	font-size: 0.95rem;
+	border-bottom: 1px dashed rgba(0, 0, 0, 0.1);
+	padding-bottom: 4px;
 }
 
 .admin-popin__total {
 	display: flex;
 	justify-content: space-between;
-	font-family: var(--font-title);
-	font-size: 1.3rem;
+	font-family: inherit;
+	font-size: 1.4rem;
+	font-weight: bold;
+	margin-top: 24px;
+	padding-top: 12px;
+	border-top: 2px dashed rgba(0, 0, 0, 0.15);
 }
 
 /* Animations */
@@ -794,13 +837,13 @@
 	}
 }
 
-@keyframes slideUp {
+@keyframes slideUpPostIt {
 	from {
-		transform: translateY(30px);
+		transform: translateY(30px) rotate(2deg);
 		opacity: 0;
 	}
 	to {
-		transform: translateY(0);
+		transform: translateY(0) rotate(-1deg);
 		opacity: 1;
 	}
 }
