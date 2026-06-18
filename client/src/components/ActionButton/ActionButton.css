@@ -55,16 +55,17 @@
 	z-index: 2; /* S'assure que le texte reste au-dessus du fond qui glisse */
 }
 .custom-button--inverse {
-	background-color: var(--color-background);
-	color: #ffffff;
+	background-color: #ffffff;
+	color: var(--color-background);
 }
 
 .custom-button--inverse::before {
-	background-color: #ffffff;
+	background-color: red;
+	border: none;
 }
 
 .custom-button--inverse:hover {
-	color: var(--color-background);
+	color: #ffffff;
 }
 
 /* Style de base de l'icône */

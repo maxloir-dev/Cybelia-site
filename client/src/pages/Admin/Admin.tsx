@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import ActionButton from "../../components/ActionButton/ActionButton";
 import { useLocation } from "react-router-dom";
 import { getAllCommandes } from "../../api/commandeService";
 import {
@@ -20,7 +21,7 @@ import {
 import type { Commande, Produit, Utilisateur, Dimension } from "../../types";
 import "./Admin.css";
 import { uploadImage } from "../../api/uploadService";
-import { GooeyInput } from "../../components/ui/GooeyInput";
+import { GooeyInput } from "../../components/Ui/GooeyInput";
 
 // Types des vues possibles
 
@@ -36,6 +37,11 @@ type Vue =
 // Page Admin
 
 function Admin() {
+	useEffect(() => {
+		getAllDimensions()
+			.then(setTousLesDimensions)
+			.catch(() => {});
+	}, []);
 	const location = useLocation();
 	const [vue, setVue] = useState<Vue>("accueil");
 	const [locationKeyVue, setLocationKeyVue] = useState(location.key);
@@ -73,6 +79,9 @@ function Admin() {
 	const [tousLesDimensions, setTousLesDimensions] = useState<Dimension[]>([]);
 	const [dimensionsProduit, setDimensionsProduit] = useState<Dimension[]>([]);
 	const [nouveauPrix, setNouveauPrix] = useState<Record<number, string>>({});
+	const [dimensionsPrixAjout, setDimensionsPrixAjout] = useState<
+		Record<number, string>
+	>({});
 
 	// Navigation vers les vues
 
@@ -110,7 +119,10 @@ function Admin() {
 		setChargement(false);
 	};
 
-	const allerDetailProduit = async (produit: Produit, editer: boolean = false) => {
+	const allerDetailProduit = async (
+		produit: Produit,
+		editer: boolean = false,
+	) => {
 		setProduitSelectionne(produit);
 		setProduitEdite({ ...produit });
 		setModeEdition(editer);
@@ -136,7 +148,6 @@ function Admin() {
 		try {
 			let image_url = "";
 			let mockup_url = null;
-
 			if (fichierImage) {
 				const urls = await uploadImage(
 					fichierImage,
@@ -146,14 +157,29 @@ function Admin() {
 				mockup_url = urls.mockup_url;
 			}
 
+			// Détermine la dimension de base selon la catégorie
+			const dimensionBaseId = nouveauProduit.categorie_id === 1 ? 1 : 3;
+			const prixFinal = Number(dimensionsPrixAjout[dimensionBaseId] ?? 0);
+
 			const formData = new FormData();
 			formData.append("nom", nouveauProduit.nom);
 			formData.append("description", nouveauProduit.description);
-			formData.append("prix", String(nouveauProduit.prix));
+			formData.append("prix", String(prixFinal));
 			formData.append("image_url", image_url);
 			formData.append("mockup_url", mockup_url ?? "");
 			formData.append("categorie_id", String(nouveauProduit.categorie_id));
-			await addProduit(formData);
+			const result = await addProduit(formData);
+
+			// Sauvegarde toutes les dimensions renseignées
+			const dimensionsARenseigner = Object.entries(dimensionsPrixAjout).filter(
+				([, prix]) =>
+					prix.trim() !== "" && !isNaN(Number(prix)) && Number(prix) >= 0,
+			);
+			await Promise.all(
+				dimensionsARenseigner.map(([dimId, prix]) =>
+					upsertDimensionProduit(result.id, Number(dimId), Number(prix)),
+				),
+			);
 
 			setNouveauProduit({
 				nom: "",
@@ -164,6 +190,9 @@ function Admin() {
 			});
 			setFichierImage(null);
 			setPreviewImage("");
+			setFichierMockup(null);
+			setPreviewMockup("");
+			setDimensionsPrixAjout({});
 			setVue("accueil");
 		} catch {
 			alert("Erreur lors de l'ajout du produit");
@@ -283,12 +312,20 @@ function Admin() {
 	if (vue === "commandes") {
 		return (
 			<main className="admin-main">
-				<button
-					type="button"
-					className="admin-retour"
-					onClick={() => setVue("accueil")}
-				>
-					← Retour
+				<button className="admin-retour" onClick={() => setVue("accueil")}>
+					<svg
+						width="36"
+						height="20"
+						viewBox="0 0 36 20"
+						fill="none"
+						stroke="currentColor"
+						strokeWidth="1.5"
+						strokeLinecap="round"
+						strokeLinejoin="round"
+					>
+						<line x1="34" y1="10" x2="2" y2="10" />
+						<polyline points="10 18 2 10 10 2" />
+					</svg>
 				</button>
 				<div className="admin-top">
 					<h1>Commandes</h1>
@@ -315,32 +352,42 @@ function Admin() {
 								new Date(c.created_at).toLocaleDateString("fr-FR").includes(q)
 							);
 						})
-						.map((commande) => (
-						<div key={commande.id} className="admin-item">
-							<div className="admin-item__info">
-								<span className="admin-item__titre">
-									Commande #{commande.id}
-								</span>
-								<span className="admin-item__detail">
-									{commande.nom} {commande.prenom}
-								</span>
-								<span className="admin-item__detail">{commande.email}</span>
-								<span className="admin-item__detail">
-									{new Date(commande.created_at).toLocaleDateString("fr-FR")}
-								</span>
-								{commande.lignes?.map((ligne, i) => (
-									<span key={i} className="admin-item__detail">
-										{ligne.quantite}x {ligne.produit_nom}
-										{ligne.dimension_label && ` (${ligne.dimension_label})`} —{" "}
-										{ligne.prix_unitaire}€
+						.map((commande, index) => (
+							<div
+								key={commande.id}
+								className="admin-item"
+								style={{ animationDelay: `${index * 0.06}s` }}
+							>
+								<div className="admin-item__info">
+									<span className="admin-item__titre">
+										Commande #{commande.id}
 									</span>
-								))}
+									<span className="admin-item__detail">
+										{commande.nom} {commande.prenom}
+									</span>
+									<span className="admin-item__detail">{commande.email}</span>
+									<span className="admin-item__detail">
+										{new Date(commande.created_at).toLocaleDateString("fr-FR")}
+									</span>
+									{commande.lignes?.map((ligne, i) => (
+										<span
+											key={i}
+											className="admin-item__detail"
+											style={{ animationDelay: `${index * 0.06}s` }}
+										>
+											{ligne.quantite}x {ligne.produit_nom}
+											{ligne.dimension_label && ` (${ligne.dimension_label})`} —{" "}
+											{ligne.prix_unitaire}€
+										</span>
+									))}
+								</div>
+								<div className="admin-item__droite">
+									<span className="admin-item__prix">
+										{commande.montant_total}€
+									</span>
+								</div>
 							</div>
-							<div className="admin-item__droite">
-								<span className="admin-item__prix">{commande.montant_total}€</span>
-							</div>
-						</div>
-					))}
+						))}
 				</div>
 			</main>
 		);
@@ -350,12 +397,20 @@ function Admin() {
 	if (vue === "clients") {
 		return (
 			<main className="admin-main">
-				<button
-					type="button"
-					className="admin-retour"
-					onClick={() => setVue("accueil")}
-				>
-					← Retour
+				<button className="admin-retour" onClick={() => setVue("accueil")}>
+					<svg
+						width="36"
+						height="20"
+						viewBox="0 0 36 20"
+						fill="none"
+						stroke="currentColor"
+						strokeWidth="1.5"
+						strokeLinecap="round"
+						strokeLinejoin="round"
+					>
+						<line x1="34" y1="10" x2="2" y2="10" />
+						<polyline points="10 18 2 10 10 2" />
+					</svg>
 				</button>
 				<h1>Clients</h1>
 				<div className="admin-liste">
@@ -392,12 +447,20 @@ function Admin() {
 	if (vue === "client-detail" && clientSelectionne) {
 		return (
 			<main className="admin-main">
-				<button
-					type="button"
-					className="admin-retour"
-					onClick={() => setVue("clients")}
-				>
-					← Retour
+				<button className="admin-retour" onClick={() => setVue("accueil")}>
+					<svg
+						width="36"
+						height="20"
+						viewBox="0 0 36 20"
+						fill="none"
+						stroke="currentColor"
+						strokeWidth="1.5"
+						strokeLinecap="round"
+						strokeLinejoin="round"
+					>
+						<line x1="34" y1="10" x2="2" y2="10" />
+						<polyline points="10 18 2 10 10 2" />
+					</svg>
 				</button>
 				<h1>
 					{clientSelectionne.nom} {clientSelectionne.prenom}
@@ -453,12 +516,20 @@ function Admin() {
 	if (vue === "produits") {
 		return (
 			<main className="admin-main">
-				<button
-					type="button"
-					className="admin-retour"
-					onClick={() => setVue("accueil")}
-				>
-					← Retour
+				<button className="admin-retour" onClick={() => setVue("accueil")}>
+					<svg
+						width="36"
+						height="20"
+						viewBox="0 0 36 20"
+						fill="none"
+						stroke="currentColor"
+						strokeWidth="1.5"
+						strokeLinecap="round"
+						strokeLinejoin="round"
+					>
+						<line x1="34" y1="10" x2="2" y2="10" />
+						<polyline points="10 18 2 10 10 2" />
+					</svg>
 				</button>
 				<h1>Produits</h1>
 
@@ -486,8 +557,12 @@ function Admin() {
 
 				<div className="admin-liste">
 					{produits.length === 0 && <p>Aucun produit dans cette catégorie.</p>}
-					{produits.map((produit) => (
-						<div key={produit.id} className="admin-item">
+					{produits.map((produit, index) => (
+						<div
+							key={produit.id}
+							className="admin-item"
+							style={{ animationDelay: `${index * 0.06}s` }}
+						>
 							<button
 								type="button"
 								className="admin-item__info admin-item--cliquable"
@@ -498,24 +573,19 @@ function Admin() {
 								<span className="admin-item__prix">{produit.prix}€</span>
 							</button>
 							<div className="admin-item__actions">
-								<button
-									type="button"
-									className="admin-btn admin-btn--modifier"
-									onClick={(e) => {
-										e.stopPropagation();
-										allerDetailProduit(produit, true);
-									}}
+								<ActionButton
+									className="admin-action-btn"
+									onClick={() => allerDetailProduit(produit, true)}
 								>
 									Modifier
-								</button>
-
-								<button
-									type="button"
-									className="admin-btn admin-btn--supprimer"
+								</ActionButton>
+								<ActionButton
+									className="admin-action-btn"
+									inverse={true}
 									onClick={() => supprimerProduit(produit.id)}
 								>
 									Supprimer
-								</button>
+								</ActionButton>
 							</div>
 						</div>
 					))}
@@ -529,12 +599,20 @@ function Admin() {
 	if (vue === "produit-detail" && produitSelectionne && produitEdite) {
 		return (
 			<main className="admin-main">
-				<button
-					type="button"
-					className="admin-retour"
-					onClick={() => setVue("produits")}
-				>
-					← Retour
+				<button className="admin-retour" onClick={() => setVue("accueil")}>
+					<svg
+						width="36"
+						height="20"
+						viewBox="0 0 36 20"
+						fill="none"
+						stroke="currentColor"
+						strokeWidth="1.5"
+						strokeLinecap="round"
+						strokeLinejoin="round"
+					>
+						<line x1="34" y1="10" x2="2" y2="10" />
+						<polyline points="10 18 2 10 10 2" />
+					</svg>
 				</button>
 				<div className="admin-produit-detail">
 					{produitSelectionne.image_url && (
@@ -664,7 +742,7 @@ function Admin() {
 							<div className="admin-item__actions">
 								<button
 									type="button"
-									className="admin-btn admin-btn--modifier"
+									className="admin-pill-btn admin-pill-btn--actif"
 									onClick={async () => {
 										let image_url = produitEdite.image_url;
 
@@ -692,7 +770,7 @@ function Admin() {
 								</button>
 								<button
 									type="button"
-									className="admin-btn admin-btn--supprimer"
+									className="admin-pill-btn"
 									onClick={() => {
 										setProduitEdite({ ...produitSelectionne });
 										setModeEdition(false);
@@ -705,7 +783,7 @@ function Admin() {
 							<div className="admin-item__actions">
 								<button
 									type="button"
-									className="admin-btn admin-btn--modifier"
+									className="admin-pill-btn"
 									onClick={() => {
 										setProduitEdite({ ...produitSelectionne });
 										setModeEdition(true);
@@ -715,7 +793,7 @@ function Admin() {
 								</button>
 								<button
 									type="button"
-									className="admin-btn admin-btn--supprimer"
+									className="admin-pill-btn"
 									onClick={() => supprimerProduit(produitSelectionne.id)}
 								>
 									Supprimer
@@ -740,9 +818,14 @@ function Admin() {
 										min="0"
 										className="admin-edit-input admin-dimension-prix"
 										placeholder="Prix €"
-										value={nouveauPrix[dim.id] ?? (active ? String(active.prix) : "")}
+										value={
+											nouveauPrix[dim.id] ?? (active ? String(active.prix) : "")
+										}
 										onChange={(e) =>
-											setNouveauPrix({ ...nouveauPrix, [dim.id]: e.target.value })
+											setNouveauPrix({
+												...nouveauPrix,
+												[dim.id]: e.target.value,
+											})
 										}
 									/>
 									{active ? (
@@ -753,8 +836,14 @@ function Admin() {
 												onClick={async () => {
 													const prix = Number(nouveauPrix[dim.id]);
 													if (Number.isNaN(prix) || prix < 0) return;
-													await upsertDimensionProduit(produitSelectionne.id, dim.id, prix);
-													const actives = await getDimensionsByProduit(produitSelectionne.id);
+													await upsertDimensionProduit(
+														produitSelectionne.id,
+														dim.id,
+														prix,
+													);
+													const actives = await getDimensionsByProduit(
+														produitSelectionne.id,
+													);
 													setDimensionsProduit(actives);
 												}}
 											>
@@ -764,8 +853,13 @@ function Admin() {
 												type="button"
 												className="admin-btn admin-btn--supprimer"
 												onClick={async () => {
-													await deleteDimensionProduit(produitSelectionne.id, dim.id);
-													const actives = await getDimensionsByProduit(produitSelectionne.id);
+													await deleteDimensionProduit(
+														produitSelectionne.id,
+														dim.id,
+													);
+													const actives = await getDimensionsByProduit(
+														produitSelectionne.id,
+													);
 													setDimensionsProduit(actives);
 													setNouveauPrix((prev) => {
 														const copy = { ...prev };
@@ -783,9 +877,20 @@ function Admin() {
 											className="admin-btn admin-btn--modifier"
 											onClick={async () => {
 												const prix = Number(nouveauPrix[dim.id]);
-												if (Number.isNaN(prix) || prix < 0 || !nouveauPrix[dim.id]) return;
-												await upsertDimensionProduit(produitSelectionne.id, dim.id, prix);
-												const actives = await getDimensionsByProduit(produitSelectionne.id);
+												if (
+													Number.isNaN(prix) ||
+													prix < 0 ||
+													!nouveauPrix[dim.id]
+												)
+													return;
+												await upsertDimensionProduit(
+													produitSelectionne.id,
+													dim.id,
+													prix,
+												);
+												const actives = await getDimensionsByProduit(
+													produitSelectionne.id,
+												);
 												setDimensionsProduit(actives);
 											}}
 										>
@@ -805,12 +910,20 @@ function Admin() {
 	if (vue === "ajouter-produit") {
 		return (
 			<main className="admin-main">
-				<button
-					type="button"
-					className="admin-retour"
-					onClick={() => setVue("accueil")}
-				>
-					← Retour
+				<button className="admin-retour" onClick={() => setVue("accueil")}>
+					<svg
+						width="36"
+						height="20"
+						viewBox="0 0 36 20"
+						fill="none"
+						stroke="currentColor"
+						strokeWidth="1.5"
+						strokeLinecap="round"
+						strokeLinejoin="round"
+					>
+						<line x1="34" y1="10" x2="2" y2="10" />
+						<polyline points="10 18 2 10 10 2" />
+					</svg>
 				</button>
 				<h1>Nouveau produit</h1>
 				<div className="admin-form">
@@ -845,44 +958,57 @@ function Admin() {
 						/>
 					</div>
 
-					<div className="admin-form__row">
-						<div className="admin-form__field">
-							<label htmlFor="prix-produit">Prix (€)</label>
-
-							<input
-								id="prix-produit"
-								type="number"
-								step="0.01"
-								className="admin-edit-input"
-								placeholder="0.00"
-								value={nouveauProduit.prix}
-								onChange={(e) =>
-									setNouveauProduit({
-										...nouveauProduit,
-										prix: Number(e.target.value),
-									})
-								}
-							/>
-						</div>
-
-						<div className="admin-form__field">
-							<label htmlFor="categorie-produit">Catégorie</label>
-							<select
-								id="categorie-produit"
-								className="admin-edit-input"
-								value={nouveauProduit.categorie_id}
-								onChange={(e) =>
-									setNouveauProduit({
-										...nouveauProduit,
-										categorie_id: Number(e.target.value),
-									})
-								}
-							>
-								<option value={1}>Carte postale</option>
-								<option value={2}>Affiche</option>
-							</select>
-						</div>
+					<div className="admin-form__field">
+						<label htmlFor="categorie-produit">Catégorie</label>
+						<select
+							id="categorie-produit"
+							className="admin-edit-input"
+							value={nouveauProduit.categorie_id}
+							onChange={(e) =>
+								setNouveauProduit({
+									...nouveauProduit,
+									categorie_id: Number(e.target.value),
+								})
+							}
+						>
+							<option value={1}>Carte postale</option>
+							<option value={2}>Affiche</option>
+						</select>
 					</div>
+
+					{tousLesDimensions.length > 0 && (
+						<div className="admin-form__field">
+							<label>
+								Formats et prix — renseigner au moins le format principal
+							</label>
+							{tousLesDimensions.map((d) => {
+								const estBase =
+									(nouveauProduit.categorie_id === 1 && d.id === 1) ||
+									(nouveauProduit.categorie_id === 2 && d.id === 3);
+								return (
+									<div key={d.id} className="admin-form__dimension-ligne">
+										<span className="admin-form__dimension-label">
+											{d.label} {estBase && <em>(format principal)</em>}
+										</span>
+										<input
+											type="number"
+											step="0.01"
+											min="0"
+											placeholder="Prix €"
+											className="admin-edit-input admin-form__dimension-prix"
+											value={dimensionsPrixAjout[d.id] ?? ""}
+											onChange={(e) =>
+												setDimensionsPrixAjout({
+													...dimensionsPrixAjout,
+													[d.id]: e.target.value,
+												})
+											}
+										/>
+									</div>
+								);
+							})}
+						</div>
+					)}
 
 					<div className="admin-form__field">
 						<label htmlFor="image-produit">Image du produit</label>
@@ -934,14 +1060,14 @@ function Admin() {
 					<div className="admin-form__actions">
 						<button
 							type="button"
-							className="admin-btn admin-btn--modifier"
+							className="admin-pill-btn admin-pill-btn--actif"
 							onClick={ajouterProduit}
 						>
 							Ajouter le produit
 						</button>
 						<button
 							type="button"
-							className="admin-btn admin-btn--supprimer"
+							className="admin-pill-btn"
 							onClick={() => setVue("accueil")}
 						>
 							Annuler

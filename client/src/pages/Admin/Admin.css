@@ -146,20 +146,24 @@
 /* Bouton retour */
 
 .admin-retour {
+	display: inline-flex;
+	align-items: center;
 	background: none;
 	border: none;
 	color: var(--color-text);
-	font-family: var(--font-body);
-	font-size: 0.9rem;
-	letter-spacing: 1px;
 	cursor: pointer;
 	margin-bottom: 32px;
-	padding: 0;
-	transition: opacity 0.2s;
+	margin-left: -60px;
+	padding: 4px;
+	transition: transform 0.4s ease;
 }
 
-.admin-retour:hover {
-	opacity: 0.7;
+.admin-retour svg {
+	transition: transform 0.4s ease;
+}
+
+.admin-retour:hover svg {
+	transform: translateX(-16px);
 }
 
 /* Liste des éléments */
@@ -167,7 +171,7 @@
 .admin-liste {
 	display: flex;
 	flex-direction: column;
-	gap: 12px;
+	gap: 16px;
 	margin-top: 32px;
 }
 
@@ -175,29 +179,42 @@
 	display: flex;
 	align-items: center;
 	justify-content: space-between;
-	padding: 20px 24px;
-	border: 1px solid rgba(150, 88, 70, 0.2);
-	transition: border-color 0.2s;
+	padding: 24px 28px;
+	background: rgba(150, 88, 70, 0.06);
+	border: 1px solid rgba(150, 88, 70, 0.15);
+	border-radius: 18px;
+	transition:
+		background 0.35s ease,
+		border-color 0.35s ease,
+		transform 0.35s ease,
+		box-shadow 0.35s ease;
+	opacity: 0;
+	transform: translateY(20px);
+	animation: adminItemAppear 0.6s ease forwards;
+}
+
+@keyframes adminItemAppear {
+	to {
+		opacity: 1;
+		transform: translateY(0);
+	}
 }
 
 .admin-item:hover {
-	border-color: var(--color-text);
+	background: rgba(150, 88, 70, 0.14);
+	border-color: rgba(150, 88, 70, 0.4);
+	transform: translateY(-3px);
+	box-shadow: 0 12px 28px rgba(150, 88, 70, 0.12);
 }
 
 .admin-item--cliquable {
 	cursor: pointer;
 }
 
-.admin-item__info {
-	display: flex;
-	flex-direction: column;
-	gap: 4px;
-}
-
 .admin-item__titre {
 	font-family: var(--font-title);
-	font-size: 1rem;
-	color: var(--color-primary);
+	font-size: 1.05rem;
+	color: var(--color-text);
 	letter-spacing: 1px;
 }
 
@@ -208,13 +225,88 @@
 
 .admin-item__prix {
 	font-family: var(--font-title);
-	font-size: 1.1rem;
+	font-size: 1.2rem;
 	color: var(--color-text);
 }
 
 .admin-item__fleche {
 	color: var(--color-text);
+	font-size: 1.3rem;
+	transition: transform 0.3s ease;
+}
+
+.admin-item:hover .admin-item__fleche {
+	transform: translateX(4px);
+}
+
+.admin-liste {
+	display: flex;
+	flex-direction: column;
+	gap: 16px;
+	margin-top: 32px;
+}
+
+.admin-item {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	padding: 24px 28px;
+	background: rgba(150, 88, 70, 0.06);
+	border: 1px solid rgba(150, 88, 70, 0.15);
+	border-radius: 18px;
+	transition:
+		background 0.35s ease,
+		border-color 0.35s ease,
+		transform 0.35s ease,
+		box-shadow 0.35s ease;
+	opacity: 0;
+	transform: translateY(20px);
+	animation: adminItemAppear 0.6s ease forwards;
+}
+
+@keyframes adminItemAppear {
+	to {
+		opacity: 1;
+		transform: translateY(0);
+	}
+}
+
+.admin-item:hover {
+	background: rgba(150, 88, 70, 0.14);
+	border-color: rgba(150, 88, 70, 0.4);
+	transform: translateY(-3px);
+	box-shadow: 0 12px 28px rgba(150, 88, 70, 0.12);
+}
+
+.admin-item--cliquable {
+	cursor: pointer;
+}
+
+.admin-item__titre {
+	font-family: var(--font-title);
+	font-size: 1.05rem;
+	color: var(--color-text);
+	letter-spacing: 1px;
+}
+
+.admin-item__detail {
+	font-size: 0.85rem;
+	color: var(--color-secondary);
+}
+
+.admin-item__prix {
+	font-family: var(--font-title);
 	font-size: 1.2rem;
+	color: var(--color-text);
+}
+
+.admin-item__fleche {
+	color: var(--color-text);
+	font-size: 1.3rem;
+	transition: transform 0.3s ease;
+}
+admin-item:hover .admin-item__fleche {
+	transform: translateX(4px);
 }
 
 /* Actions produits */
@@ -225,54 +317,45 @@
 }
 
 .admin-btn {
-	padding: 8px 16px;
+	padding: 9px 18px;
 	border: none;
+	border-radius: 10px;
 	font-family: var(--font-body);
 	font-size: 0.8rem;
 	letter-spacing: 1px;
 	text-transform: uppercase;
 	cursor: pointer;
-	transition: opacity 0.2s;
+	transition:
+		opacity 0.25s,
+		transform 0.25s;
 }
 
 .admin-btn:hover {
-	opacity: 0.8;
+	opacity: 0.85;
+	transform: translateY(-2px);
 }
 
-.admin-btn--modifier {
-	background-color: var(--color-text);
-	color: #fff;
-}
-
-.admin-btn--supprimer {
-	background-color: #c0392b;
-	color: #fff;
-}
-
-/* Filtres catégories */
-
-.admin-filtres {
-	display: flex;
-	gap: 12px;
-	margin-top: 24px;
-}
-
+/* ============================================
+   Filtres — plus arrondis et vivants
+============================================ */
 .admin-filtre {
-	padding: 10px 24px;
+	padding: 10px 26px;
 	border: 1px solid rgba(150, 88, 70, 0.3);
-	background: none;
+	border-radius: 30px;
+	background: rgba(150, 88, 70, 0.04);
 	font-family: var(--font-body);
 	font-size: 0.85rem;
 	letter-spacing: 1px;
 	text-transform: uppercase;
 	color: var(--color-secondary);
 	cursor: pointer;
-	transition: all 0.2s;
+	transition: all 0.3s ease;
 }
 
 .admin-filtre:hover {
 	border-color: var(--color-text);
 	color: var(--color-text);
+	background: rgba(150, 88, 70, 0.1);
 }
 
 .admin-filtre--actif {
@@ -284,8 +367,10 @@
 /* Profil client */
 
 .admin-profil {
-	padding: 24px;
-	border: 1px solid rgba(150, 88, 70, 0.2);
+	padding: 28px;
+	background: rgba(150, 88, 70, 0.06);
+	border: 1px solid rgba(150, 88, 70, 0.15);
+	border-radius: 18px;
 	margin-top: 24px;
 	margin-bottom: 32px;
 }
@@ -324,31 +409,38 @@
 
 .admin-produit-detail {
 	display: grid;
-	grid-template-columns: 1fr 1fr;
-	gap: 48px;
+	grid-template-columns: 360px 1fr;
+	gap: 40px;
+	align-items: start;
 	margin-top: 32px;
+	background: rgba(150, 88, 70, 0.06);
+	border: 1px solid rgba(150, 88, 70, 0.15);
+	border-radius: 18px;
+	padding: 32px;
 }
 
 .admin-produit-detail__image {
 	width: 100%;
-	aspect-ratio: 1;
+	aspect-ratio: 3 / 4;
 	object-fit: cover;
+	border-radius: 14px;
 }
-
 .admin-produit-detail__info {
 	display: flex;
 	flex-direction: column;
-	gap: 16px;
+	gap: 28px;
+}
+
+.admin-produit-detail__info h1 {
+	color: var(--color-text);
 }
 
 .admin-produit-detail__description {
 	color: var(--color-secondary);
-	line-height: 1.6;
+	line-height: 1.7;
 }
 
 .admin-produit-detail__prix {
-	font-family: var(--font-title);
-	font-size: 1.8rem;
 	color: var(--color-text);
 }
 
@@ -376,7 +468,7 @@
 	width: 100%;
 	background: transparent;
 	border: none;
-	border-bottom: 2px solid var(--color-text);
+	border-bottom: 1px solid var(--color-text);
 	outline: none;
 	font-family: var(--font-body);
 	font-size: 1rem;
@@ -430,6 +522,9 @@
 	gap: 24px;
 	margin-top: 32px;
 	max-width: 600px;
+	background: rgba(150, 88, 70, 0.05);
+	border-radius: 18px;
+	padding: 32px;
 }
 
 .admin-form__field {
@@ -469,10 +564,19 @@
    SECTION DIMENSIONS (vue produit-detail)
    ========================================= */
 
+.admin-profil {
+	padding: 28px;
+	background: rgba(150, 88, 70, 0.06);
+	border: 1px solid rgba(150, 88, 70, 0.15);
+	border-radius: 18px;
+	margin-top: 24px;
+	margin-bottom: 32px;
+}
 .admin-dimensions {
-	margin-top: 40px;
-	padding-top: 32px;
-	border-top: 1px solid rgba(150, 88, 70, 0.15);
+	margin-top: 56px;
+	padding: 28px;
+	border-radius: 18px;
+	border-top: none;
 }
 
 .admin-dimensions h2 {
@@ -490,17 +594,23 @@
 }
 
 .admin-dimension-ligne {
+	background: rgba(255, 255, 255, 0.5);
+	border-radius: 12px;
+	padding: 12px 16px;
 	display: flex;
 	align-items: center;
-	gap: 12px;
-	flex-wrap: wrap;
+	gap: 16px;
+	flex-wrap: nowrap;
 }
 
 .admin-dimension-label {
 	flex: 1;
-	min-width: 180px;
+	min-width: 0;
 	font-size: 0.9rem;
 	color: var(--color-text);
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
 }
 
 .admin-dimension-prix {
@@ -511,6 +621,13 @@
 .admin-dimension-actions {
 	display: flex;
 	gap: 8px;
+	margin-left: auto;
+	flex-shrink: 0;
+}
+
+.admin-dimension-ligne > button {
+	margin-left: auto;
+	flex-shrink: 0;
 }
 
 /* Statut commande */
@@ -548,4 +665,62 @@
 
 .admin-btn--rupture:hover {
 	background: #ead5ce;
+}
+.admin-form__dimension-ligne {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 16px;
+	border-bottom: 1px solid rgba(150, 88, 70, 0.1);
+	border-radius: 10px;
+	padding: 12px 8px;
+}
+
+.admin-form__dimension-ligne:hover {
+	background: rgba(150, 88, 70, 0.06);
+}
+
+.admin-form__dimension-label {
+	font-size: 0.9rem;
+	color: var(--color-primary);
+}
+
+.admin-form__dimension-prix {
+	max-width: 120px;
+}
+.admin-action-btn {
+	padding: 8px 18px !important;
+	font-size: 0.8rem !important;
+	border-radius: 10px !important;
+}
+
+.admin-pill-btn {
+	padding: 10px 26px;
+	border: 1px solid rgba(150, 88, 70, 0.3);
+	border-radius: 30px;
+	background: rgba(150, 88, 70, 0.04);
+	font-family: var(--font-body);
+	font-size: 0.85rem;
+	letter-spacing: 1px;
+	text-transform: uppercase;
+	color: var(--color-secondary);
+	cursor: pointer;
+	transition: all 0.3s ease;
+}
+
+.admin-pill-btn:hover {
+	border-color: var(--color-text);
+	color: var(--color-text);
+	background: rgba(150, 88, 70, 0.1);
+}
+
+.admin-pill-btn--actif {
+	background-color: var(--color-text);
+	border-color: var(--color-text);
+	color: #fff;
+}
+
+.admin-pill-btn--actif:hover {
+	opacity: 0.9;
+	color: #fff;
 }
