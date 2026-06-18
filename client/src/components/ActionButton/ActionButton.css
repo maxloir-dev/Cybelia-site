@@ -57,15 +57,19 @@
 .custom-button--inverse {
 	background-color: #ffffff;
 	color: var(--color-background);
+	border: 2px solid var(--color-background);
+	transition:
+		color 0.4s ease-in-out,
+		border-color 0.4s ease-in-out;
 }
 
 .custom-button--inverse::before {
 	background-color: red;
-	border: none;
 }
 
 .custom-button--inverse:hover {
 	color: #ffffff;
+	border-color: red;
 }
 
 /* Style de base de l'icône */

@@ -605,22 +605,17 @@ function Admin() {
 				<div
 					style={{
 						display: "flex",
-						justifyContent: "flex-end",
+						justifyContent: "center",
 						marginTop: "16px",
+						marginBottom: "24px",
 					}}
 				>
-					<button
-						type="button"
-						className="admin-pill-btn"
-						style={{
-							borderColor: "#d4a090",
-							color: "#a0522d",
-							background: "#f5e6e2",
-						}}
+					<ActionButton
+						inverse={true}
 						onClick={() => supprimerClient(clientSelectionne.id)}
 					>
 						Supprimer le client
-					</button>
+					</ActionButton>
 				</div>
 				<div className="admin-historique">
 					<h2>Historique des commandes</h2>
