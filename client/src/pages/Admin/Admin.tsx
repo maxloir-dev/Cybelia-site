@@ -156,23 +156,21 @@ function Admin() {
 			!window.confirm(
 				`Êtes-vous sûr de vouloir supprimer la commande #${commandeId} ?`,
 			)
-		) {
+		)
 			return;
-		}
 		try {
 			setCommandeSelectionnee(null);
-			setCommandeEnSuppression(commandeId); // Active l'animation
-
-			await deleteCommande(commandeId); // Supprime sur le serveur
-
-			// On attend la fin des 800ms de l'animation CSS
+			setCommandeEnSuppression(commandeId);
+			await deleteCommande(commandeId);
 			setTimeout(() => {
+				// Met à jour les deux listes
 				setHistoriqueClient((prev) => prev.filter((c) => c.id !== commandeId));
-				setCommandeEnSuppression(null); // <--- TRÈS IMPORTANT : Désactive l'animation
+				setCommandes((prev) => prev.filter((c) => c.id !== commandeId));
+				setCommandeEnSuppression(null);
 			}, 800);
 		} catch {
 			alert("Erreur lors de la suppression de la commande sur le serveur");
-			setCommandeEnSuppression(null); // Sécurité en cas d'erreur
+			setCommandeEnSuppression(null);
 		}
 	};
 
@@ -368,8 +366,10 @@ function Admin() {
 						expandedOffset={48}
 					/>
 				</div>
-				<div className="admin-commandes-grid">
-					{commandes.length === 0 && <p>Aucune commande pour le moment.</p>}
+
+				{commandes.length === 0 && <p>Aucune commande pour le moment.</p>}
+
+				<div className="admin-postit-grille">
 					{commandes
 						.filter((c) => {
 							const q = rechercheCommandes.toLowerCase();
@@ -382,43 +382,109 @@ function Admin() {
 								new Date(c.created_at).toLocaleDateString("fr-FR").includes(q)
 							);
 						})
-						.map((commande, index) => (
-							<div
-								key={commande.id}
-								className="admin-item"
-								style={{ animationDelay: `${index * 0.06}s` }}
-							>
-								<div className="admin-item__info">
-									<span className="admin-item__titre">
+						.map((commande) => {
+							const estEnSuppression = commandeEnSuppression === commande.id;
+							return (
+								<button
+									type="button"
+									key={commande.id}
+									className={`admin-postit ${estEnSuppression ? "admin-postit--suppression" : ""}`}
+									onClick={() => setCommandeSelectionnee(commande)}
+									aria-label={`Ouvrir la commande numéro ${commande.id}`}
+								>
+									<span className="admin-postit__punaise" />
+									<div className="admin-postit__titre">
 										Commande #{commande.id}
-									</span>
-									<span className="admin-item__detail">
+									</div>
+									<div className="admin-postit__date">
 										{commande.nom} {commande.prenom}
-									</span>
-									<span className="admin-item__detail">{commande.email}</span>
-									<span className="admin-item__detail">
+									</div>
+									<div className="admin-postit__date">
 										{new Date(commande.created_at).toLocaleDateString("fr-FR")}
-									</span>
-									{commande.lignes?.map((ligne, i) => (
-										<span
-											key={i}
-											className="admin-item__detail"
-											style={{ animationDelay: `${index * 0.06}s` }}
-										>
-											{ligne.quantite}x {ligne.produit_nom}
-											{ligne.dimension_label && ` (${ligne.dimension_label})`} —{" "}
-											{ligne.prix_unitaire}€
-										</span>
-									))}
-								</div>
-								<div className="admin-item__droite">
-									<span className="admin-item__prix">
+									</div>
+									<div className="admin-postit__prix">
 										{commande.montant_total}€
-									</span>
-								</div>
-							</div>
-						))}
+									</div>
+									<div className="admin-postit__cliquez">Cliquez pour voir</div>
+								</button>
+							);
+						})}
 				</div>
+
+				{commandeSelectionnee && (
+					<button
+						type="button"
+						className="admin-popin-overlay"
+						onClick={() => setCommandeSelectionnee(null)}
+						aria-label="Fermer"
+					>
+						<div
+							className="admin-popin"
+							role="document"
+							onClick={(e) => e.stopPropagation()}
+							onKeyDown={(e) => e.stopPropagation()}
+						>
+							<button
+								type="button"
+								className="admin-popin__fermer"
+								onClick={() => setCommandeSelectionnee(null)}
+							>
+								&times;
+							</button>
+							<h3>Commande #{commandeSelectionnee.id}</h3>
+							<p className="admin-popin__date">
+								{commandeSelectionnee.nom} {commandeSelectionnee.prenom} —{" "}
+								{commandeSelectionnee.email}
+							</p>
+							<p className="admin-popin__date">
+								Le{" "}
+								{new Date(commandeSelectionnee.created_at).toLocaleDateString(
+									"fr-FR",
+								)}
+							</p>
+							<div className="admin-popin__lignes">
+								<h4>Articles commandés</h4>
+								{commandeSelectionnee.lignes?.map((ligne, index) => (
+									<div
+										key={`${commandeSelectionnee.id}-${index}`}
+										className="admin-popin__ligne"
+									>
+										<span>
+											{ligne.quantite}x <strong>{ligne.produit_nom}</strong>
+										</span>
+										<span>{ligne.prix_unitaire}€ / u</span>
+									</div>
+								))}
+							</div>
+							<div className="admin-popin__total">
+								<span>Total</span>
+								<strong>{commandeSelectionnee.montant_total}€</strong>
+							</div>
+							<div
+								style={{
+									display: "flex",
+									justifyContent: "center",
+									marginTop: "24px",
+								}}
+							>
+								<button
+									type="button"
+									className="admin-pill-btn"
+									style={{
+										borderColor: "#d4a090",
+										color: "#a0522d",
+										background: "#f5e6e2",
+									}}
+									onClick={() =>
+										handleSupprimerCommande(commandeSelectionnee.id)
+									}
+								>
+									Supprimer la commande
+								</button>
+							</div>
+						</div>
+					</button>
+				)}
 			</main>
 		);
 	}
