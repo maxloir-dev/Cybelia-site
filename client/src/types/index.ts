@@ -6,9 +6,13 @@ export interface Produit {
 	nom: string;
 	description: string;
 	prix: number;
-	image_url: string;
+	image_url?: string;
 	created_at: string;
-	categorie: string;
+	categorie_id: number;
+	categorie?: string;
+	actif: number;
+	disponible: number;
+	mockup_url?: string | null;
 }
 
 // Categorie

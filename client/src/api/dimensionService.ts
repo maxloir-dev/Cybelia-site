@@ -3,13 +3,17 @@ import api from "./axios";
 
 // Référentiel complet des formats disponibles
 export const getAllDimensions = async (): Promise<Dimension[]> => {
-	const response = await api.get("/dimensions");
+	const response = await api.get(`/dimensions?_t=${Date.now()}`);
 	return response.data;
 };
 
-// Dimensions (avec prix) disponibles pour un produit donné
-export const getDimensionsByProduit = async (produitId: number): Promise<Dimension[]> => {
-	const response = await api.get(`/produits/${produitId}/dimensions`);
+// Dimensions (avec prix) disponibles pour un produit donné (Anti-cache ajouté ici !)
+export const getDimensionsByProduit = async (
+	produitId: number,
+): Promise<Dimension[]> => {
+	const response = await api.get(
+		`/produits/${produitId}/dimensions?_t=${Date.now()}`,
+	);
 	return response.data;
 };
 
@@ -19,7 +23,10 @@ export const upsertDimensionProduit = async (
 	dimension_id: number,
 	prix: number,
 ): Promise<{ message: string }> => {
-	const response = await api.post(`/produits/${produitId}/dimensions`, { dimension_id, prix });
+	const response = await api.post(`/produits/${produitId}/dimensions`, {
+		dimension_id,
+		prix,
+	});
 	return response.data;
 };
 
@@ -28,6 +35,8 @@ export const deleteDimensionProduit = async (
 	produitId: number,
 	dimensionId: number,
 ): Promise<{ message: string }> => {
-	const response = await api.delete(`/produits/${produitId}/dimensions/${dimensionId}`);
+	const response = await api.delete(
+		`/produits/${produitId}/dimensions/${dimensionId}`,
+	);
 	return response.data;
 };

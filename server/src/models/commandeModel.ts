@@ -1,7 +1,12 @@
 import pool from "../config/database";
 import { grouperLignesParCommande } from "../utils/grouperCommandes";
 
-const CHAMPS_LIGNE = ["quantite", "prix_unitaire", "produit_nom", "dimension_label"];
+const CHAMPS_LIGNE = [
+	"quantite",
+	"prix_unitaire",
+	"produit_nom",
+	"dimension_label",
+];
 
 // Crée une nouvelle commande et retourne son id
 export const createCommande = async (
@@ -98,4 +103,11 @@ export const getCommandesByUserId = async (utilisateur_id: number) => {
 		[utilisateur_id],
 	);
 	return grouperLignesParCommande(rows, CHAMPS_LIGNE);
+};
+
+// Supprime une commande et ses lignes associées
+export const deleteCommandeById = async (id: number): Promise<void> => {
+	await pool.query("DELETE FROM lignes_commande WHERE commande_id = ?", [id]);
+
+	await pool.query("DELETE FROM commandes WHERE id = ?", [id]);
 };

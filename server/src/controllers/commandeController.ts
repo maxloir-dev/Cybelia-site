@@ -6,6 +6,7 @@ import {
 	getAllCommandes,
 	getCommandeById,
 	getCommandesByUserId,
+	deleteCommandeById,
 } from "../models/commandeModel";
 import {
 	getAllDimensions,
@@ -132,5 +133,26 @@ export const getMesCommandes = async (req: AuthRequest, res: Response) => {
 		res
 			.status(500)
 			.json({ message: "Erreur lors de la récupération de vos commandes" });
+	}
+};
+
+// Supprime définitivement une commande (gérante uniquement)
+export const deleteCommande = async (req: AuthRequest, res: Response) => {
+	try {
+		const commandeId = Number(req.params.id);
+
+		if (isNaN(commandeId)) {
+			res.status(400).json({ message: "ID de commande invalide" });
+			return;
+		}
+
+		// Appelle le modèle SQL qu'on vient de créer
+		await deleteCommandeById(commandeId);
+
+		res.status(200).json({ message: "Commande supprimée avec succès" });
+	} catch (error) {
+		res
+			.status(500)
+			.json({ message: "Erreur lors de la suppression de la commande" });
 	}
 };

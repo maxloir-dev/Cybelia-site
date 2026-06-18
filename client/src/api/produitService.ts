@@ -3,23 +3,23 @@ import api from "./axios";
 
 // Appels API liés aux produits
 
-// Récupère tous les produits
+// Récupère tous les produits (avec contournement du cache)
 export const getProduits = async (): Promise<Produit[]> => {
-	const response = await api.get("/produits");
+	const response = await api.get(`/produits?_t=${Date.now()}`);
 	return response.data;
 };
 
-// Récupère un produit par son id
+// Récupère un produit par son id (avec contournement du cache)
 export const getProduitById = async (id: number): Promise<Produit> => {
-	const response = await api.get(`/produits/${id}`);
+	const response = await api.get(`/produits/${id}?_t=${Date.now()}`);
 	return response.data;
 };
 
-// Récupère les produits par catégorie
+// Récupère les produits par catégorie (avec contournement du cache)
 export const getProduitsByCategorie = async (
 	id: number,
 ): Promise<Produit[]> => {
-	const response = await api.get(`/produits/categorie/${id}`);
+	const response = await api.get(`/produits/categorie/${id}?_t=${Date.now()}`);
 	return response.data;
 };
 
@@ -34,7 +34,7 @@ export const addProduit = async (
 // Modifie un produit (gérante)
 export const updateProduit = async (
 	id: number,
-	produit: FormData,
+	produit: FormData | Record<string, any>,
 ): Promise<{ message: string }> => {
 	const response = await api.put(`/produits/${id}`, produit);
 	return response.data;
@@ -47,4 +47,3 @@ export const deleteProduit = async (
 	const response = await api.delete(`/produits/${id}`);
 	return response.data;
 };
-

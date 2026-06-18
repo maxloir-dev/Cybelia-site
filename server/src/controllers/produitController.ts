@@ -76,6 +76,7 @@ export const addProduit = async (req: Request, res: Response) => {
 // Modifie un produit existant par son id
 export const editProduit = async (req: Request, res: Response) => {
 	try {
+		console.log("BODY RECU:", req.body);
 		const { nom, description, prix, image_url, mockup_url, categorie_id } =
 			req.body;
 		await updateProduit(

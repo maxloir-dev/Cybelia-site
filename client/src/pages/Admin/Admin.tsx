@@ -1,9 +1,10 @@
 import { useState, useEffect } from "react";
 import ActionButton from "../../components/ActionButton/ActionButton";
 import { useLocation } from "react-router-dom";
-import { getAllCommandes } from "../../api/commandeService";
+import { getAllCommandes, deleteCommande } from "../../api/commandeService";
 import {
 	getProduitsByCategorie,
+	getProduitById,
 	deleteProduit,
 	updateProduit,
 	addProduit,
@@ -24,7 +25,6 @@ import { uploadImage } from "../../api/uploadService";
 import { GooeyInput } from "../../components/Ui/GooeyInput";
 
 // Types des vues possibles
-
 type Vue =
 	| "accueil"
 	| "commandes"
@@ -35,7 +35,6 @@ type Vue =
 	| "ajouter-produit";
 
 // Page Admin
-
 function Admin() {
 	useEffect(() => {
 		getAllDimensions()
@@ -84,9 +83,13 @@ function Admin() {
 	>({});
 	const [commandeSelectionnee, setCommandeSelectionnee] =
 		useState<Commande | null>(null);
+	const [fichierMockupEdit, setFichierMockupEdit] = useState<File | null>(null);
+	const [previewMockupEdit, setPreviewMockupEdit] = useState<string>("");
+	const [commandeEnSuppression, setCommandeEnSuppression] = useState<
+		number | null
+	>(null);
 
 	// Navigation vers les vues
-
 	const allerCommandes = async () => {
 		setChargement(true);
 		const data = await getAllCommandes();
@@ -105,6 +108,8 @@ function Admin() {
 
 	const allerDetailClient = async (client: Utilisateur) => {
 		setChargement(true);
+		setCommandeEnSuppression(null);
+		setCommandeSelectionnee(null);
 		setClientSelectionne(client);
 		const data = await getHistoriqueClient(client.id);
 		setHistoriqueClient(data);
@@ -146,6 +151,31 @@ function Admin() {
 		allerProduits(categorieFiltre);
 	};
 
+	const handleSupprimerCommande = async (commandeId: number) => {
+		if (
+			!window.confirm(
+				`Êtes-vous sûr de vouloir supprimer la commande #${commandeId} ?`,
+			)
+		) {
+			return;
+		}
+		try {
+			setCommandeSelectionnee(null);
+			setCommandeEnSuppression(commandeId); // Active l'animation
+
+			await deleteCommande(commandeId); // Supprime sur le serveur
+
+			// On attend la fin des 800ms de l'animation CSS
+			setTimeout(() => {
+				setHistoriqueClient((prev) => prev.filter((c) => c.id !== commandeId));
+				setCommandeEnSuppression(null); // <--- TRÈS IMPORTANT : Désactive l'animation
+			}, 800);
+		} catch {
+			alert("Erreur lors de la suppression de la commande sur le serveur");
+			setCommandeEnSuppression(null); // Sécurité en cas d'erreur
+		}
+	};
+
 	const ajouterProduit = async () => {
 		try {
 			let image_url = "";
@@ -159,7 +189,6 @@ function Admin() {
 				mockup_url = urls.mockup_url;
 			}
 
-			// Détermine la dimension de base selon la catégorie
 			const dimensionBaseId = nouveauProduit.categorie_id === 1 ? 1 : 3;
 			const prixFinal = Number(dimensionsPrixAjout[dimensionBaseId] ?? 0);
 
@@ -172,7 +201,6 @@ function Admin() {
 			formData.append("categorie_id", String(nouveauProduit.categorie_id));
 			const result = await addProduit(formData);
 
-			// Sauvegarde toutes les dimensions renseignées
 			const dimensionsARenseigner = Object.entries(dimensionsPrixAjout).filter(
 				([, prix]) =>
 					prix.trim() !== "" && !isNaN(Number(prix)) && Number(prix) >= 0,
@@ -201,8 +229,6 @@ function Admin() {
 		}
 	};
 
-	// Rendu des vues
-
 	if (chargement) return <div className="admin-chargement">Chargement...</div>;
 
 	// Vue Accueil
@@ -214,7 +240,6 @@ function Admin() {
 					<p className="subtitle">Espace de gestion Cybelia</p>
 				</div>
 				<div className="admin-cards">
-					{/* Commandes */}
 					<button type="button" className="admin-card" onClick={allerCommandes}>
 						<svg
 							width="64"
@@ -235,7 +260,6 @@ function Admin() {
 						<p>Voir toutes les commandes</p>
 					</button>
 
-					{/* Clients */}
 					<button type="button" className="admin-card" onClick={allerClients}>
 						<svg
 							aria-hidden="true"
@@ -255,7 +279,6 @@ function Admin() {
 						<p>Gérer les clients</p>
 					</button>
 
-					{/* Produits */}
 					<button
 						type="button"
 						className="admin-card"
@@ -282,7 +305,6 @@ function Admin() {
 						<p>Gérer les produits</p>
 					</button>
 
-					{/* Ajouter */}
 					<button
 						type="button"
 						className="admin-card"
@@ -440,15 +462,12 @@ function Admin() {
 								<span className="admin-item__titre">
 									{client.nom} {client.prenom}
 								</span>
-
 								<span className="admin-item__detail">{client.email}</span>
-
 								<span className="admin-item__detail">
 									Inscrit le{" "}
 									{new Date(client.created_at).toLocaleDateString("fr-FR")}
 								</span>
 							</div>
-
 							<span className="admin-item__fleche">→</span>
 						</button>
 					))}
@@ -505,32 +524,33 @@ function Admin() {
 						<p>Aucune commande pour ce client.</p>
 					)}
 
-					{/* Grille de Post-it */}
 					<div className="admin-postit-grille">
-						{historiqueClient.map((commande) => (
-							<button
-								type="button"
-								key={commande.id}
-								className="admin-postit"
-								onClick={() => setCommandeSelectionnee(commande)}
-								aria-label={`Ouvrir la commande numéro ${commande.id}`}
-							>
-								<span className="admin-postit__punaise"></span>
-								<div className="admin-postit__titre">
-									Commande #{commande.id}
-								</div>
-								<div className="admin-postit__date">
-									{new Date(commande.created_at).toLocaleDateString("fr-FR")}
-								</div>
-								<div className="admin-postit__prix">
-									{commande.montant_total}€
-								</div>
-								<div className="admin-postit__cliquez">Cliquez pour voir</div>
-							</button>
-						))}
+						{historiqueClient.map((commande) => {
+							const estEnSuppression = commandeEnSuppression === commande.id;
+							return (
+								<button
+									type="button"
+									key={commande.id}
+									className={`admin-postit ${estEnSuppression ? "admin-postit--suppression" : ""}`}
+									onClick={() => setCommandeSelectionnee(commande)}
+									aria-label={`Ouvrir la commande numéro ${commande.id}`}
+								>
+									<span className="admin-postit__punaise"></span>
+									<div className="admin-postit__titre">
+										Commande #{commande.id}
+									</div>
+									<div className="admin-postit__date">
+										{new Date(commande.created_at).toLocaleDateString("fr-FR")}
+									</div>
+									<div className="admin-postit__prix">
+										{commande.montant_total}€
+									</div>
+									<div className="admin-postit__cliquez">Cliquez pour voir</div>
+								</button>
+							);
+						})}
 					</div>
 
-					{/* POP-IN (MODALE) : S'affiche uniquement si une commande est sélectionnée */}
 					{commandeSelectionnee && (
 						<button
 							type="button"
@@ -542,7 +562,7 @@ function Admin() {
 								className="admin-popin"
 								role="document"
 								onClick={(e) => e.stopPropagation()}
-								onKeyDown={(e) => e.stopPropagation()} // Évite de fermer la pop-in si on clique/tape dedans
+								onKeyDown={(e) => e.stopPropagation()}
 							>
 								<button
 									type="button"
@@ -582,6 +602,29 @@ function Admin() {
 								<div className="admin-popin__total">
 									<span>Montant Total :</span>
 									<strong>{commandeSelectionnee.montant_total}€</strong>
+								</div>
+
+								<div
+									style={{
+										display: "flex",
+										justifyContent: "center",
+										marginTop: "24px",
+									}}
+								>
+									<button
+										type="button"
+										className="admin-pill-btn"
+										style={{
+											borderColor: "#d4a090",
+											color: "#a0522d",
+											background: "#f5e6e2",
+										}}
+										onClick={() =>
+											handleSupprimerCommande(commandeSelectionnee.id)
+										}
+									>
+										Supprimer la commande
+									</button>
 								</div>
 							</div>
 						</button>
@@ -680,7 +723,6 @@ function Admin() {
 	}
 
 	// Vue Détail Produit
-
 	if (vue === "produit-detail" && produitSelectionne && produitEdite) {
 		return (
 			<main className="admin-main">
@@ -706,15 +748,25 @@ function Admin() {
 					</svg>
 				</button>
 				<div className="admin-produit-detail">
-					{produitSelectionne.image_url && (
-						<img
-							src={produitSelectionne.image_url}
-							alt={produitSelectionne.nom}
-							className="admin-produit-detail__image"
-						/>
-					)}
+					{/* BLOC DES IMAGES EMPILÉES */}
+					<div className="admin-produit-detail__images-wrapper">
+						{produitSelectionne.image_url && (
+							<img
+								src={produitSelectionne.image_url}
+								alt={produitSelectionne.nom}
+								className="admin-produit-detail__image"
+							/>
+						)}
+						{produitSelectionne.mockup_url && (
+							<img
+								src={produitSelectionne.mockup_url}
+								alt={`${produitSelectionne.nom} - Mockup`}
+								className="admin-produit-detail__image"
+							/>
+						)}
+					</div>
+
 					<div className="admin-produit-detail__info">
-						{/* Nom */}
 						{modeEdition ? (
 							<input
 								className="admin-edit-input admin-edit-titre"
@@ -727,7 +779,6 @@ function Admin() {
 							<h1>{produitSelectionne.nom}</h1>
 						)}
 
-						{/* Catégorie */}
 						{modeEdition ? (
 							<select
 								className="admin-edit-input"
@@ -746,7 +797,6 @@ function Admin() {
 							<p className="subtitle">{produitSelectionne.categorie}</p>
 						)}
 
-						{/* Description */}
 						{modeEdition ? (
 							<textarea
 								className="admin-edit-input admin-edit-textarea"
@@ -764,7 +814,6 @@ function Admin() {
 							</p>
 						)}
 
-						{/* Prix */}
 						{modeEdition ? (
 							<div className="admin-edit-prix-wrapper">
 								<input
@@ -794,67 +843,184 @@ function Admin() {
 							)}
 						</p>
 
-						{/* Image */}
-						<div className="admin-form__field">
-							<label
-								htmlFor="edit-image-produit"
-								style={{
-									fontSize: "0.85rem",
-									letterSpacing: "1px",
-									textTransform: "uppercase",
-									color: "var(--color-secondary)",
-								}}
-							>
-								Changer l'image
-							</label>
-							<input
-								type="file"
-								accept="image/jpeg, image/png, image/webp"
-								className="admin-edit-input"
-								onChange={(e) => {
-									const file = e.target.files?.[0];
-									if (file) {
-										setFichierImageEdit(file);
-										setPreviewImageEdit(URL.createObjectURL(file));
-									}
-								}}
-							/>
-							{previewImageEdit && (
-								<img
-									src={previewImageEdit}
-									alt="Prévisualisation"
-									className="admin-form__preview"
-								/>
-							)}
-						</div>
+						{/* ZONE DE GESTION DES IMAGES */}
+						{modeEdition ? (
+							<div className="admin-form__images-row">
+								{(() => {
+									console.log("produitSelectionne:", produitSelectionne);
+									return null;
+								})()}
+								{/* BLOC 1 : IMAGE PRINCIPALE */}
+								<div className="admin-form__field">
+									<span
+										style={{
+											fontSize: "0.85rem",
+											letterSpacing: "1px",
+											textTransform: "uppercase",
+											color: "var(--color-secondary)",
+											display: "block",
+										}}
+									>
+										Image Principale
+									</span>
+									<input
+										type="file"
+										accept="image/jpeg, image/png, image/webp"
+										className="admin-edit-input"
+										onChange={(e) => {
+											const file = e.target.files?.[0];
+											if (file) {
+												setFichierImageEdit(file);
+												setPreviewImageEdit(URL.createObjectURL(file));
+											}
+										}}
+									/>
+									{(previewImageEdit || produitSelectionne.image_url) && (
+										<img
+											src={previewImageEdit || produitSelectionne.image_url}
+											alt="Prévisualisation principale"
+											className="admin-form__preview"
+										/>
+									)}
+								</div>
 
-						{/* Boutons */}
+								{/* BLOC 2 : MOCKUP */}
+								<div className="admin-form__field">
+									<span
+										style={{
+											fontSize: "0.85rem",
+											letterSpacing: "1px",
+											textTransform: "uppercase",
+											color: "var(--color-secondary)",
+											display: "block",
+										}}
+									>
+										Seconde Image (Mockup)
+									</span>
+									<input
+										type="file"
+										accept="image/jpeg, image/png, image/webp"
+										className="admin-edit-input"
+										onChange={(e) => {
+											const file = e.target.files?.[0];
+											if (file) {
+												setFichierMockupEdit(file);
+												setPreviewMockupEdit(URL.createObjectURL(file));
+											}
+										}}
+									/>
+									{(previewMockupEdit || produitSelectionne.mockup_url) && (
+										<img
+											src={
+												previewMockupEdit || produitSelectionne.mockup_url || ""
+											}
+											alt="Prévisualisation mockup"
+											className="admin-form__preview"
+										/>
+									)}
+								</div>
+							</div>
+						) : (
+							<div className="admin-form__field">
+								<span
+									style={{
+										fontSize: "0.85rem",
+										letterSpacing: "1px",
+										textTransform: "uppercase",
+										color: "var(--color-secondary)",
+										display: "block",
+									}}
+								>
+									Images enregistrées
+								</span>
+								<div className="admin-form__images-previews">
+									{produitSelectionne.image_url && (
+										<img
+											src={produitSelectionne.image_url}
+											alt="Principal"
+											className="admin-form__preview-mini"
+										/>
+									)}
+									{produitSelectionne.mockup_url && (
+										<img
+											src={produitSelectionne.mockup_url}
+											alt="Mockup"
+											className="admin-form__preview-mini"
+										/>
+									)}
+								</div>
+							</div>
+						)}
 						{modeEdition ? (
 							<div className="admin-item__actions">
 								<button
 									type="button"
 									className="admin-pill-btn admin-pill-btn--actif"
 									onClick={async () => {
-										let image_url = produitEdite.image_url;
+										try {
+											let imagePrincipaleFinale = produitSelectionne.image_url;
+											let mockupFinal = produitSelectionne.mockup_url;
 
-										if (fichierImageEdit) {
-											const urls = await uploadImage(fichierImageEdit);
-											image_url = urls.image_url;
+											console.log(
+												"DEBUT - fichierMockupEdit:",
+												fichierMockupEdit,
+											);
+
+											if (fichierImageEdit) {
+												const reponse1 = await uploadImage(fichierImageEdit);
+												console.log("reponse1:", reponse1);
+												if (reponse1?.image_url)
+													imagePrincipaleFinale = reponse1.image_url;
+											}
+
+											if (fichierMockupEdit) {
+												const reponse2 = await uploadImage(fichierMockupEdit);
+												console.log("reponse2:", reponse2);
+												if (reponse2?.image_url)
+													mockupFinal = reponse2.image_url;
+											}
+
+											console.log("AVANT SAVE - mockupFinal:", mockupFinal);
+											console.log(
+												"AVANT SAVE - imagePrincipaleFinale:",
+												imagePrincipaleFinale,
+											);
+											console.log("mockupFinal avant save:", mockupFinal);
+											console.log(
+												"imagePrincipaleFinale avant save:",
+												imagePrincipaleFinale,
+											);
+
+											await updateProduit(produitSelectionne.id, {
+												nom: produitEdite.nom,
+												description: produitEdite.description,
+												prix: produitEdite.prix,
+												image_url: imagePrincipaleFinale,
+												mockup_url: mockupFinal || null,
+												categorie_id:
+													produitEdite.categorie === "Carte postale" ? 1 : 2,
+											} as any);
+
+											// Recharge le produit frais depuis la base
+											const produitFrais = await getProduitById(
+												produitSelectionne.id,
+											);
+											setProduitSelectionne(produitFrais);
+											setProduitEdite(produitFrais);
+
+											// 7. On nettoie tout
+											setFichierImageEdit(null);
+											setFichierMockupEdit(null);
+											setPreviewImageEdit("");
+											setPreviewMockupEdit("");
+											setModeEdition(false);
+											if (categorieFiltre) {
+												await allerProduits(categorieFiltre);
+											}
+										} catch (error) {
+											console.error(error);
+											alert("Erreur lors de l'enregistrement.");
 										}
-
-										const categorie_id =
-											produitEdite.categorie === "Carte postale" ? 1 : 2;
-										const formData = new FormData();
-										formData.append("nom", produitEdite.nom);
-										formData.append("description", produitEdite.description);
-										formData.append("prix", String(produitEdite.prix));
-										formData.append("image_url", image_url);
-										formData.append("categorie_id", String(categorie_id));
-										await updateProduit(produitSelectionne.id, formData);
-										setProduitSelectionne({ ...produitEdite, image_url });
-										setFichierImageEdit(null);
-										setPreviewImageEdit("");
-										setModeEdition(false);
 									}}
 								>
 									Enregistrer
@@ -864,6 +1030,10 @@ function Admin() {
 									className="admin-pill-btn"
 									onClick={() => {
 										setProduitEdite({ ...produitSelectionne });
+										setFichierImageEdit(null);
+										setFichierMockupEdit(null);
+										setPreviewImageEdit("");
+										setPreviewMockupEdit("");
 										setModeEdition(false);
 									}}
 								>
@@ -894,7 +1064,6 @@ function Admin() {
 					</div>
 				</div>
 
-				{/* Section dimensions */}
 				<div className="admin-dimensions">
 					<h2>Dimensions & prix</h2>
 					<div className="admin-dimensions-liste">
@@ -996,7 +1165,6 @@ function Admin() {
 			</main>
 		);
 	}
-
 	// Vue Ajouter un produit
 	if (vue === "ajouter-produit") {
 		return (
@@ -1026,7 +1194,6 @@ function Admin() {
 				<div className="admin-form">
 					<div className="admin-form__field">
 						<label htmlFor="nom-produit">Nom du produit</label>
-
 						<input
 							id="nom-produit"
 							type="text"
@@ -1075,10 +1242,9 @@ function Admin() {
 
 					{tousLesDimensions.length > 0 && (
 						<div className="admin-form__field">
-							<p className="admin-form__section-title">
+							<label>
 								Formats et prix — renseigner au moins le format principal
-							</p>
-
+							</label>
 							{tousLesDimensions.map((d) => {
 								const estBase =
 									(nouveauProduit.categorie_id === 1 && d.id === 1) ||
@@ -1131,6 +1297,7 @@ function Admin() {
 							/>
 						)}
 					</div>
+
 					<div className="admin-form__field">
 						<label htmlFor="mockup-produit">Image mockup (optionnel)</label>
 						<input
@@ -1175,7 +1342,9 @@ function Admin() {
 			</main>
 		);
 	}
+
 	return null;
+	// Reste du routage ou des cas par défaut si nécessaire
 }
 
 export default Admin;

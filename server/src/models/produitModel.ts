@@ -78,8 +78,14 @@ export const deleteProduit = async (id: number) => {
 };
 
 // Bascule la disponibilité d'un produit (rupture / disponible)
-export const toggleDisponibleProduit = async (id: number, disponible: boolean) => {
-	await pool.query("UPDATE produits SET disponible = ? WHERE id = ?", [disponible, id]);
+export const toggleDisponibleProduit = async (
+	id: number,
+	disponible: boolean,
+) => {
+	await pool.query("UPDATE produits SET disponible = ? WHERE id = ?", [
+		disponible,
+		id,
+	]);
 };
 
 // Retourne les ids de commandes qui contiennent ce produit
@@ -95,7 +101,7 @@ export const getCommandesForProduit = async (id: number) => {
 export const getProduitsByCategorie = async (categorie_id: number) => {
 	const [rows] = await pool.query(
 		`
-        SELECT p.id, p.nom, p.description, p.prix, p.image_url, p.created_at,
+        SELECT p.id, p.nom, p.description, p.prix, p.image_url, p.mockup_url, p.created_at,
                c.nom AS categorie
         FROM produits p
         JOIN categories c ON p.categorie_id = c.id
