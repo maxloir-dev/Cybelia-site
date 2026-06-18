@@ -12,6 +12,7 @@ import {
 import {
 	getAllUtilisateurs,
 	getHistoriqueClient,
+	deleteUtilisateur,
 } from "../../api/utilisateurService";
 import {
 	getAllDimensions,
@@ -115,6 +116,23 @@ function Admin() {
 		setHistoriqueClient(data);
 		setVue("client-detail");
 		setChargement(false);
+	};
+
+	const supprimerClient = async (id: number) => {
+		if (
+			!confirm(
+				"Êtes-vous sûr de vouloir supprimer ce client et toutes ses commandes ?",
+			)
+		)
+			return;
+		try {
+			await deleteUtilisateur(id);
+			setVue("clients");
+			const data = await getAllUtilisateurs();
+			setClients(data);
+		} catch {
+			alert("Erreur lors de la suppression du client");
+		}
 	};
 
 	const allerProduits = async (categorie: number = 1) => {
@@ -583,6 +601,26 @@ function Admin() {
 							)}
 						</p>
 					</div>
+				</div>
+				<div
+					style={{
+						display: "flex",
+						justifyContent: "flex-end",
+						marginTop: "16px",
+					}}
+				>
+					<button
+						type="button"
+						className="admin-pill-btn"
+						style={{
+							borderColor: "#d4a090",
+							color: "#a0522d",
+							background: "#f5e6e2",
+						}}
+						onClick={() => supprimerClient(clientSelectionne.id)}
+					>
+						Supprimer le client
+					</button>
 				</div>
 				<div className="admin-historique">
 					<h2>Historique des commandes</h2>
