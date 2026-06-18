@@ -37,7 +37,7 @@
 	outline: none;
 	background-color: #9e7b65;
 	color: white;
-	box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+	box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
 	transition: opacity 0.2s;
 }
 
@@ -95,5 +95,9 @@
 	border-radius: 999px;
 	background-color: #9e7b65;
 	color: white;
-	box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+	box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+}
+.admin-top .gooey-wrapper {
+	justify-content: flex-start;
+	margin-left: 20px; /* Petit espace avec le titre H1 */
 }

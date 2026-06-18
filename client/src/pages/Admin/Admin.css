@@ -329,6 +329,36 @@
 	background: #ead5ce;
 }
 
+.admin-filtres-clean {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	gap: 16px;
+	width: 100%;
+	margin: 20px 0 35px 0;
+}
+
+.admin-filtres-clean .custom-button:not(.custom-button--inverse) {
+	background-color: var(--color-background) !important;
+	color: #ffffff !important;
+	border: 2px solid var(--color-background) !important;
+}
+
+.admin-filtres-clean .custom-button--inverse {
+	background-color: #ffffff !important;
+	color: var(--color-background) !important;
+	border: 2px solid var(--color-background) !important;
+}
+
+.admin-filtres-clean .custom-button--inverse:hover {
+	color: #ffffff !important;
+	border-color: var(--color-background) !important;
+}
+
+.admin-filtres-clean .custom-button--inverse::before {
+	background-color: var(--color-background) !important;
+}
+
 /* ==========================================================================
    PROFIL ET HISTORIQUE CLIENT
    ========================================================================== */
@@ -422,7 +452,12 @@
 	font-size: 0.85rem;
 	color: var(--color-secondary);
 }
-
+.admin-produit-detail__image--mockup {
+	width: 50%;
+	aspect-ratio: 3 / 4;
+	object-fit: cover;
+	border-radius: 14px;
+}
 /* ==========================================================================
    SECTION DIMENSIONS ET FORMULAIRES
    ========================================================================== */
@@ -667,7 +702,6 @@
 	transform: rotate(1deg);
 }
 
-/* Petite punaise ou scotch virtuel en haut */
 .admin-postit__punaise {
 	position: absolute;
 	top: -6px;
@@ -858,49 +892,41 @@
 
 /* --- ANIMATION DE SUPPRESSION DU POST-IT --- */
 
-/* Conteneur parent lors de l'animation pour éviter les coupures visuelles */
 .admin-postit--suppression {
 	position: relative;
-	pointer-events: none; /* Empêche les clics pendant la chute */
+	pointer-events: none;
 	animation: chutePostIt 0.8s cubic-bezier(0.55, 0.055, 0.675, 0.19) forwards;
 	transform-origin: top center;
 }
 
-/* La punaise se détache et saute vers le haut */
 .admin-postit--suppression .admin-postit__punaise {
 	animation: ejectionPunaise 0.4s ease-out forwards;
 }
 
-/* Keyframes pour le Post-it qui tombe */
 @keyframes chutePostIt {
 	0% {
 		transform: rotate(var(--postit-rotation, -2deg)) translateY(0);
 		opacity: 1;
 	}
 	15% {
-		/* Petite secousse initiale lorsque la punaise s'en va */
 		transform: rotate(5deg) translateY(5px);
 	}
 	100% {
-		/* Chute vers le bas de l'écran avec inclinaison */
 		transform: rotate(25deg) translateY(800px);
 		opacity: 0;
 	}
 }
 
-/* Keyframes pour la punaise qui saute */
 @keyframes ejectionPunaise {
 	0% {
 		transform: translate(0, 0) scale(1);
 		opacity: 1;
 	}
 	30% {
-		/* Rebond vers le haut et zoom léger */
 		transform: translate(-10px, -40px) scale(1.2);
 		opacity: 1;
 	}
 	100% {
-		/* Chute derrière le décor */
 		transform: translate(-20px, 100px) scale(0.8);
 		opacity: 0;
 	}

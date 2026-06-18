@@ -89,6 +89,8 @@ function Admin() {
 	const [commandeEnSuppression, setCommandeEnSuppression] = useState<
 		number | null
 	>(null);
+	// Déclaration de l'état pour la recherche de produits
+	const [rechercheProduits, setRechercheProduits] = useState<string>("");
 
 	// Navigation vers les vues
 	const allerCommandes = async () => {
@@ -758,64 +760,82 @@ function Admin() {
 						<polyline points="10 18 2 10 10 2" />
 					</svg>
 				</button>
-				<h1>Produits</h1>
-
-				<div className="admin-filtres">
-					<button
-						type="button"
-						className={`admin-filtre ${
-							categorieFiltre === 1 ? "admin-filtre--actif" : ""
-						}`}
+				<div className="admin-filtres-clean">
+					<ActionButton
+						inverse={categorieFiltre !== 1}
 						onClick={() => allerProduits(1)}
 					>
 						Cartes postales
-					</button>
+					</ActionButton>
 
-					<button
-						type="button"
-						className={`admin-filtre ${
-							categorieFiltre === 2 ? "admin-filtre--actif" : ""
-						}`}
-						onClick={() => allerProduits(2)}
+					<ActionButton
+						inverse={categorieFiltre !== 2}
+						onClick={() => allerProduits(1)}
 					>
 						Affiches
-					</button>
+					</ActionButton>
+				</div>
+
+				<div className="admin-top">
+					<h1>Produits</h1>
+					<GooeyInput
+						placeholder="Rechercher un produit..."
+						value={rechercheProduits}
+						onValueChange={setRechercheProduits}
+						collapsedWidth={40}
+						expandedWidth={280}
+						expandedOffset={48}
+					/>
 				</div>
 
 				<div className="admin-liste">
 					{produits.length === 0 && <p>Aucun produit dans cette catégorie.</p>}
-					{produits.map((produit, index) => (
-						<div
-							key={produit.id}
-							className="admin-item"
-							style={{ animationDelay: `${index * 0.06}s` }}
-						>
-							<button
-								type="button"
-								className="admin-item__info admin-item--cliquable"
-								onClick={() => allerDetailProduit(produit)}
+
+					{/* 2. On filtre la liste des produits avant de faire le .map() */}
+					{produits
+						.filter((produit) => {
+							const q = rechercheProduits.toLowerCase();
+							if (!q) return true;
+							return (
+								(produit.nom || "").toLowerCase().includes(q) ||
+								(produit.categorie || "").toLowerCase().includes(q) ||
+								String(produit.prix).includes(q)
+							);
+						})
+						.map((produit, index) => (
+							<div
+								key={produit.id}
+								className="admin-item"
+								style={{ animationDelay: `${index * 0.06}s` }}
 							>
-								<span className="admin-item__titre">{produit.nom}</span>
-								<span className="admin-item__detail">{produit.categorie}</span>
-								<span className="admin-item__prix">{produit.prix}€</span>
-							</button>
-							<div className="admin-item__actions">
-								<ActionButton
-									className="admin-action-btn"
-									onClick={() => allerDetailProduit(produit, true)}
+								<button
+									type="button"
+									className="admin-item__info admin-item--cliquable"
+									onClick={() => allerDetailProduit(produit)}
 								>
-									Modifier
-								</ActionButton>
-								<ActionButton
-									className="admin-action-btn"
-									inverse={true}
-									onClick={() => supprimerProduit(produit.id)}
-								>
-									Supprimer
-								</ActionButton>
+									<span className="admin-item__titre">{produit.nom}</span>
+									<span className="admin-item__detail">
+										{produit.categorie}
+									</span>
+									<span className="admin-item__prix">{produit.prix}€</span>
+								</button>
+								<div className="admin-item__actions">
+									<ActionButton
+										className="admin-action-btn"
+										onClick={() => allerDetailProduit(produit, true)}
+									>
+										Modifier
+									</ActionButton>
+									<ActionButton
+										className="admin-action-btn"
+										inverse={true}
+										onClick={() => supprimerProduit(produit.id)}
+									>
+										Supprimer
+									</ActionButton>
+								</div>
 							</div>
-						</div>
-					))}
+						))}
 				</div>
 			</main>
 		);
@@ -860,7 +880,7 @@ function Admin() {
 							<img
 								src={produitSelectionne.mockup_url}
 								alt={`${produitSelectionne.nom} - Mockup`}
-								className="admin-produit-detail__image"
+								className="admin-produit-detail__image--mockup"
 							/>
 						)}
 					</div>
@@ -877,7 +897,6 @@ function Admin() {
 						) : (
 							<h1>{produitSelectionne.nom}</h1>
 						)}
-
 						{modeEdition ? (
 							<select
 								className="admin-edit-input"
@@ -895,7 +914,6 @@ function Admin() {
 						) : (
 							<p className="subtitle">{produitSelectionne.categorie}</p>
 						)}
-
 						{modeEdition ? (
 							<textarea
 								className="admin-edit-input admin-edit-textarea"
@@ -912,7 +930,6 @@ function Admin() {
 								{produitSelectionne.description}
 							</p>
 						)}
-
 						{modeEdition ? (
 							<div className="admin-edit-prix-wrapper">
 								<input
@@ -934,14 +951,12 @@ function Admin() {
 								{produitSelectionne.prix}€
 							</p>
 						)}
-
 						<p className="admin-produit-detail__date">
 							Ajouté le{" "}
 							{new Date(produitSelectionne.created_at).toLocaleDateString(
 								"fr-FR",
 							)}
 						</p>
-
 						{/* ZONE DE GESTION DES IMAGES */}
 						{modeEdition ? (
 							<div className="admin-form__images-row">
@@ -1019,37 +1034,38 @@ function Admin() {
 									)}
 								</div>
 							</div>
-						) : (
-							<div className="admin-form__field">
-								<span
-									style={{
-										fontSize: "0.85rem",
-										letterSpacing: "1px",
-										textTransform: "uppercase",
-										color: "var(--color-secondary)",
-										display: "block",
-									}}
-								>
-									Images enregistrées
-								</span>
-								<div className="admin-form__images-previews">
-									{produitSelectionne.image_url && (
-										<img
-											src={produitSelectionne.image_url}
-											alt="Principal"
-											className="admin-form__preview-mini"
-										/>
-									)}
-									{produitSelectionne.mockup_url && (
-										<img
-											src={produitSelectionne.mockup_url}
-											alt="Mockup"
-											className="admin-form__preview-mini"
-										/>
-									)}
-								</div>
-							</div>
-						)}
+						) : null}{" "}
+						{/*
+						// 	<div className="admin-form__field">
+						// 		<span
+						// 			style={{
+						// 				fontSize: "0.85rem",
+						// 				letterSpacing: "1px",
+						// 				textTransform: "uppercase",
+						// 				color: "var(--color-secondary)",
+						// 				display: "block",
+						// 			}}
+						// 		>
+						// 			Images enregistrées
+						// 		</span>
+						// 		<div className="admin-form__images-previews">
+						// 			{produitSelectionne.image_url && (
+						// 				<img
+						// 					src={produitSelectionne.image_url}
+						// 					alt="Principal"
+						// 					className="admin-form__preview-mini"
+						// 				/>
+						// 			)}
+						// 			{produitSelectionne.mockup_url && (
+						// 				<img
+						// 					src={produitSelectionne.mockup_url}
+						// 					alt="Mockup"
+						// 					className="admin-form__preview-mini"
+						// 				/>
+						// 			)}
+						// 		</div>
+						// 	</div>
+						// )} */}
 						{modeEdition ? (
 							<div className="admin-item__actions">
 								<button
@@ -1141,23 +1157,21 @@ function Admin() {
 							</div>
 						) : (
 							<div className="admin-item__actions">
-								<button
-									type="button"
-									className="admin-pill-btn"
+								<ActionButton
 									onClick={() => {
 										setProduitEdite({ ...produitSelectionne });
 										setModeEdition(true);
 									}}
 								>
 									Modifier
-								</button>
-								<button
-									type="button"
-									className="admin-pill-btn"
+								</ActionButton>
+
+								<ActionButton
+									inverse={true}
 									onClick={() => supprimerProduit(produitSelectionne.id)}
 								>
 									Supprimer
-								</button>
+								</ActionButton>
 							</div>
 						)}
 					</div>
