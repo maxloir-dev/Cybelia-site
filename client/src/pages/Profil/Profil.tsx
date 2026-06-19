@@ -299,6 +299,8 @@ function Profil() {
 						strokeWidth="1.5"
 						strokeLinecap="round"
 						strokeLinejoin="round"
+						aria-hidden="true"
+						focusable="false"
 					>
 						<line x1="34" y1="10" x2="2" y2="10" />
 						<polyline points="10 18 2 10 10 2" />
@@ -422,6 +424,8 @@ function Profil() {
 						strokeWidth="1.5"
 						strokeLinecap="round"
 						strokeLinejoin="round"
+						aria-hidden="true"
+						focusable="false"
 					>
 						<line x1="34" y1="10" x2="2" y2="10" />
 						<polyline points="10 18 2 10 10 2" />
@@ -538,6 +542,8 @@ function Profil() {
 						strokeWidth="1.5"
 						strokeLinecap="round"
 						strokeLinejoin="round"
+						aria-hidden="true"
+						focusable="false"
 					>
 						<line x1="34" y1="10" x2="2" y2="10" />
 						<polyline points="10 18 2 10 10 2" />
