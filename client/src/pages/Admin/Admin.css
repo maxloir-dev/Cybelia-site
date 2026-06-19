@@ -59,7 +59,6 @@
 		adminRespiration 4s ease-in-out infinite;
 }
 
-/* Délais d'apparition des cartes */
 .admin-card:nth-child(1) {
 	animation-delay: 0.2s, 1.8s;
 }
@@ -232,7 +231,6 @@
 	gap: 8px;
 }
 
-/* Actions produits */
 .admin-item__actions {
 	display: flex;
 	gap: 8px;
@@ -301,7 +299,6 @@
 	color: #fff;
 }
 
-/* Boutons et badges de Rupture */
 .admin-badge-rupture {
 	margin-left: 8px;
 	font-size: 0.68rem;
@@ -414,11 +411,10 @@
 	padding: 32px;
 }
 
-/* Enveloppe pour empiler les images à gauche */
 .admin-produit-detail__images-wrapper {
 	display: flex;
 	flex-direction: column;
-	gap: 16px; /* Espace entre la première et la deuxième image */
+	gap: 16px;
 	width: 100%;
 }
 
@@ -869,7 +865,6 @@
 	border-top: 2px dashed rgba(0, 0, 0, 0.15);
 }
 
-/* Animations */
 @keyframes fadeIn {
 	from {
 		opacity: 0;
@@ -960,19 +955,18 @@
    FIX DES VIGNETTES PRODUITS (TAILLE VERROUILLÉE)
    ========================================================================== */
 
-/* 1. On force le bouton interne à aligner l'image et la structure de texte */
 .admin-item--cliquable {
 	display: flex !important;
 	align-items: column !important;
-	gap: 20px !important; /* Espace fixe entre la vignette et les textes */
+	gap: 20px !important;
 	flex: 1 !important;
 	background: none !important;
 	border: none !important;
 	text-align: left !important;
 	padding: 0 !important;
-	min-width: 0 !important; /* Sécurité anti-débordement */
+	min-width: 0 !important;
 }
-/* 3. Le bouton cliquable passe du mode ligne au mode colonne */
+
 .admin-liste-grille .admin-item--cliquable {
 	display: flex !important;
 	flex-direction: column !important;
@@ -984,27 +978,24 @@
 	padding: 0 !important;
 }
 
-/* 2. On verrouille la taille de la vignette : elle ne changera JAMAIS de dimension */
 .admin-item__vignette {
-	width: 65px !important; /* Largeur fixe */
-	height: 65px !important; /* Hauteur fixe (doit être identique pour un carré parfait) */
-	object-fit: cover !important; /* Coupe l'image proprement pour qu'elle ne soit pas déformée */
-	border-radius: 10px !important; /* Bords arrondis harmonieux */
+	width: 65px !important;
+	height: 65px !important;
+	object-fit: cover !important;
+	border-radius: 10px !important;
 	border: 1px solid rgba(150, 88, 70, 0.15) !important;
-	flex-shrink: 0 !important; /* 🔐 INTERDIT FORMELLEMENT à la case de rétrécir ou de bouger */
-	background-color: #eaeaea; /* Fond de secours neutre en cas d'image transparente */
+	flex-shrink: 0 !important;
+	background-color: #eaeaea;
 }
 
-/* 3. On crée un bloc de texte qui prend toute la place restante */
 .admin-item__textes {
 	display: flex !important;
 	align-items: center !important;
-	justify-content: space-between !important; /* Repousse le prix à l'extrémité droite */
-	flex: 1 !important; /* Utilise tout l'espace restant à côté de l'image */
+	justify-content: space-between !important;
+	flex: 1 !important;
 	min-width: 0 !important;
 }
 
-/* 4. On isole le titre et la catégorie pour qu'ils s'empilent verticalement à côté de l'image */
 .admin-item__textes-empiles {
 	display: flex !important;
 	flex-direction: column !important;
@@ -1016,10 +1007,9 @@
    FIX DES VIGNETTES PRODUITS (CERCLER ET VERROUILLER LA TAILLE)
    ========================================================================== */
 
-/* 1. On force le bouton interne à aligner l'image et la structure de texte */
 .admin-item--cliquable {
 	display: flex !important;
-	align-items: center !important; /* Corrigé : 'column' n'est pas valide pour align-items */
+	align-items: center !important;
 	gap: 20px !important;
 	flex: 1 !important;
 	background: none !important;
@@ -1029,18 +1019,16 @@
 	min-width: 0 !important;
 }
 
-/* 2. 🎯 VIGNETTES PARFAITEMENT RONDES (Verrouillées pour ne jamais se déformer) */
 .admin-item__vignette {
-	width: 80px !important; /* Largeur fixe */
-	height: 80px !important; /* Hauteur identique obligatoire pour un cercle */
-	border-radius: 50% !important; /* 🌟 Rayon à 50% pour créer le cercle parfait */
-	object-fit: cover !important; /* Centre et coupe l'image proprement sans l'écraser */
-	flex-shrink: 0 !important; /* 🔐 Interdit formellement au cercle de se déformer */
+	width: 80px !important;
+	height: 80px !important;
+	border-radius: 50% !important;
+	object-fit: cover !important;
+	flex-shrink: 0 !important;
 	border: 1px solid rgba(150, 88, 70, 0.15) !important;
 	background-color: #eaeaea;
 }
 
-/* 3. On crée un bloc de texte qui prend toute la place restante */
 .admin-item__textes {
 	display: flex !important;
 	align-items: center !important;
@@ -1049,7 +1037,6 @@
 	min-width: 0 !important;
 }
 
-/* 4. On isole le titre et la catégorie pour qu'ils s'empilent verticalement */
 .admin-item__textes-empiles {
 	display: flex !important;
 	flex-direction: column !important;
@@ -1063,11 +1050,8 @@
 
 .admin-liste-grille {
 	display: grid !important;
-	grid-template-columns: repeat(
-			4,
-			1fr
-		) !important; /* 🎯 4 colonnes horizontales parfaites */
-	gap: 24px !important; /* Espace entre les bulles */
+	grid-template-columns: repeat(4, 1fr) !important;
+	gap: 24px !important;
 	margin-top: 32px;
 	width: 100%;
 }
@@ -1081,22 +1065,19 @@
 	flex-direction: column !important;
 	align-items: center !important;
 	justify-content: center !important;
-
-	/* 🎯 Le secret de la bulle : Largeur et hauteur identiques + border-radius à 50% */
-	width: 220px !important; /* Ajustez cette taille selon l'espace de votre écran */
-	height: 220px !important; /* Impérativement identique à la largeur */
-	border-radius: 50% !important; /* 🌟 Transforme la carte carrée en bulle ronde */
+	width: 220px !important;
+	height: 220px !important;
+	border-radius: 50% !important;
 
 	padding: 20px !important;
 	background-color: #ffffff !important;
 	border: 1px solid rgba(150, 88, 70, 0.15) !important;
-	box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05) !important; /* Ombre légère pour l'effet bulle */
+	box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05) !important;
 	text-align: center !important;
-	overflow: hidden !important; /* Sécurité pour que rien ne dépasse de la bulle */
+	overflow: hidden !important;
 	box-sizing: border-box !important;
 }
 
-/* Conteneur cliquable interne à la bulle */
 .admin-liste-grille .admin-item--cliquable {
 	display: flex !important;
 	flex-direction: column !important;
@@ -1115,9 +1096,9 @@
    ========================================================================== */
 
 .admin-liste-grille .admin-item__vignette {
-	width: 70px !important; /* Taille de l'image dans la bulle */
+	width: 70px !important;
 	height: 70px !important;
-	border-radius: 50% !important; /* Également en bulle pour rester harmonieux */
+	border-radius: 50% !important;
 	object-fit: cover !important;
 	flex-shrink: 0 !important;
 	border: 1px solid rgba(150, 88, 70, 0.1) !important;
@@ -1140,17 +1121,16 @@
 	flex-direction: column !important;
 	align-items: center !important;
 	gap: 2px !important;
-	max-width: 90% !important; /* Évite que le texte ne colle trop aux bords de la bulle */
+	max-width: 90% !important;
 }
 
-/* Style optionnel pour le prix ou les textes secondaires */
 .admin-liste-grille .admin-item__textes p,
 .admin-liste-grille .admin-item__textes span {
 	font-size: 0.85rem !important;
 	margin: 0 !important;
 	white-space: nowrap !important;
 	overflow: hidden !important;
-	text-overflow: ellipsis !important; /* Coupe proprement si le nom est trop long pour la bulle */
+	text-overflow: ellipsis !important;
 	width: 100% !important;
 }
 
@@ -1158,7 +1138,6 @@
    BOUTONS D'ACTIONS (MODIFIER / SUPPRIMER)
    ========================================================================== */
 
-/* Si les boutons sont à l'intérieur de la bulle, on les centre proprement */
 .admin-liste-grille .admin-item__actions {
 	display: flex !important;
 	gap: 6px !important;
@@ -1171,7 +1150,7 @@
 	flex: 1 !important;
 	padding: 5px 8px !important;
 	font-size: 0.7rem !important;
-	border-radius: 20px !important; /* Boutons arrondis assortis aux bulles */
+	border-radius: 20px !important;
 }
 
 /* ============================================
