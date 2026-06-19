@@ -118,7 +118,7 @@ function Panier() {
 							<ActionButton onClick={handleCommander}>
 								{estConnecte ? "Passer commande" : "Se connecter pour commander"}
 							</ActionButton>
-							<ActionButton to="/shop" inverse={true} onClick={() => {}}>
+							<ActionButton to="/shop" onClick={() => {}}>
 								Continuer mes achats
 							</ActionButton>
 							<button
