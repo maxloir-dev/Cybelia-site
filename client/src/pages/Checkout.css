@@ -2,101 +2,135 @@
    Layout principal
 ============================================ */
 .checkout-page {
-	padding: 140px 40px 60px 40px;
-	max-width: 1200px;
-	margin: 0 auto;
-	min-height: 100vh;
+    padding: 140px 40px 60px 40px;
+    max-width: 1200px;
+    margin: 0 auto;
+    min-height: 100vh;
 }
 
 .checkout-titre {
-	font-family: var(--font-title);
-	font-size: 1.8rem;
-	letter-spacing: 3px;
-	text-transform: uppercase;
-	color: var(--color-text);
-	margin-bottom: 40px;
+    font-family: var(--font-title);
+    font-size: 2.5rem;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--color-text);
+    margin-bottom: 48px;
 }
 
 /* ============================================
    Layout 2 colonnes
 ============================================ */
 .checkout-layout {
-	display: grid;
-	grid-template-columns: 380px 1fr;
-	gap: 60px;
-	align-items: start;
+    display: grid;
+    grid-template-columns: 380px 1fr;
+    gap: 60px;
+    align-items: start;
 }
 
 /* ============================================
    Colonne gauche — récapitulatif
 ============================================ */
 .checkout-recap {
-	border: 1px solid rgba(150, 88, 70, 0.15);
-	padding: 32px;
-	position: sticky;
-	top: 140px;
+    background: rgba(150, 88, 70, 0.06);
+    border: 1px solid rgba(150, 88, 70, 0.15);
+    border-radius: 18px;
+    padding: 32px;
+    position: sticky;
+    top: 140px;
 }
 
 .checkout-recap__titre {
-	font-family: var(--font-title);
-	font-size: 1.1rem;
-	letter-spacing: 2px;
-	text-transform: uppercase;
-	color: var(--color-primary);
-	margin-bottom: 24px;
+    font-family: var(--font-title);
+    font-size: 1rem;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--color-primary);
+    margin-bottom: 24px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid rgba(150, 88, 70, 0.15);
 }
 
 .checkout-recap__liste {
-	display: flex;
-	flex-direction: column;
-	gap: 12px;
-	margin-bottom: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    margin-bottom: 24px;
 }
 
 .checkout-recap__item {
-	display: flex;
-	justify-content: space-between;
-	gap: 16px;
-	font-size: 0.85rem;
-	color: var(--color-secondary);
+    display: flex;
+    justify-content: space-between;
+    gap: 16px;
+    font-size: 0.9rem;
+    color: var(--color-secondary);
+    padding-bottom: 12px;
+    border-bottom: 1px solid rgba(150, 88, 70, 0.08);
 }
 
 .checkout-recap__nom {
-	flex: 1;
+    flex: 1;
 }
 
 .checkout-recap__total {
-	display: flex;
-	justify-content: space-between;
-	font-family: var(--font-title);
-	font-size: 1.1rem;
-	color: var(--color-primary);
-	padding-top: 16px;
-	border-top: 1px solid rgba(150, 88, 70, 0.15);
+    display: flex;
+    justify-content: space-between;
+    font-family: var(--font-title);
+    font-size: 1.2rem;
+    color: var(--color-text);
+    padding-top: 16px;
+    border-top: 1px solid rgba(150, 88, 70, 0.2);
+    letter-spacing: 1px;
 }
 
 /* ============================================
    Colonne droite — paiement
 ============================================ */
 .checkout-carte {
-	border: 1px solid rgba(150, 88, 70, 0.15);
-	padding: 32px;
+    background: rgba(150, 88, 70, 0.06);
+    border: 1px solid rgba(150, 88, 70, 0.15);
+    border-radius: 18px;
+    padding: 40px;
 }
 
 .checkout-chargement {
-	text-align: center;
-	color: var(--color-secondary);
+    text-align: center;
+    color: var(--color-secondary);
+    font-family: var(--font-title);
+    letter-spacing: 2px;
+}
+.checkout-retour {
+    display: inline-flex;
+    align-items: center;
+    background: none;
+    border: none;
+    color: var(--color-text);
+    cursor: pointer;
+    margin-bottom: 32px;
+    padding: 4px;
+    transition: transform 0.4s ease;
+}
+
+.checkout-retour svg {
+    transition: transform 0.4s ease;
+}
+
+.checkout-retour:hover svg {
+    transform: translateX(-16px);
 }
 
 /* ============================================
    Responsive
 ============================================ */
 @media (max-width: 900px) {
-	.checkout-layout {
-		grid-template-columns: 1fr;
-	}
+    .checkout-layout {
+        grid-template-columns: 1fr;
+    }
 
-	.checkout-recap {
-		position: static;
-	}
+    .checkout-recap {
+        position: static;
+    }
+
+    .checkout-page {
+        padding: 120px 20px 40px 20px;
+    }
 }
