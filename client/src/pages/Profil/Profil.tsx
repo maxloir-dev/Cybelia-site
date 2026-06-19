@@ -277,7 +277,6 @@ function Profil() {
 		);
 	}
 
-	// Vue Commandes
 	if (vue === "commandes") {
 		return (
 			<main className="profil-main">
@@ -295,124 +294,94 @@ function Profil() {
 				)}
 
 				<div className="admin-postit-grille">
-					{commandes.map((commande) => (
-						<button
-							type="button"
-							key={commande.id}
-							className="admin-postit"
-							onClick={() => setCommandeSelectionnee(commande)}
-							aria-label={`Ouvrir la commande numéro ${commande.id}`}
-						>
-							<span className="admin-postit__punaise" />
-							<div className="admin-postit__titre">Commande #{commande.id}</div>
-							<div className="admin-postit__date">
-								{new Date(commande.created_at).toLocaleDateString("fr-FR")}
-							</div>
-							<div className="admin-postit__prix">
-								{Number(commande.montant_total).toFixed(2)}€
-							</div>
-							<div className="admin-postit__cliquez">Cliquez pour voir</div>
-						</button>
-					))}
-				</div>
-
-				{commandeSelectionnee && (
-					<button
-						type="button"
-						className="admin-popin-overlay"
-						onClick={() => {
-							setCommandeSelectionnee(null);
-							setProduitImageSelectionnee(null);
-						}}
-						aria-label="Fermer"
-					>
-						<div
-							className="admin-popin"
-							role="document"
-							onClick={(e) => e.stopPropagation()}
-							onKeyDown={(e) => e.stopPropagation()}
-						>
-							<button
-								type="button"
-								className="admin-popin__fermer"
-								onClick={() => {
-									setCommandeSelectionnee(null);
-									setProduitImageSelectionnee(null);
-								}}
-							>
-								&times;
-							</button>
-
-							<h3>Commande #{commandeSelectionnee.id}</h3>
-							<p className="admin-popin__date">
-								{new Date(commandeSelectionnee.created_at).toLocaleDateString(
-									"fr-FR",
-								)}
-							</p>
-
-							<div className="admin-popin__lignes">
-								<h4>Articles commandés</h4>
-								{commandeSelectionnee.lignes?.map((ligne, index) => {
-									console.log("ligne image_url:", ligne.image_url);
-									return (
-										<button
-											type="button"
-											key={`${commandeSelectionnee.id}-${index}`}
-											className="profil-popin__ligne"
-											onClick={() =>
-												setProduitImageSelectionnee(
-													produitImageSelectionnee === ligne.image_url
-														? null
-														: (ligne.image_url ?? null),
-												)
-											}
-										>
-											<div className="profil-popin__ligne-info">
-												<span>
-													{ligne.quantite}x <strong>{ligne.produit_nom}</strong>
-													{ligne.dimension_label &&
-														` (${ligne.dimension_label})`}
-												</span>
-												<span>{ligne.prix_unitaire}€ / u</span>
-											</div>
-											{produitImageSelectionnee === ligne.image_url &&
-												ligne.image_url && (
-													<img
-														src={ligne.image_url}
-														alt={ligne.produit_nom}
-														className="profil-popin__produit-image"
-													/>
-												)}
-										</button>
-									);
-								})}
-							</div>
-
-							<div className="admin-popin__total">
-								<span>Total</span>
-								<strong>
-									{Number(commandeSelectionnee.montant_total).toFixed(2)}€
-								</strong>
-							</div>
-
+					{commandes.map((commande) => {
+						const estOuverte = commandeSelectionnee?.id === commande.id;
+						return (
 							<div
-								style={{
-									display: "flex",
-									justifyContent: "center",
-									marginTop: "24px",
-								}}
+								key={commande.id}
+								className={`profil-postit ${estOuverte ? "profil-postit--ouvert" : ""}`}
 							>
+								{/* En-tête cliquable */}
 								<button
 									type="button"
-									className="admin-pill-btn admin-pill-btn--actif"
-									onClick={() => telechargerFacture(commandeSelectionnee)}
+									className="profil-postit__header"
+									onClick={() =>
+										setCommandeSelectionnee(estOuverte ? null : commande)
+									}
 								>
-									Télécharger la facture
+									<span className="admin-postit__punaise" />
+									<div className="admin-postit__titre">
+										Commande #{commande.id}
+									</div>
+									<div className="admin-postit__date">
+										{new Date(commande.created_at).toLocaleDateString("fr-FR")}
+									</div>
+									<div className="admin-postit__prix">
+										{Number(commande.montant_total).toFixed(2)}€
+									</div>
+									{!estOuverte && (
+										<div className="admin-postit__cliquez">
+											Cliquez pour voir
+										</div>
+									)}
 								</button>
+
+								{/* Contenu déplié */}
+								{estOuverte && (
+									<div className="profil-postit__contenu">
+										{commande.lignes?.map((ligne, index) => (
+											<button
+												type="button"
+												key={`${commande.id}-${index}`}
+												className="profil-popin__ligne"
+												onClick={() =>
+													setProduitImageSelectionnee(
+														produitImageSelectionnee === ligne.image_url
+															? null
+															: (ligne.image_url ?? null),
+													)
+												}
+											>
+												<div className="profil-popin__ligne-info">
+													<span>
+														{ligne.quantite}x{" "}
+														<strong>{ligne.produit_nom}</strong>
+														{ligne.dimension_label &&
+															` (${ligne.dimension_label})`}
+													</span>
+													<span>{ligne.prix_unitaire}€/u</span>
+												</div>
+												{produitImageSelectionnee === ligne.image_url &&
+													ligne.image_url && (
+														<img
+															src={ligne.image_url}
+															alt={ligne.produit_nom}
+															className="profil-popin__produit-image"
+														/>
+													)}
+											</button>
+										))}
+
+										<div className="profil-postit__total">
+											<span>Total</span>
+											<strong>
+												{Number(commande.montant_total).toFixed(2)}€
+											</strong>
+										</div>
+
+										<button
+											type="button"
+											className="profil-postit__facture"
+											onClick={() => telechargerFacture(commande)}
+										>
+											Télécharger la facture
+										</button>
+									</div>
+								)}
 							</div>
-						</div>
-					</button>
-				)}
+						);
+					})}
+				</div>
 			</main>
 		);
 	}

@@ -373,3 +373,136 @@
 	margin-top: 8px;
 	animation: fadeIn 0.3s ease;
 }
+
+.profil-postit {
+	position: relative;
+	background: #fef5c1;
+	color: #333;
+	font-family: "Caveat", "Comic Sans MS", cursive;
+	box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.15);
+	transition:
+		transform 0.4s ease,
+		box-shadow 0.4s ease;
+}
+
+.profil-postit:nth-child(even) {
+	transform: rotate(2deg);
+}
+.profil-postit:nth-child(odd) {
+	transform: rotate(-1.5deg);
+}
+.profil-postit:nth-child(3n) {
+	transform: rotate(1deg);
+}
+
+.profil-postit--ouvert {
+	transform: rotate(0deg) !important;
+	box-shadow: 10px 10px 30px rgba(0, 0, 0, 0.2);
+	z-index: 10;
+}
+
+.profil-postit__header {
+	background: none;
+	border: none;
+	width: 100%;
+	cursor: pointer;
+	padding: 24px 16px 16px 16px;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	gap: 8px;
+	text-align: center;
+	font-family: inherit;
+	font-size: inherit;
+	color: inherit;
+	min-height: 160px;
+	justify-content: center;
+}
+
+.profil-postit__contenu {
+	padding: 0 16px 16px 16px;
+	display: flex;
+	flex-direction: column;
+	gap: 8px;
+	border-top: 1px dashed rgba(0, 0, 0, 0.15);
+	transform-origin: top center;
+	animation: deplier 1.2s cubic-bezier(0.23, 1, 0.32, 1) forwards;
+}
+
+@keyframes deplier {
+	0% {
+		clip-path: inset(0 0 100% 0);
+		transform: perspective(600px) rotateX(-60deg);
+		opacity: 0;
+	}
+	50% {
+		transform: perspective(600px) rotateX(-10deg);
+		opacity: 0.8;
+	}
+	100% {
+		clip-path: inset(0 0 0% 0);
+		transform: perspective(600px) rotateX(0deg);
+		opacity: 1;
+	}
+}
+
+.profil-postit__total {
+	display: flex;
+	justify-content: space-between;
+	font-size: 1.2rem;
+	font-weight: bold;
+	padding-top: 8px;
+	border-top: 1px dashed rgba(0, 0, 0, 0.15);
+	margin-top: 8px;
+}
+
+.profil-postit__facture {
+	background: rgba(150, 88, 70, 0.15);
+	border: 1px dashed rgba(150, 88, 70, 0.5);
+	color: #965846;
+	font-family: inherit;
+	font-size: 0.9rem;
+	padding: 8px 16px;
+	cursor: pointer;
+	border-radius: 4px;
+	margin-top: 8px;
+	transition: background 0.2s;
+	width: 100%;
+}
+
+.profil-postit__facture:hover {
+	background: rgba(150, 88, 70, 0.25);
+}
+
+.profil-popin__ligne {
+	background: none;
+	border: none;
+	border-bottom: 1px dashed rgba(0, 0, 0, 0.1);
+	width: 100%;
+	text-align: left;
+	cursor: pointer;
+	padding: 10px 8px;
+	border-radius: 8px;
+	font-family: "Caveat", "Comic Sans MS", cursive;
+	font-size: 1.1rem;
+	color: #333;
+	transition: background 0.2s;
+}
+
+.profil-popin__ligne:hover {
+	background: rgba(0, 0, 0, 0.04);
+}
+
+.profil-popin__ligne-info {
+	display: flex;
+	justify-content: space-between;
+}
+
+.profil-popin__produit-image {
+	width: 100%;
+	max-height: 200px;
+	object-fit: cover;
+	border-radius: 8px;
+	margin-top: 8px;
+	animation: fadeIn 0.3s ease;
+}
