@@ -25,8 +25,9 @@ export function UserGreeting({ prenom }: UserGreetingProps) {
 
 	const displayWords = [
 		`${prenom || "à vous"}`,
-		"des idées ?", //
-		"besoin d'aide ?",
+		"des idées ?",
+		"une envie ?",
+		"un projet ?",
 	];
 
 	return (

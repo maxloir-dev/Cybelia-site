@@ -28,12 +28,12 @@ function SplitText({
 	const splitRef = useRef<SplitType | null>(null);
 	const [fontsLoaded, setFontsLoaded] = useState(false);
 
-	// 1. Attendre les polices
+	//  Attendre les polices
 	useEffect(() => {
 		document.fonts.ready.then(() => setFontsLoaded(true));
 	}, []);
 
-	// 2. Initialiser le découpage
+	//  Initialiser le découpage
 	useEffect(() => {
 		if (!containerRef.current || !fontsLoaded) return;
 		splitRef.current = new SplitType(containerRef.current, { types: "chars" });
@@ -53,7 +53,7 @@ function SplitText({
 		return () => splitRef.current?.revert();
 	}, [fontsLoaded, duration, delay]);
 
-	// 3. Gérer la sortie
+	//  Gérer la sortie
 	useGSAP(
 		() => {
 			if (animateOut && splitRef.current) {

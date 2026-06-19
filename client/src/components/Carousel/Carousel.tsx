@@ -9,22 +9,20 @@ const slides = [
 	{ image: "https://picsum.photos/seed/44/1600/800", alt: "Slide 4" },
 ];
 
-const INTERVAL = 5000;
+const INTERVAL = 4000;
 
 function Carousel() {
 	const [current, setCurrent] = useState(0);
 	const [transitioning, setTransitioning] = useState(false);
 
-	// useCallback permet de stabiliser la fonction pour le useEffect
 	const goTo = useCallback(
 		(index: number) => {
 			if (transitioning) return;
 			setTransitioning(true);
 			setCurrent(index);
-			// On réduit le timeout ou on gère la fin de transition via CSS
 			setTimeout(() => {
 				setTransitioning(false);
-			}, 600);
+			}, 2000);
 		},
 		[transitioning],
 	);
@@ -40,13 +38,12 @@ function Carousel() {
 
 	return (
 		<div className="carousel">
-			<div
-				className="carousel__track"
-				style={{ transform: `translateX(-${current * 100}%)` }}
-			>
-				{slides.map((slide) => (
-					<div key={slide.image} className="carousel__slide">
-						{" "}
+			<div className="carousel__track">
+				{slides.map((slide, i) => (
+					<div
+						key={slide.image}
+						className={`carousel__slide ${i === current ? "carousel__slide--actif" : ""}`}
+					>
 						<img
 							src={slide.image}
 							alt={slide.alt}
@@ -59,7 +56,6 @@ function Carousel() {
 			<div className="carousel__dots">
 				{slides.map((slide, i) => (
 					<button
-						// On utilise slide.image (unique) au lieu de l'index i
 						key={`dot-${slide.image}`}
 						type="button"
 						className={`carousel__dot ${i === current ? "carousel__dot--actif" : ""}`}
