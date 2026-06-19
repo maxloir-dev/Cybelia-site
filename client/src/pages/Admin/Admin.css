@@ -174,9 +174,9 @@
 		border-color 0.35s ease,
 		transform 0.35s ease,
 		box-shadow 0.35s ease;
-	opacity: 0;
+	/* opacity: 0;
 	transform: translateY(20px);
-	animation: adminItemAppear 0.6s ease forwards;
+	animation: adminItemAppear 0.6s ease forwards; */
 }
 
 @keyframes adminItemAppear {
@@ -1172,4 +1172,29 @@
 	padding: 5px 8px !important;
 	font-size: 0.7rem !important;
 	border-radius: 20px !important; /* Boutons arrondis assortis aux bulles */
+}
+
+/* ============================================
+   Scroll Reveal
+============================================ */
+.scroll-item {
+	transition:
+		opacity 1.35s ease-out,
+		transform 1.35s ease-out;
+	will-change: transform, opacity;
+}
+
+.scroll-hidden-left {
+	opacity: 0;
+	transform: translateX(-120px);
+}
+
+.scroll-hidden-right {
+	opacity: 0;
+	transform: translateX(120px);
+}
+
+.scroll-visible {
+	opacity: 1;
+	transform: translateX(0);
 }

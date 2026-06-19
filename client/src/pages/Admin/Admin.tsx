@@ -24,6 +24,7 @@ import type { Commande, Produit, Utilisateur, Dimension } from "../../types";
 import "./Admin.css";
 import { uploadImage } from "../../api/uploadService";
 import { GooeyInput } from "../../components/Ui/GooeyInput";
+import { useScrollReveal } from "../../hooks/useScrollReveal";
 
 // Types des vues possibles
 type Vue =
@@ -44,6 +45,7 @@ function Admin() {
 	}, []);
 	const location = useLocation();
 	const [vue, setVue] = useState<Vue>("accueil");
+	const containerRef = useScrollReveal(vue);
 	const [locationKeyVue, setLocationKeyVue] = useState(location.key);
 	if (location.key !== locationKeyVue) {
 		setLocationKeyVue(location.key);
@@ -546,9 +548,8 @@ function Admin() {
 					/>
 				</div>
 
-				<div className="admin-liste">
+				<div className="admin-liste" ref={containerRef}>
 					{clients.length === 0 && <p>Aucun client trouvé.</p>}
-
 					{clients
 						.filter((client) => {
 							const q = rechercheClients.toLowerCase();
@@ -560,11 +561,7 @@ function Admin() {
 							);
 						})
 						.map((client, index) => (
-							<div
-								key={client.id}
-								className="admin-item"
-								style={{ animationDelay: `${index * 0.06}s` }}
-							>
+							<div key={client.id} className="admin-item scroll-item">
 								<button
 									type="button"
 									className="admin-item__info admin-item--cliquable"
@@ -807,9 +804,8 @@ function Admin() {
 					/>
 				</div>
 
-				<div className="admin-liste">
+				<div className="admin-liste" ref={containerRef}>
 					{produits.length === 0 && <p>Aucun produit dans cette catégorie.</p>}
-
 					{produits
 						.filter((produit) => {
 							const q = rechercheProduits.toLowerCase();
@@ -821,24 +817,17 @@ function Admin() {
 							);
 						})
 						.map((produit, index) => (
-							<div
-								key={produit.id}
-								className="admin-item"
-								style={{ animationDelay: `${index * 0.06}s` }}
-							>
+							<div key={produit.id} className="admin-item scroll-item">
 								<button
 									type="button"
 									className="admin-item--cliquable"
 									onClick={() => allerDetailProduit(produit)}
 								>
-									{/* Vignette ronde */}
 									<img
 										src={produit.image_url || "/placeholder.jpg"}
 										alt={produit.nom}
 										className="admin-item__vignette"
 									/>
-
-									{/* Textes centrés sous l'image */}
 									<div className="admin-item__textes">
 										<div className="admin-item__textes-empiles">
 											<span className="admin-item__titre">{produit.nom}</span>
@@ -849,8 +838,6 @@ function Admin() {
 										<span className="admin-item__prix">{produit.prix}€</span>
 									</div>
 								</button>
-
-								{/* Boutons d'actions en dessous */}
 								<div className="admin-item__actions">
 									<ActionButton
 										className="admin-action-btn"
