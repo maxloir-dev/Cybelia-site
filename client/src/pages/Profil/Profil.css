@@ -7,6 +7,7 @@
 	min-height: 100vh;
 	display: flex;
 	flex-direction: column;
+	align-items: center;
 }
 
 /* ============================================
@@ -151,20 +152,25 @@
    Bouton retour
 ============================================ */
 .profil-retour {
+	display: inline-flex;
+	align-items: center;
 	background: none;
 	border: none;
 	color: var(--color-text);
-	font-family: var(--font-body);
-	font-size: 0.9rem;
-	letter-spacing: 1px;
 	cursor: pointer;
 	margin-bottom: 32px;
-	padding: 0;
-	transition: opacity 0.2s;
+	margin-left: -60px;
+	padding: 4px;
+	transition: transform 0.4s ease;
+	align-self: flex-start;
 }
 
-.profil-retour:hover {
-	opacity: 0.7;
+.profil-retour svg {
+	transition: transform 0.4s ease;
+}
+
+.profil-retour:hover svg {
+	transform: translateX(-16px);
 }
 
 /* ============================================
@@ -244,48 +250,25 @@
 /* ============================================
    Formulaires
 ============================================ */
-.profil-form {
-	display: flex;
-	flex-direction: column;
-	gap: 24px;
-	margin-top: 32px;
-	max-width: 600px;
-}
-
-.profil-form__row {
-	display: grid;
-	grid-template-columns: 1fr 1fr;
-	gap: 24px;
-}
-
-.profil-form__field {
-	display: flex;
-	flex-direction: column;
-	gap: 8px;
-}
-
-.profil-form__field label {
-	font-family: var(--font-body);
-	font-size: 0.85rem;
-	letter-spacing: 1px;
-	text-transform: uppercase;
-	color: var(--color-secondary);
-}
-
-.profil-form__field input {
-	padding: 12px 16px;
+.profil-retour {
+	display: inline-flex;
+	align-items: center;
+	background: none;
 	border: none;
-	border-bottom: 2px solid var(--color-text);
-	outline: none;
-	font-family: var(--font-body);
-	font-size: 1rem;
-	color: var(--color-primary);
-	transition: border-color 0.2s;
-	background: transparent;
+	color: var(--color-text);
+	cursor: pointer;
+	margin-bottom: 32px;
+	margin-left: -60px;
+	padding: 4px;
+	transition: transform 0.4s ease;
 }
 
-.profil-form__field input:focus {
-	border-bottom-color: var(--color-background);
+.profil-retour svg {
+	transition: transform 0.4s ease;
+}
+
+.profil-retour:hover svg {
+	transform: translateX(-16px);
 }
 
 .profil-btn {
@@ -313,18 +296,20 @@
 .profil-message {
 	color: #27ae60;
 	font-size: 0.9rem;
-	padding: 10px;
-	border: 1px solid #27ae60;
-	margin-top: 16px;
+	padding: 12px 16px;
+	border-radius: 10px;
+	background: rgba(39, 174, 96, 0.08);
+	border: 1px solid rgba(39, 174, 96, 0.3);
 	max-width: 600px;
 }
 
 .profil-erreur {
 	color: #c0392b;
 	font-size: 0.9rem;
-	padding: 10px;
-	border: 1px solid #c0392b;
-	margin-top: 16px;
+	padding: 12px 16px;
+	border-radius: 10px;
+	background: rgba(192, 57, 43, 0.08);
+	border: 1px solid rgba(192, 57, 43, 0.3);
 	max-width: 600px;
 }
 
@@ -505,4 +490,39 @@
 	border-radius: 8px;
 	margin-top: 8px;
 	animation: fadeIn 0.3s ease;
+}
+
+.profil-form {
+	display: flex;
+	flex-direction: column;
+	gap: 24px;
+	margin-top: 32px auto 0 auto;
+	max-width: 500px;
+	background: rgba(150, 88, 70, 0.06);
+	border: 1px solid rgba(150, 88, 70, 0.15);
+	border-radius: 18px;
+	padding: 32px;
+}
+
+.profil-form__field input {
+	padding: 12px 16px;
+	border: none;
+	border-bottom: 1px solid rgba(150, 88, 70, 0.3);
+	outline: none;
+	font-family: var(--font-body);
+	font-size: 1rem;
+	color: var(--color-primary);
+	background: transparent;
+	transition: border-color 0.2s;
+	width: 100%;
+}
+
+.profil-form__field input:focus {
+	border-bottom-color: var(--color-text);
+}
+
+.profil-form__row {
+	display: grid;
+	grid-template-columns: 1fr 1fr;
+	gap: 24px;
 }

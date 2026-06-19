@@ -8,6 +8,7 @@ import {
 import { getMesCommandes } from "../../api/commandeService";
 import type { Utilisateur, Commande } from "../../types";
 import "./Profil.css";
+import ActionButton from "../../components/ActionButton/ActionButton";
 
 // ============================================
 // Types des vues possibles
@@ -31,6 +32,9 @@ function Profil() {
 	const [nom, setNom] = useState("");
 	const [prenom, setPrenom] = useState("");
 	const [email, setEmail] = useState("");
+	const [adresse, setAdresse] = useState("");
+	const [codePostal, setCodePostal] = useState("");
+	const [ville, setVille] = useState("");
 
 	// États formulaire changer mot de passe
 	const [ancienMdp, setAncienMdp] = useState("");
@@ -284,8 +288,21 @@ function Profil() {
 					className="profil-retour"
 					type="button"
 					onClick={() => setVue("accueil")}
+					aria-label="Retour"
 				>
-					← Retour
+					<svg
+						width="36"
+						height="20"
+						viewBox="0 0 36 20"
+						fill="none"
+						stroke="currentColor"
+						strokeWidth="1.5"
+						strokeLinecap="round"
+						strokeLinejoin="round"
+					>
+						<line x1="34" y1="10" x2="2" y2="10" />
+						<polyline points="10 18 2 10 10 2" />
+					</svg>
 				</button>
 				<h1>Mes commandes</h1>
 
@@ -394,8 +411,21 @@ function Profil() {
 					className="profil-retour"
 					type="button"
 					onClick={() => setVue("accueil")}
+					aria-label="Retour"
 				>
-					← Retour
+					<svg
+						width="36"
+						height="20"
+						viewBox="0 0 36 20"
+						fill="none"
+						stroke="currentColor"
+						strokeWidth="1.5"
+						strokeLinecap="round"
+						strokeLinejoin="round"
+					>
+						<line x1="34" y1="10" x2="2" y2="10" />
+						<polyline points="10 18 2 10 10 2" />
+					</svg>
 				</button>
 				<h1>Modifier mon profil</h1>
 
@@ -403,6 +433,7 @@ function Profil() {
 				{erreur && <p className="profil-erreur">{erreur}</p>}
 
 				<form className="profil-form" onSubmit={handleModifierProfil}>
+					{/* Nom + Prénom côte à côte */}
 					<div className="profil-form__row">
 						<div className="profil-form__field">
 							<label htmlFor="nom">Nom</label>
@@ -425,6 +456,8 @@ function Profil() {
 							/>
 						</div>
 					</div>
+
+					{/* Email */}
 					<div className="profil-form__field">
 						<label htmlFor="email">Email</label>
 						<input
@@ -435,9 +468,52 @@ function Profil() {
 							required
 						/>
 					</div>
-					<button type="submit" className="profil-btn">
-						Enregistrer
-					</button>
+
+					{/* Adresse */}
+					<div className="profil-form__field">
+						<label htmlFor="adresse">Adresse</label>
+						<input
+							id="adresse"
+							type="text"
+							value={adresse}
+							onChange={(e) => setAdresse(e.target.value)}
+							placeholder="Ex: 12 rue de la Paix"
+						/>
+					</div>
+
+					{/* Code postal + Ville */}
+					<div className="profil-form__row">
+						<div className="profil-form__field">
+							<label htmlFor="code-postal">Code postal</label>
+							<input
+								id="code-postal"
+								type="text"
+								value={codePostal}
+								onChange={(e) => setCodePostal(e.target.value)}
+								placeholder="Ex: 75001"
+							/>
+						</div>
+						<div className="profil-form__field">
+							<label htmlFor="ville">Ville</label>
+							<input
+								id="ville"
+								type="text"
+								value={ville}
+								onChange={(e) => setVille(e.target.value)}
+								placeholder="Ex: Paris"
+							/>
+						</div>
+					</div>
+
+					<div
+						style={{
+							display: "flex",
+							justifyContent: "center",
+							marginTop: "20px",
+						}}
+					>
+						<ActionButton type="submit">Enregistrer</ActionButton>
+					</div>
 				</form>
 			</main>
 		);
@@ -451,8 +527,21 @@ function Profil() {
 					className="profil-retour"
 					type="button"
 					onClick={() => setVue("accueil")}
+					aria-label="Retour"
 				>
-					← Retour
+					<svg
+						width="36"
+						height="20"
+						viewBox="0 0 36 20"
+						fill="none"
+						stroke="currentColor"
+						strokeWidth="1.5"
+						strokeLinecap="round"
+						strokeLinejoin="round"
+					>
+						<line x1="34" y1="10" x2="2" y2="10" />
+						<polyline points="10 18 2 10 10 2" />
+					</svg>
 				</button>
 				<h1>Changer mon mot de passe</h1>
 
@@ -495,9 +584,15 @@ function Profil() {
 							required
 						/>
 					</div>
-					<button type="submit" className="profil-btn">
-						Changer le mot de passe
-					</button>
+					<div
+						style={{
+							display: "flex",
+							justifyContent: "center",
+							marginTop: "20px",
+						}}
+					>
+						<ActionButton type="submit">Enregistrer</ActionButton>
+					</div>
 				</form>
 			</main>
 		);
