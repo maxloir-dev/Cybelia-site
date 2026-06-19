@@ -32,7 +32,8 @@ app.use(cors({
 	origin: process.env.CLIENT_URL,
 	methods: ["GET", "POST", "PUT", "DELETE"],
 }));
-app.use(express.json()); // Permet de lire le JSON dans les requêtes
+app.use(express.json({ limit: "50mb" }));
+app.use(express.urlencoded({ limit: "50mb", extended: true }));
 
 // Rate limiting sur les routes sensibles
 const authLimiter = rateLimit({
