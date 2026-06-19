@@ -98,7 +98,8 @@ export const getCommandes = async (_req: AuthRequest, res: Response) => {
 	try {
 		const commandes = await getAllCommandes();
 		res.json(commandes);
-	} catch {
+	} catch (error) {
+		console.error("ERREUR COMMANDES:", error);
 		res
 			.status(500)
 			.json({ message: "Erreur lors de la récupération des commandes" });

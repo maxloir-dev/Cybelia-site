@@ -6,6 +6,7 @@ const CHAMPS_LIGNE = [
 	"prix_unitaire",
 	"produit_nom",
 	"dimension_label",
+	"image_url",
 ];
 
 // Crée une nouvelle commande et retourne son id
@@ -54,7 +55,8 @@ export const getAllCommandes = async () => {
                u.nom, u.prenom, u.email,
                lc.quantite, lc.prix_unitaire,
                COALESCE(lc.produit_nom, p.nom) AS produit_nom,
-               COALESCE(lc.dimension_label, d.label) AS dimension_label
+               COALESCE(lc.dimension_label, d.label) AS dimension_label,
+			   p.image_url
         FROM commandes c
         JOIN utilisateurs u ON c.utilisateur_id = u.id
         JOIN lignes_commande lc ON c.id = lc.commande_id
@@ -73,7 +75,8 @@ export const getCommandeById = async (id: number) => {
                u.nom, u.prenom, u.email,
                lc.quantite, lc.prix_unitaire,
                COALESCE(lc.produit_nom, p.nom) AS produit_nom,
-               COALESCE(lc.dimension_label, d.label) AS dimension_label
+               COALESCE(lc.dimension_label, d.label) AS dimension_label,
+			   p.image_url
         FROM commandes c
         JOIN utilisateurs u ON c.utilisateur_id = u.id
         JOIN lignes_commande lc ON c.id = lc.commande_id
@@ -92,7 +95,8 @@ export const getCommandesByUserId = async (utilisateur_id: number) => {
         SELECT c.id, c.montant_total, c.created_at,
                lc.quantite, lc.prix_unitaire,
                COALESCE(lc.produit_nom, p.nom) AS produit_nom,
-               COALESCE(lc.dimension_label, d.label) AS dimension_label
+               COALESCE(lc.dimension_label, d.label) AS dimension_label,
+               p.image_url
         FROM commandes c
         JOIN lignes_commande lc ON c.id = lc.commande_id
         LEFT JOIN produits p ON lc.produit_id = p.id
