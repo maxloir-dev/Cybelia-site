@@ -97,12 +97,6 @@ function Navbar() {
 						className="navbar-icon"
 						aria-label="Déconnexion"
 						onClick={deconnexion}
-						style={{
-							background: "none",
-							border: "none",
-							cursor: "pointer",
-							padding: 0,
-						}}
 					>
 						<svg width="20" height="20" viewBox="0 0 32 32" aria-hidden="true">
 							<g fill="none" fillRule="evenodd">
