@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import "../Admin/Admin.css";
 import {
 	getProfil,
 	updateProfil,
@@ -20,6 +21,11 @@ function Profil() {
 	const [chargement, setChargement] = useState(false);
 	const [message, setMessage] = useState("");
 	const [erreur, setErreur] = useState("");
+	const [commandeSelectionnee, setCommandeSelectionnee] =
+		useState<Commande | null>(null);
+	const [produitImageSelectionnee, setProduitImageSelectionnee] = useState<
+		string | null
+	>(null);
 
 	// États formulaire modifier profil
 	const [nom, setNom] = useState("");
@@ -283,45 +289,130 @@ function Profil() {
 					← Retour
 				</button>
 				<h1>Mes commandes</h1>
-				<div className="profil-liste">
-					{commandes.length === 0 && (
-						<p>Vous n'avez pas encore passé de commande.</p>
-					)}
+
+				{commandes.length === 0 && (
+					<p>Vous n'avez pas encore passé de commande.</p>
+				)}
+
+				<div className="admin-postit-grille">
 					{commandes.map((commande) => (
-						<div key={commande.id} className="profil-item">
-							<div className="profil-item__info">
-								<span className="profil-item__titre">
-									Commande #{commande.id}
-								</span>
-								<span className="profil-item__detail">
-									{new Date(commande.created_at).toLocaleDateString("fr-FR")}
-								</span>
-								{commande.lignes?.map((ligne) => (
-									<span
-										// Utilisez l'ID du produit ou de la ligne plutôt que l'index 'i'
-										key={ligne.produit_id}
-										className="profil-item__detail"
-									>
-										{ligne.quantite}x {ligne.produit_nom} —{" "}
-										{ligne.prix_unitaire}€
-									</span>
-								))}
+						<button
+							type="button"
+							key={commande.id}
+							className="admin-postit"
+							onClick={() => setCommandeSelectionnee(commande)}
+							aria-label={`Ouvrir la commande numéro ${commande.id}`}
+						>
+							<span className="admin-postit__punaise" />
+							<div className="admin-postit__titre">Commande #{commande.id}</div>
+							<div className="admin-postit__date">
+								{new Date(commande.created_at).toLocaleDateString("fr-FR")}
 							</div>
-							<div className="profil-item__actions">
-								<span className="profil-item__prix">
-									{Number(commande.montant_total).toFixed(2)}€
-								</span>
+							<div className="admin-postit__prix">
+								{Number(commande.montant_total).toFixed(2)}€
+							</div>
+							<div className="admin-postit__cliquez">Cliquez pour voir</div>
+						</button>
+					))}
+				</div>
+
+				{commandeSelectionnee && (
+					<button
+						type="button"
+						className="admin-popin-overlay"
+						onClick={() => {
+							setCommandeSelectionnee(null);
+							setProduitImageSelectionnee(null);
+						}}
+						aria-label="Fermer"
+					>
+						<div
+							className="admin-popin"
+							role="document"
+							onClick={(e) => e.stopPropagation()}
+							onKeyDown={(e) => e.stopPropagation()}
+						>
+							<button
+								type="button"
+								className="admin-popin__fermer"
+								onClick={() => {
+									setCommandeSelectionnee(null);
+									setProduitImageSelectionnee(null);
+								}}
+							>
+								&times;
+							</button>
+
+							<h3>Commande #{commandeSelectionnee.id}</h3>
+							<p className="admin-popin__date">
+								{new Date(commandeSelectionnee.created_at).toLocaleDateString(
+									"fr-FR",
+								)}
+							</p>
+
+							<div className="admin-popin__lignes">
+								<h4>Articles commandés</h4>
+								{commandeSelectionnee.lignes?.map((ligne, index) => {
+									console.log("ligne image_url:", ligne.image_url);
+									return (
+										<button
+											type="button"
+											key={`${commandeSelectionnee.id}-${index}`}
+											className="profil-popin__ligne"
+											onClick={() =>
+												setProduitImageSelectionnee(
+													produitImageSelectionnee === ligne.image_url
+														? null
+														: (ligne.image_url ?? null),
+												)
+											}
+										>
+											<div className="profil-popin__ligne-info">
+												<span>
+													{ligne.quantite}x <strong>{ligne.produit_nom}</strong>
+													{ligne.dimension_label &&
+														` (${ligne.dimension_label})`}
+												</span>
+												<span>{ligne.prix_unitaire}€ / u</span>
+											</div>
+											{produitImageSelectionnee === ligne.image_url &&
+												ligne.image_url && (
+													<img
+														src={ligne.image_url}
+														alt={ligne.produit_nom}
+														className="profil-popin__produit-image"
+													/>
+												)}
+										</button>
+									);
+								})}
+							</div>
+
+							<div className="admin-popin__total">
+								<span>Total</span>
+								<strong>
+									{Number(commandeSelectionnee.montant_total).toFixed(2)}€
+								</strong>
+							</div>
+
+							<div
+								style={{
+									display: "flex",
+									justifyContent: "center",
+									marginTop: "24px",
+								}}
+							>
 								<button
 									type="button"
-									className="profil-item__facture"
-									onClick={() => telechargerFacture(commande)}
+									className="admin-pill-btn admin-pill-btn--actif"
+									onClick={() => telechargerFacture(commandeSelectionnee)}
 								>
 									Télécharger la facture
 								</button>
 							</div>
 						</div>
-					))}
-				</div>
+					</button>
+				)}
 			</main>
 		);
 	}

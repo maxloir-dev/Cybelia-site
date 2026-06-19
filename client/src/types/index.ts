@@ -48,6 +48,7 @@ export interface LigneCommande {
 	dimension_id?: number | null;
 	produit_nom?: string;
 	dimension_label?: string | null;
+	image_url?: string | null;
 }
 
 // Commande

@@ -789,7 +789,7 @@ function Admin() {
 
 					<ActionButton
 						inverse={categorieFiltre !== 2}
-						onClick={() => allerProduits(1)}
+						onClick={() => allerProduits(2)}
 					>
 						Affiches
 					</ActionButton>
@@ -1387,9 +1387,9 @@ function Admin() {
 
 					{tousLesDimensions.length > 0 && (
 						<div className="admin-form__field">
-							<label>
+							<span className="admin-form__section-title">
 								Formats et prix — renseigner au moins le format principal
-							</label>
+							</span>
 							{tousLesDimensions.map((d) => {
 								const estBase =
 									(nouveauProduit.categorie_id === 1 && d.id === 1) ||

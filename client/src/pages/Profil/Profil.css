@@ -231,7 +231,9 @@
 	text-transform: uppercase;
 	cursor: pointer;
 	border-radius: 4px;
-	transition: background 0.2s, color 0.2s;
+	transition:
+		background 0.2s,
+		color 0.2s;
 }
 
 .profil-item__facture:hover {
@@ -337,4 +339,37 @@
 	font-family: var(--font-title);
 	letter-spacing: 2px;
 	color: var(--color-text);
+}
+
+.profil-popin__ligne {
+	background: none;
+	border: none;
+	border-bottom: 1px dashed rgba(0, 0, 0, 0.1);
+	width: 100%;
+	text-align: left;
+	cursor: pointer;
+	padding: 10px 8px;
+	border-radius: 8px;
+	font-family: "Caveat", "Comic Sans MS", cursive;
+	font-size: 1.1rem;
+	color: #333;
+	transition: background 0.2s;
+}
+
+.profil-popin__ligne:hover {
+	background: rgba(0, 0, 0, 0.04);
+}
+
+.profil-popin__ligne-info {
+	display: flex;
+	justify-content: space-between;
+}
+
+.profil-popin__produit-image {
+	width: 100%;
+	max-height: 200px;
+	object-fit: cover;
+	border-radius: 8px;
+	margin-top: 8px;
+	animation: fadeIn 0.3s ease;
 }
