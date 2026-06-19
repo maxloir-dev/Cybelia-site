@@ -89,8 +89,8 @@ function Admin() {
 	const [commandeEnSuppression, setCommandeEnSuppression] = useState<
 		number | null
 	>(null);
-	// Déclaration de l'état pour la recherche de produits
 	const [rechercheProduits, setRechercheProduits] = useState<string>("");
+	const [rechercheClients, setRechercheClients] = useState<string>("");
 
 	// Navigation vers les vues
 	const allerCommandes = async () => {
@@ -534,34 +534,53 @@ function Admin() {
 						<polyline points="10 18 2 10 10 2" />
 					</svg>
 				</button>
-				<h1>Clients</h1>
+				<div className="admin-top">
+					<h1>Clients</h1>
+					<GooeyInput
+						placeholder="Rechercher un client..."
+						value={rechercheClients}
+						onValueChange={setRechercheClients}
+						collapsedWidth={40}
+						expandedWidth={280}
+						expandedOffset={48}
+					/>
+				</div>
+
 				<div className="admin-liste">
-					{clients.length === 0 && <p>Aucun client pour le moment.</p>}
-					{clients.map((client) => (
-						<button
-							type="button"
-							key={client.id}
-							className="admin-item admin-item--cliquable"
-							onClick={() => allerDetailClient(client)}
-						>
-							<div className="admin-item__info">
-								<span className="admin-item__titre">
-									{client.nom} {client.prenom}
-								</span>
-								<span className="admin-item__detail">{client.email}</span>
-								<span className="admin-item__detail">
-									Inscrit le{" "}
-									{new Date(client.created_at).toLocaleDateString("fr-FR")}
-								</span>
+					{clients.length === 0 && <p>Aucun client trouvé.</p>}
+
+					{clients
+						.filter((client) => {
+							const q = rechercheClients.toLowerCase();
+							if (!q) return true;
+							return (
+								(client.nom || "").toLowerCase().includes(q) ||
+								(client.prenom || "").toLowerCase().includes(q) ||
+								(client.email || "").toLowerCase().includes(q)
+							);
+						})
+						.map((client, index) => (
+							<div
+								key={client.id}
+								className="admin-item"
+								style={{ animationDelay: `${index * 0.06}s` }}
+							>
+								<button
+									type="button"
+									className="admin-item__info admin-item--cliquable"
+									onClick={() => allerDetailClient(client)}
+								>
+									<span className="admin-item__titre">
+										{client.nom} {client.prenom}
+									</span>
+									<span className="admin-item__detail">{client.email}</span>
+								</button>
 							</div>
-							<span className="admin-item__fleche">→</span>
-						</button>
-					))}
+						))}
 				</div>
 			</main>
 		);
 	}
-
 	// Vue Détail Client
 	if (vue === "client-detail" && clientSelectionne) {
 		return (
@@ -777,7 +796,7 @@ function Admin() {
 				</div>
 
 				<div className="admin-top">
-					<h1>Produits</h1>
+					<h1>Mes Produits</h1>
 					<GooeyInput
 						placeholder="Rechercher un produit..."
 						value={rechercheProduits}
@@ -791,7 +810,6 @@ function Admin() {
 				<div className="admin-liste">
 					{produits.length === 0 && <p>Aucun produit dans cette catégorie.</p>}
 
-					{/* 2. On filtre la liste des produits avant de faire le .map() */}
 					{produits
 						.filter((produit) => {
 							const q = rechercheProduits.toLowerCase();
@@ -810,15 +828,29 @@ function Admin() {
 							>
 								<button
 									type="button"
-									className="admin-item__info admin-item--cliquable"
+									className="admin-item--cliquable"
 									onClick={() => allerDetailProduit(produit)}
 								>
-									<span className="admin-item__titre">{produit.nom}</span>
-									<span className="admin-item__detail">
-										{produit.categorie}
-									</span>
-									<span className="admin-item__prix">{produit.prix}€</span>
+									{/* Vignette ronde */}
+									<img
+										src={produit.image_url || "/placeholder.jpg"}
+										alt={produit.nom}
+										className="admin-item__vignette"
+									/>
+
+									{/* Textes centrés sous l'image */}
+									<div className="admin-item__textes">
+										<div className="admin-item__textes-empiles">
+											<span className="admin-item__titre">{produit.nom}</span>
+											<span className="admin-item__detail">
+												{produit.categorie}
+											</span>
+										</div>
+										<span className="admin-item__prix">{produit.prix}€</span>
+									</div>
 								</button>
+
+								{/* Boutons d'actions en dessous */}
 								<div className="admin-item__actions">
 									<ActionButton
 										className="admin-action-btn"
