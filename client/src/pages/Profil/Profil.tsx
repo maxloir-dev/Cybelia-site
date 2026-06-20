@@ -209,7 +209,6 @@ function Profil() {
 							<path d="M7 13L5.4 5" />
 						</svg>
 						<h2>Mes commandes</h2>
-						<p>Voir mes commandes passées</p>
 					</button>
 
 					{/* Carte Mon profil */}
@@ -239,7 +238,7 @@ function Profil() {
 							<path d="M4 20c0-4 3.6-7 8-7s8 3 8 7" />
 						</svg>
 						<h2>Mon profil</h2>
-						<p>Mettre à jour mes informations</p>
+						
 					</button>
 
 					{/* Carte Mot de passe */}
@@ -274,7 +273,6 @@ function Profil() {
 							<path d="M5 10h14" />
 						</svg>
 						<h2>Mot de passe</h2>
-						<p>Changer mon mot de passe</p>
 					</button>
 				</div>
 			</main>
