@@ -37,7 +37,7 @@ app.use(express.urlencoded({ limit: "50mb", extended: true }));
 
 // Rate limiting sur les routes sensibles
 const authLimiter = rateLimit({
-	windowMs: 15 * 60 * 1000, // 15 minutes
+	windowMs: 15 * 60 * 1000,
 	max: 15,
 	message: { message: "Trop de tentatives, réessayez dans 15 minutes." },
 	standardHeaders: true,

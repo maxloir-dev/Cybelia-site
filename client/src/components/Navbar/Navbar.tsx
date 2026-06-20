@@ -9,8 +9,6 @@ import { UserGreeting } from "../UserGreeting";
 function Navbar() {
 	const [searchOpen, setSearchOpen] = useState(false);
 	const { estConnecte, estAdmin, deconnexion, utilisateur } = useAuth();
-	console.log("estConnecte:", estConnecte);
-	console.log("estAdmin:", estAdmin);
 	const { nombreArticles } = useCart();
 
 	return (
