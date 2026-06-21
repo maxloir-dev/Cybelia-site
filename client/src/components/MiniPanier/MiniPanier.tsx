@@ -1,6 +1,8 @@
 import { useCart } from "../../store/CartContext";
 import ActionButton from "../ActionButton/ActionButton";
 import "./MiniPanier.css";
+import { useEffect } from "react";
+import { useLocation } from "react-router-dom"
 
 function MiniPanier() {
 	const {
@@ -11,7 +13,11 @@ function MiniPanier() {
 		total,
 		items,
 	} = useCart();
+   const location = useLocation();
 
+    useEffect(() => {
+        fermerMiniPanier();
+    }, [location.pathname, fermerMiniPanier]);
 	if (!miniPanierOuvert || !dernierProduitAjoute) return null;
 
 	return (
@@ -103,7 +109,7 @@ function MiniPanier() {
 					<ActionButton to="/panier" onClick={fermerMiniPanier}>
 						Commander maintenant
 					</ActionButton>
-					<ActionButton onClick={fermerMiniPanier} inverse={true}>
+					<ActionButton onClick={fermerMiniPanier}>
 						Continuer mes achats
 					</ActionButton>
 				</div>

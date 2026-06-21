@@ -1,11 +1,11 @@
-import { Request, Response } from "express";
+import type { Request, Response } from "express";
 import {
+	createProduit,
+	deleteProduit,
 	getAllProduits,
 	getProduitById,
-	createProduit,
-	updateProduit,
-	deleteProduit,
 	getProduitsByCategorie,
+	updateProduit,
 } from "../models/produitModel";
 
 // Routes publiques (tout le monde peut voir)
@@ -17,7 +17,7 @@ export const getProduits = async (req: Request, res: Response) => {
 		const dimensionId = req.query.dimension_id ? Number(req.query.dimension_id) : undefined;
 		const produits = await getAllProduits(categorieId, dimensionId);
 		res.json(produits);
-	} catch (error) {
+	} catch {
 		res
 			.status(500)
 			.json({ message: "Erreur lors de la récupération des produits" });
@@ -33,7 +33,7 @@ export const getProduit = async (req: Request, res: Response) => {
 		} else {
 			res.json(produit);
 		}
-	} catch (error) {
+	} catch {
 		res
 			.status(500)
 			.json({ message: "Erreur lors de la récupération du produit" });
@@ -44,7 +44,7 @@ export const getProduitsByCategorieid = async (req: Request, res: Response) => {
 	try {
 		const produits = await getProduitsByCategorie(Number(req.params.id));
 		res.json(produits);
-	} catch (error) {
+	} catch {
 		res.status(500).json({
 			message: "Erreur lors de la récupération des produits par catégorie",
 		});
@@ -56,7 +56,8 @@ export const getProduitsByCategorieid = async (req: Request, res: Response) => {
 // Ajoute un nouveau produit
 export const addProduit = async (req: Request, res: Response) => {
 	try {
-		const { nom, description, prix, image_url, mockup_url, categorie_id } = req.body;
+		const { nom, description, prix, image_url, mockup_url, categorie_id } =
+			req.body;
 		const id = await createProduit(
 			nom,
 			description,
@@ -66,7 +67,7 @@ export const addProduit = async (req: Request, res: Response) => {
 			mockup_url,
 		);
 		res.status(201).json({ message: "Produit créé avec succès", id });
-	} catch (error) {
+	} catch {
 		res.status(500).json({ message: "Erreur lors de la création du produit" });
 	}
 };
@@ -74,7 +75,9 @@ export const addProduit = async (req: Request, res: Response) => {
 // Modifie un produit existant par son id
 export const editProduit = async (req: Request, res: Response) => {
 	try {
-		const { nom, description, prix, image_url, mockup_url, categorie_id } = req.body;
+		console.log("BODY RECU:", req.body);
+		const { nom, description, prix, image_url, mockup_url, categorie_id } =
+			req.body;
 		await updateProduit(
 			Number(req.params.id),
 			nom,
@@ -85,20 +88,21 @@ export const editProduit = async (req: Request, res: Response) => {
 			mockup_url,
 		);
 		res.json({ message: "Produit modifié avec succès" });
-	} catch (error) {
+	} catch {
 		res
 			.status(500)
 			.json({ message: "Erreur lors de la modification du produit" });
 	}
 };
 
-
 // Désactive un produit (soft delete)
 export const removeProduit = async (req: Request, res: Response) => {
 	try {
 		await deleteProduit(Number(req.params.id));
 		res.json({ message: "Produit désactivé avec succès" });
-	} catch (error) {
-		res.status(500).json({ message: "Erreur lors de la suppression du produit" });
+	} catch {
+		res
+			.status(500)
+			.json({ message: "Erreur lors de la suppression du produit" });
 	}
 };

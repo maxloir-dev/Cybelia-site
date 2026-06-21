@@ -1,27 +1,38 @@
 .footer {
-	background-color: var(--color-text);
+	background-color: var(--color-background);
 	color: #fff;
-	padding: 60px 40px 20px;
+	padding: 40px 40px 24px;
 	margin-top: 0;
+	display: flex;
+	flex-direction: column;
+	gap: 24px;
 }
 
+/* --- PARTIE HAUTE (Centrée) --- */
 .footer-top {
 	display: flex;
-	justify-content: space-between;
-	gap: 40px;
-	padding-bottom: 40px;
-	border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	gap: 30px;
+	text-align: center;
 }
 
 .footer-brand {
 	display: flex;
-	flex-direction: column;
-	align-items: flex-start;
-	gap: 8px;
+	align-items: center; /* Aligne le logo et le texte sur la même ligne */
+	justify-content: center;
+	gap: 16px;
+}
+
+.footer-logo-img {
+	height: 50px; /* Ajusté pour ressembler à la taille d'icône de la capture */
+	width: auto;
 }
 
 .footer-brand .signature {
-	font-size: 2.5rem;
+	font-size: 1.5rem;
+	font-weight: 500;
 	color: #fff;
 }
 
@@ -29,90 +40,79 @@
 	font-family: var(--font-body);
 	font-weight: 200;
 	font-size: 0.85rem;
-	letter-spacing: 0.2em;
-	text-transform: uppercase;
+	letter-spacing: 0.1em;
 	color: rgba(255, 255, 255, 0.5);
 }
 
-.footer-title {
-	font-family: var(--font-title);
-	font-size: 0.75rem;
-	letter-spacing: 0.2em;
-	text-transform: uppercase;
-	color: white;
-	margin-bottom: 20px;
-}
-
-.footer-links ul {
-	list-style: none;
+/* Liens alignés horizontalement */
+.footer-nav {
 	display: flex;
-	flex-direction: column;
-	gap: 12px;
+	flex-wrap: wrap; /* Permet de passer à la ligne proprement sur mobile */
+	justify-content: center;
+	gap: 20px;
 }
 
-.footer-links a {
+.footer-nav a {
 	font-family: var(--font-body);
-	font-weight: 200;
-	font-size: 0.9rem;
-	color: rgba(255, 255, 255, 0.6);
+	font-weight: 300;
+	font-size: 0.95rem;
+	color: rgba(255, 255, 255, 0.7);
 	text-decoration: none;
 	transition: color 0.2s;
 }
 
-.footer-links a:hover {
+.footer-nav a:hover {
 	color: #fff;
 }
 
-.footer-contact p {
-	font-family: var(--font-body);
-	font-weight: 200;
-	font-size: 0.9rem;
-	color: rgba(255, 255, 255, 0.6);
-	margin-bottom: 20px;
+/* --- PARTIE BASSE (Séparée et éclatée) --- */
+.footer-bottom {
+	display: flex;
+	justify-content: space-between; /* Copyright à gauche, Réseaux à droite */
+	align-items: center;
+	padding-top: 16px;
+	border-top: 1px dashed rgba(255, 255, 255, 0.15); /* Ligne pointillée comme sur l'image */
 }
 
+.footer-copyright {
+	font-family: var(--font-body);
+	font-weight: 200;
+	font-size: 0.85rem;
+	color: rgba(255, 255, 255, 0.5);
+}
+
+/* Réseaux sociaux maintenant alignés en ligne */
 .footer-socials {
 	display: flex;
-	flex-direction: column;
-	gap: 12px;
-}
-
-.footer-socials a {
-	font-family: var(--font-body);
-	font-weight: 200;
-	font-size: 0.9rem;
-	color: rgba(255, 255, 255, 0.6);
-	text-decoration: none;
-	transition: color 0.2s;
-}
-
-.footer-socials a:hover {
-	color: #fff;
-}
-
-.footer-bottom {
-	padding-top: 20px;
-	text-align: center;
-	font-family: var(--font-body);
-	font-weight: 200;
-	font-size: 0.8rem;
-	color: rgba(255, 255, 255, 0.3);
+	flex-direction: row; /* Aligné horizontalement */
+	gap: 20px;
 }
 
 .footer-social-icon {
-	width: 20px;
-	height: 20px;
+	width: 22px;
+	height: 22px;
 	filter: invert(1);
 	opacity: 0.6;
-	transition: opacity 0.2s;
+	transition:
+		opacity 0.2s,
+		transform 0.2s;
 }
 
 .footer-socials a:hover .footer-social-icon {
 	opacity: 1;
+	transform: translateY(-2px); /* Léger effet de survol sympa */
 }
 
-.footer-logo-img {
-	height: 160px;
-	width: auto;
-	margin: 8px 0;
+/* --- RESPONSIVE (Pour les téléphones) --- */
+@media (max-width: 768px) {
+	.footer-bottom {
+		flex-direction: column-reverse; /* Met les réseaux au-dessus du copyright sur mobile */
+		gap: 20px;
+		text-align: center;
+	}
+
+	.footer-brand {
+		flex-direction: column; /* Aligne logo et texte verticalement sur petit écran */
+		gap: 6px;
+	}
 }

@@ -4,7 +4,7 @@ import {
 	getCommandes,
 	getCommande,
 	getMesCommandes,
-	supprimerCommande,
+	deleteCommande,
 } from "../controllers/commandeController";
 import { verifierToken, verifierAdmin } from "../middlewares/authMiddleware";
 
@@ -22,6 +22,6 @@ router.get("/", verifierToken, verifierAdmin, getCommandes);
 router.get("/:id", verifierToken, verifierAdmin, getCommande);
 
 // Supprime une commande (gérante uniquement)
-router.delete("/:id", verifierToken, verifierAdmin, supprimerCommande);
+router.delete("/:id", verifierToken, verifierAdmin, deleteCommande);
 
 export default router;

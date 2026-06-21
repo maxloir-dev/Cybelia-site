@@ -1,4 +1,4 @@
-import { Request, Response, NextFunction } from "express";
+import type { Request, Response, NextFunction } from "express";
 import jwt from "jsonwebtoken";
 
 // On étend le type Request pour pouvoir y ajouter l'utilisateur connecté
@@ -29,7 +29,7 @@ export const verifierToken = (
 		};
 		req.utilisateur = decoded;
 		next();
-	} catch (error) {
+	} catch {
 		res.status(401).json({ message: "Token invalide ou expiré" });
 	}
 };

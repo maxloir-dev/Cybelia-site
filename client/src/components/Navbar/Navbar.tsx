@@ -9,8 +9,6 @@ import { UserGreeting } from "../UserGreeting";
 function Navbar() {
 	const [searchOpen, setSearchOpen] = useState(false);
 	const { estConnecte, estAdmin, deconnexion, utilisateur } = useAuth();
-	console.log("estConnecte:", estConnecte);
-	console.log("estAdmin:", estAdmin);
 	const { nombreArticles } = useCart();
 
 	return (
@@ -97,12 +95,6 @@ function Navbar() {
 						className="navbar-icon"
 						aria-label="Déconnexion"
 						onClick={deconnexion}
-						style={{
-							background: "none",
-							border: "none",
-							cursor: "pointer",
-							padding: 0,
-						}}
 					>
 						<svg width="20" height="20" viewBox="0 0 32 32" aria-hidden="true">
 							<g fill="none" fillRule="evenodd">

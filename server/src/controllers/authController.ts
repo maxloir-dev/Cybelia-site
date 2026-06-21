@@ -1,20 +1,20 @@
-import { Request, Response } from "express";
-import bcrypt from "bcrypt";
-import jwt from "jsonwebtoken";
-import crypto from "crypto";
+import type { Request, Response } from "express";
+import type { AuthRequest } from "../middlewares/authMiddleware";
+import { envoyerEmailReinitialisation } from "../config/email";
 import {
-	getUserByEmail,
+	clearResetToken,
 	createUser,
+	getUserByEmail,
 	getUserById,
 	getUserByIdWithPassword,
-	updateUser,
-	updatePassword,
-	setResetToken,
 	getUserByResetToken,
-	clearResetToken,
+	setResetToken,
+	updatePassword,
+	updateUser,
 } from "../models/utilisateurModel";
-import { envoyerEmailReinitialisation } from "../config/email";
-import { AuthRequest } from "../middlewares/authMiddleware";
+import bcrypt from "bcrypt";
+import crypto from "crypto";
+import jwt from "jsonwebtoken";
 
 // Authentification
 
@@ -36,7 +36,7 @@ export const register = async (req: Request, res: Response) => {
 		// Créer l'utilisateur
 		const id = await createUser(nom, prenom, email, hash);
 		res.status(201).json({ message: "Compte créé avec succès", id });
-	} catch (error) {
+	} catch {
 		res.status(500).json({ message: "Erreur lors de l'inscription" });
 	}
 };
@@ -70,7 +70,7 @@ export const login = async (req: Request, res: Response) => {
 			{ expiresIn: "7d" },
 		);
 		res.json({ token, role_id: utilisateur.role_id, id: utilisateur.id });
-	} catch (error) {
+	} catch {
 		res.status(500).json({ message: "Erreur lors de la connexion" });
 	}
 };
@@ -80,13 +80,18 @@ export const login = async (req: Request, res: Response) => {
 // Récupère le profil de l'utilisateur connecté (sans mot de passe)
 export const getProfil = async (req: AuthRequest, res: Response) => {
 	try {
-		const utilisateur = await getUserById(req.utilisateur!.id);
+		// Sécurisation requise par Biome contre le non-null assertion (!)
+		if (!req.utilisateur) {
+			res.status(401).json({ message: "Utilisateur non authentifié" });
+			return;
+		}
+		const utilisateur = await getUserById(req.utilisateur.id);
 		if (!utilisateur) {
 			res.status(404).json({ message: "Utilisateur non trouvé" });
 		} else {
 			res.json(utilisateur);
 		}
-	} catch (error) {
+	} catch {
 		res
 			.status(500)
 			.json({ message: "Erreur lors de la récupération du profil" });
@@ -96,10 +101,14 @@ export const getProfil = async (req: AuthRequest, res: Response) => {
 // Met à jour le profil de l'utilisateur connecté
 export const updateProfil = async (req: AuthRequest, res: Response) => {
 	try {
+		if (!req.utilisateur) {
+			res.status(401).json({ message: "Utilisateur non authentifié" });
+			return;
+		}
 		const { nom, prenom, email } = req.body;
-		await updateUser(req.utilisateur!.id, nom, prenom, email);
+		await updateUser(req.utilisateur.id, nom, prenom, email);
 		res.json({ message: "Profil mis à jour avec succès" });
-	} catch (error) {
+	} catch {
 		res
 			.status(500)
 			.json({ message: "Erreur lors de la mise à jour du profil" });
@@ -111,10 +120,14 @@ export const updateProfil = async (req: AuthRequest, res: Response) => {
 // Change le mot de passe de l'utilisateur connecté
 export const updateMotDePasse = async (req: AuthRequest, res: Response) => {
 	try {
+		if (!req.utilisateur) {
+			res.status(401).json({ message: "Utilisateur non authentifié" });
+			return;
+		}
 		const { ancien_mot_de_passe, nouveau_mot_de_passe } = req.body;
 
 		// Récupère uniquement le mot de passe hashé de l'utilisateur connecté
-		const utilisateur = await getUserByIdWithPassword(req.utilisateur!.id);
+		const utilisateur = await getUserByIdWithPassword(req.utilisateur.id);
 
 		// Vérifie que l'ancien mot de passe est correct
 		const motDePasseValide = await bcrypt.compare(
@@ -130,9 +143,9 @@ export const updateMotDePasse = async (req: AuthRequest, res: Response) => {
 		const hash = await bcrypt.hash(nouveau_mot_de_passe, 10);
 
 		// Met à jour le mot de passe
-		await updatePassword(req.utilisateur!.id, hash);
+		await updatePassword(req.utilisateur.id, hash);
 		res.json({ message: "Mot de passe mis à jour avec succès" });
-	} catch (error) {
+	} catch {
 		res
 			.status(500)
 			.json({ message: "Erreur lors de la mise à jour du mot de passe" });
@@ -182,7 +195,7 @@ export const resetPassword = async (req: Request, res: Response) => {
 		await clearResetToken(utilisateur.id);
 
 		res.json({ message: "Mot de passe réinitialisé avec succès." });
-	} catch (error) {
+	} catch {
 		res.status(500).json({ message: "Erreur lors de la réinitialisation." });
 	}
 };
@@ -193,7 +206,7 @@ export const resetPassword = async (req: Request, res: Response) => {
 export const logout = async (_req: AuthRequest, res: Response) => {
 	try {
 		res.json({ message: "Déconnexion réussie" });
-	} catch (error) {
+	} catch {
 		res.status(500).json({ message: "Erreur lors de la déconnexion" });
 	}
 };

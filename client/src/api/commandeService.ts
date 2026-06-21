@@ -29,8 +29,10 @@ export const getCommandeById = async (id: number): Promise<Commande> => {
 	const response = await api.get(`/commandes/${id}`);
 	return response.data;
 };
-
-// Supprime une commande (gérante)
-export const deleteCommande = async (id: number): Promise<void> => {
-	await api.delete(`/commandes/${id}`);
+// Supprimer définitivement une commande (gérante)
+export const deleteCommande = async (
+	id: number,
+): Promise<{ message: string }> => {
+	const response = await api.delete(`/commandes/${id}`);
+	return response.data;
 };

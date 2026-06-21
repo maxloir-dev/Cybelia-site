@@ -1,9 +1,13 @@
 import "./show.css";
 import ActionButton from "../ActionButton/ActionButton";
-import { GooeyInput } from "../ui/GooeyInput";
+import { GooeyInput } from "../Ui/GooeyInput";
 import { useCart } from "../../store/CartContext";
 import { useAuth } from "../../store/AuthContext";
-import { getAllDimensions, getDimensionsByProduit, upsertDimensionProduit } from "../../api/dimensionService";
+import {
+	getAllDimensions,
+	getDimensionsByProduit,
+	upsertDimensionProduit,
+} from "../../api/dimensionService";
 import type { Dimension } from "../../types";
 import {
 	type ChangeEvent,
@@ -146,7 +150,9 @@ export default function Show({ categorieId, titre }: Props) {
 			// Pour les affiches : prix de base = prix du format A4 (21×30 cm)
 			let prixFinal = Number(form.prix);
 			if (categorieId === 2) {
-				const dimA4 = toutesLesDimensions.find((d) => Number(d.largeur_cm) === 21);
+				const dimA4 = toutesLesDimensions.find(
+					(d) => Number(d.largeur_cm) === 21,
+				);
 				const prixA4 = dimA4 ? Number(dimensionsPrixAjout[dimA4.id] ?? 0) : 0;
 				prixFinal = prixA4;
 			}
@@ -165,7 +171,8 @@ export default function Show({ categorieId, titre }: Props) {
 
 			// Sauvegarde des dimensions configurées dans le formulaire
 			const dimensionsARenseigner = Object.entries(dimensionsPrixAjout).filter(
-				([, prix]) => prix.trim() !== "" && !isNaN(Number(prix)) && Number(prix) >= 0,
+				([, prix]) =>
+					prix.trim() !== "" && !isNaN(Number(prix)) && Number(prix) >= 0,
 			);
 			await Promise.all(
 				dimensionsARenseigner.map(([dimId, prix]) =>
@@ -443,26 +450,31 @@ export default function Show({ categorieId, titre }: Props) {
 
 							{categorieId === 2 && toutesLesDimensions.length > 0 && (
 								<div className="form-dimensions">
-									<p className="form-dimensions-titre">Formats disponibles — renseigner uniquement les formats proposés</p>
-									{toutesLesDimensions.filter((d) => d.id !== 1).map((d) => (
-										<div key={d.id} className="form-dimension-ligne">
-											<span className="form-dimension-label">{d.label}</span>
-											<input
-												type="number"
-												step="0.01"
-												min="0"
-												placeholder="Prix €"
-												className="form-dimension-prix"
-												value={dimensionsPrixAjout[d.id] ?? ""}
-												onChange={(e) =>
-													setDimensionsPrixAjout({
-														...dimensionsPrixAjout,
-														[d.id]: e.target.value,
-													})
-												}
-											/>
-										</div>
-									))}
+									<p className="form-dimensions-titre">
+										Formats disponibles — renseigner uniquement les formats
+										proposés
+									</p>
+									{toutesLesDimensions
+										.filter((d) => d.id !== 1)
+										.map((d) => (
+											<div key={d.id} className="form-dimension-ligne">
+												<span className="form-dimension-label">{d.label}</span>
+												<input
+													type="number"
+													step="0.01"
+													min="0"
+													placeholder="Prix €"
+													className="form-dimension-prix"
+													value={dimensionsPrixAjout[d.id] ?? ""}
+													onChange={(e) =>
+														setDimensionsPrixAjout({
+															...dimensionsPrixAjout,
+															[d.id]: e.target.value,
+														})
+													}
+												/>
+											</div>
+										))}
 								</div>
 							)}
 

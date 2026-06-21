@@ -14,3 +14,10 @@ export const getHistoriqueClient = async (id: number): Promise<Commande[]> => {
 	const response = await api.get(`/utilisateurs/${id}/commandes`);
 	return response.data;
 };
+
+export const deleteUtilisateur = async (
+	id: number,
+): Promise<{ message: string }> => {
+	const response = await api.delete(`/utilisateurs/${id}`);
+	return response.data;
+};

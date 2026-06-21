@@ -1,7 +1,13 @@
 import pool from "../config/database";
 import { grouperLignesParCommande } from "../utils/grouperCommandes";
 
-const CHAMPS_LIGNE = ["quantite", "prix_unitaire", "produit_nom", "dimension_label"];
+const CHAMPS_LIGNE = [
+	"quantite",
+	"prix_unitaire",
+	"produit_nom",
+	"dimension_label",
+	"image_url",
+];
 
 export interface LivraisonData {
 	prenom: string;
@@ -76,7 +82,8 @@ export const getAllCommandes = async () => {
                c.telephone, c.adresse, c.code_postal, c.ville, c.pays,
                lc.quantite, lc.prix_unitaire,
                COALESCE(lc.produit_nom, p.nom) AS produit_nom,
-               COALESCE(lc.dimension_label, d.label) AS dimension_label
+               COALESCE(lc.dimension_label, d.label) AS dimension_label,
+			   p.image_url
         FROM commandes c
         JOIN utilisateurs u ON c.utilisateur_id = u.id
         JOIN lignes_commande lc ON c.id = lc.commande_id
@@ -95,7 +102,8 @@ export const getCommandeById = async (id: number) => {
                u.nom, u.prenom, u.email,
                lc.quantite, lc.prix_unitaire,
                COALESCE(lc.produit_nom, p.nom) AS produit_nom,
-               COALESCE(lc.dimension_label, d.label) AS dimension_label
+               COALESCE(lc.dimension_label, d.label) AS dimension_label,
+			   p.image_url
         FROM commandes c
         JOIN utilisateurs u ON c.utilisateur_id = u.id
         JOIN lignes_commande lc ON c.id = lc.commande_id
@@ -120,7 +128,8 @@ export const getCommandesByUserId = async (utilisateur_id: number) => {
         SELECT c.id, c.montant_total, c.created_at,
                lc.quantite, lc.prix_unitaire,
                COALESCE(lc.produit_nom, p.nom) AS produit_nom,
-               COALESCE(lc.dimension_label, d.label) AS dimension_label
+               COALESCE(lc.dimension_label, d.label) AS dimension_label,
+               p.image_url
         FROM commandes c
         JOIN lignes_commande lc ON c.id = lc.commande_id
         LEFT JOIN produits p ON lc.produit_id = p.id
@@ -131,4 +140,11 @@ export const getCommandesByUserId = async (utilisateur_id: number) => {
 		[utilisateur_id],
 	);
 	return grouperLignesParCommande(rows, CHAMPS_LIGNE);
+};
+
+// Supprime une commande et ses lignes associées
+export const deleteCommandeById = async (id: number): Promise<void> => {
+	await pool.query("DELETE FROM lignes_commande WHERE commande_id = ?", [id]);
+
+	await pool.query("DELETE FROM commandes WHERE id = ?", [id]);
 };

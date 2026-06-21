@@ -1,13 +1,14 @@
-import { Request, Response } from "express";
-import cloudinary from "../config/cloudinary";
+import type { Request, Response } from "express";
 import multer from "multer";
+import cloudinary from "../config/cloudinary";
+import sharp from "sharp";
 
 // Multer — stockage en mémoire avant envoi à Cloudinary
 
 const storage = multer.memoryStorage();
 
 const fileFilter = (
-	_req: any,
+	_req: Request,
 	file: Express.Multer.File,
 	cb: multer.FileFilterCallback,
 ) => {
@@ -22,16 +23,23 @@ const fileFilter = (
 export const upload = multer({
 	storage,
 	fileFilter,
-	limits: { fileSize: 5 * 1024 * 1024 }, // 5MB max
+	limits: { fileSize: 20 * 1024 * 1024 }, // 20MB max
 });
 
-const uploadVersCloudinary = async (file: Express.Multer.File): Promise<string> => {
-	const base64 = `data:${file.mimetype};base64,${file.buffer.toString("base64")}`;
-	const result = await cloudinary.uploader.upload(base64, {
-		folder: "cybelia",
-		transformation: [{ quality: "auto" }, { fetch_format: "auto" }],
-	});
-	return result.secure_url;
+const uploadVersCloudinary = async (
+    file: Express.Multer.File,
+): Promise<string> => {
+    // Compression avant envoi à Cloudinary
+    const buffer = await sharp(file.buffer)
+        .resize({ width: 2000, withoutEnlargement: true })
+        .jpeg({ quality: 80 })
+        .toBuffer();
+
+    const base64 = `data:image/jpeg;base64,${buffer.toString("base64")}`;
+    const result = await cloudinary.uploader.upload(base64, {
+        folder: "cybelia",
+    });
+    return result.secure_url;
 };
 
 // Upload jusqu'à 2 images (image principale + mockup)
@@ -48,6 +56,7 @@ export const uploadMultipleImages = async (req: Request, res: Response) => {
 			mockup_url: urls[1] ?? null,
 		});
 	} catch (error) {
+        console.error("ERREUR UPLOAD:", error);
 		res.status(500).json({ message: "Erreur lors de l'upload des images" });
 	}
 };

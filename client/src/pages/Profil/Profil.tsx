@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import "../Admin/Admin.css";
 import {
 	getProfil,
 	updateProfil,
@@ -7,6 +8,7 @@ import {
 import { getMesCommandes } from "../../api/commandeService";
 import type { Utilisateur, Commande } from "../../types";
 import "./Profil.css";
+import ActionButton from "../../components/ActionButton/ActionButton";
 
 // ============================================
 // Types des vues possibles
@@ -20,11 +22,19 @@ function Profil() {
 	const [chargement, setChargement] = useState(false);
 	const [message, setMessage] = useState("");
 	const [erreur, setErreur] = useState("");
+	const [commandeSelectionnee, setCommandeSelectionnee] =
+		useState<Commande | null>(null);
+	const [produitImageSelectionnee, setProduitImageSelectionnee] = useState<
+		string | null
+	>(null);
 
 	// États formulaire modifier profil
 	const [nom, setNom] = useState("");
 	const [prenom, setPrenom] = useState("");
 	const [email, setEmail] = useState("");
+	const [adresse, setAdresse] = useState("");
+	const [codePostal, setCodePostal] = useState("");
+	const [ville, setVille] = useState("");
 
 	// États formulaire changer mot de passe
 	const [ancienMdp, setAncienMdp] = useState("");
@@ -199,7 +209,6 @@ function Profil() {
 							<path d="M7 13L5.4 5" />
 						</svg>
 						<h2>Mes commandes</h2>
-						<p>Voir mes commandes passées</p>
 					</button>
 
 					{/* Carte Mon profil */}
@@ -229,7 +238,7 @@ function Profil() {
 							<path d="M4 20c0-4 3.6-7 8-7s8 3 8 7" />
 						</svg>
 						<h2>Mon profil</h2>
-						<p>Mettre à jour mes informations</p>
+						
 					</button>
 
 					{/* Carte Mot de passe */}
@@ -264,14 +273,12 @@ function Profil() {
 							<path d="M5 10h14" />
 						</svg>
 						<h2>Mot de passe</h2>
-						<p>Changer mon mot de passe</p>
 					</button>
 				</div>
 			</main>
 		);
 	}
 
-	// Vue Commandes
 	if (vue === "commandes") {
 		return (
 			<main className="profil-main">
@@ -279,48 +286,118 @@ function Profil() {
 					className="profil-retour"
 					type="button"
 					onClick={() => setVue("accueil")}
+					aria-label="Retour"
 				>
-					← Retour
+					<svg
+						width="36"
+						height="20"
+						viewBox="0 0 36 20"
+						fill="none"
+						stroke="currentColor"
+						strokeWidth="1.5"
+						strokeLinecap="round"
+						strokeLinejoin="round"
+						aria-hidden="true"
+						focusable="false"
+					>
+						<line x1="34" y1="10" x2="2" y2="10" />
+						<polyline points="10 18 2 10 10 2" />
+					</svg>
 				</button>
 				<h1>Mes commandes</h1>
-				<div className="profil-liste">
-					{commandes.length === 0 && (
-						<p>Vous n'avez pas encore passé de commande.</p>
-					)}
-					{commandes.map((commande) => (
-						<div key={commande.id} className="profil-item">
-							<div className="profil-item__info">
-								<span className="profil-item__titre">
-									Commande #{commande.id}
-								</span>
-								<span className="profil-item__detail">
-									{new Date(commande.created_at).toLocaleDateString("fr-FR")}
-								</span>
-								{commande.lignes?.map((ligne) => (
-									<span
-										// Utilisez l'ID du produit ou de la ligne plutôt que l'index 'i'
-										key={ligne.produit_id}
-										className="profil-item__detail"
-									>
-										{ligne.quantite}x {ligne.produit_nom} —{" "}
-										{ligne.prix_unitaire}€
-									</span>
-								))}
-							</div>
-							<div className="profil-item__actions">
-								<span className="profil-item__prix">
-									{Number(commande.montant_total).toFixed(2)}€
-								</span>
+
+				{commandes.length === 0 && (
+					<p>Vous n'avez pas encore passé de commande.</p>
+				)}
+
+				<div className="admin-postit-grille">
+					{commandes.map((commande) => {
+						const estOuverte = commandeSelectionnee?.id === commande.id;
+						return (
+							<div
+								key={commande.id}
+								className={`profil-postit ${estOuverte ? "profil-postit--ouvert" : ""}`}
+							>
+								{/* En-tête cliquable */}
 								<button
 									type="button"
-									className="profil-item__facture"
-									onClick={() => telechargerFacture(commande)}
+									className="profil-postit__header"
+									onClick={() =>
+										setCommandeSelectionnee(estOuverte ? null : commande)
+									}
 								>
-									Télécharger la facture
+									<span className="admin-postit__punaise" />
+									<div className="admin-postit__titre">
+										Commande #{commande.id}
+									</div>
+									<div className="admin-postit__date">
+										{new Date(commande.created_at).toLocaleDateString("fr-FR")}
+									</div>
+									<div className="admin-postit__prix">
+										{Number(commande.montant_total).toFixed(2)}€
+									</div>
+									{!estOuverte && (
+										<div className="admin-postit__cliquez">
+											Cliquez pour voir
+										</div>
+									)}
 								</button>
+
+								{/* Contenu déplié */}
+								{estOuverte && (
+									<div className="profil-postit__contenu">
+										{commande.lignes?.map((ligne, index) => (
+											<button
+												type="button"
+												key={`${commande.id}-${index}`}
+												className="profil-popin__ligne"
+												onClick={() =>
+													setProduitImageSelectionnee(
+														produitImageSelectionnee === ligne.image_url
+															? null
+															: (ligne.image_url ?? null),
+													)
+												}
+											>
+												<div className="profil-popin__ligne-info">
+													<span>
+														{ligne.quantite}x{" "}
+														<strong>{ligne.produit_nom}</strong>
+														{ligne.dimension_label &&
+															` (${ligne.dimension_label})`}
+													</span>
+													<span>{ligne.prix_unitaire}€/u</span>
+												</div>
+												{produitImageSelectionnee === ligne.image_url &&
+													ligne.image_url && (
+														<img
+															src={ligne.image_url}
+															alt={ligne.produit_nom}
+															className="profil-popin__produit-image"
+														/>
+													)}
+											</button>
+										))}
+
+										<div className="profil-postit__total">
+											<span>Total</span>
+											<strong>
+												{Number(commande.montant_total).toFixed(2)}€
+											</strong>
+										</div>
+
+										<button
+											type="button"
+											className="profil-postit__facture"
+											onClick={() => telechargerFacture(commande)}
+										>
+											Télécharger la facture
+										</button>
+									</div>
+								)}
 							</div>
-						</div>
-					))}
+						);
+					})}
 				</div>
 			</main>
 		);
@@ -334,8 +411,23 @@ function Profil() {
 					className="profil-retour"
 					type="button"
 					onClick={() => setVue("accueil")}
+					aria-label="Retour"
 				>
-					← Retour
+					<svg
+						width="36"
+						height="20"
+						viewBox="0 0 36 20"
+						fill="none"
+						stroke="currentColor"
+						strokeWidth="1.5"
+						strokeLinecap="round"
+						strokeLinejoin="round"
+						aria-hidden="true"
+						focusable="false"
+					>
+						<line x1="34" y1="10" x2="2" y2="10" />
+						<polyline points="10 18 2 10 10 2" />
+					</svg>
 				</button>
 				<h1>Modifier mon profil</h1>
 
@@ -343,6 +435,7 @@ function Profil() {
 				{erreur && <p className="profil-erreur">{erreur}</p>}
 
 				<form className="profil-form" onSubmit={handleModifierProfil}>
+					{/* Nom + Prénom côte à côte */}
 					<div className="profil-form__row">
 						<div className="profil-form__field">
 							<label htmlFor="nom">Nom</label>
@@ -365,6 +458,8 @@ function Profil() {
 							/>
 						</div>
 					</div>
+
+					{/* Email */}
 					<div className="profil-form__field">
 						<label htmlFor="email">Email</label>
 						<input
@@ -375,9 +470,52 @@ function Profil() {
 							required
 						/>
 					</div>
-					<button type="submit" className="profil-btn">
-						Enregistrer
-					</button>
+
+					{/* Adresse */}
+					<div className="profil-form__field">
+						<label htmlFor="adresse">Adresse</label>
+						<input
+							id="adresse"
+							type="text"
+							value={adresse}
+							onChange={(e) => setAdresse(e.target.value)}
+							placeholder="Ex: 12 rue de la Paix"
+						/>
+					</div>
+
+					{/* Code postal + Ville */}
+					<div className="profil-form__row">
+						<div className="profil-form__field">
+							<label htmlFor="code-postal">Code postal</label>
+							<input
+								id="code-postal"
+								type="text"
+								value={codePostal}
+								onChange={(e) => setCodePostal(e.target.value)}
+								placeholder="Ex: 75001"
+							/>
+						</div>
+						<div className="profil-form__field">
+							<label htmlFor="ville">Ville</label>
+							<input
+								id="ville"
+								type="text"
+								value={ville}
+								onChange={(e) => setVille(e.target.value)}
+								placeholder="Ex: Paris"
+							/>
+						</div>
+					</div>
+
+					<div
+						style={{
+							display: "flex",
+							justifyContent: "center",
+							marginTop: "20px",
+						}}
+					>
+						<ActionButton type="submit">Enregistrer</ActionButton>
+					</div>
 				</form>
 			</main>
 		);
@@ -391,8 +529,23 @@ function Profil() {
 					className="profil-retour"
 					type="button"
 					onClick={() => setVue("accueil")}
+					aria-label="Retour"
 				>
-					← Retour
+					<svg
+						width="36"
+						height="20"
+						viewBox="0 0 36 20"
+						fill="none"
+						stroke="currentColor"
+						strokeWidth="1.5"
+						strokeLinecap="round"
+						strokeLinejoin="round"
+						aria-hidden="true"
+						focusable="false"
+					>
+						<line x1="34" y1="10" x2="2" y2="10" />
+						<polyline points="10 18 2 10 10 2" />
+					</svg>
 				</button>
 				<h1>Changer mon mot de passe</h1>
 
@@ -435,9 +588,15 @@ function Profil() {
 							required
 						/>
 					</div>
-					<button type="submit" className="profil-btn">
-						Changer le mot de passe
-					</button>
+					<div
+						style={{
+							display: "flex",
+							justifyContent: "center",
+							marginTop: "20px",
+						}}
+					>
+						<ActionButton type="submit">Enregistrer</ActionButton>
+					</div>
 				</form>
 			</main>
 		);

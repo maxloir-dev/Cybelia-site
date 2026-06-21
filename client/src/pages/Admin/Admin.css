@@ -1,4 +1,7 @@
-/* Layout principal */
+@import url("https://fonts.googleapis.com/css2?family=Caveat:wght@400..700&display=swap");
+/* ==========================================================================
+   LAYOUT PRINCIPAL
+   ========================================================================== */
 
 .admin-main {
 	max-width: 1200px;
@@ -18,7 +21,9 @@
 	margin-bottom: 12px;
 }
 
-/* Cartes d'accueil */
+/* ==========================================================================
+   CARTES D'ACCUEIL (ADMIN CARDS)
+   ========================================================================== */
 
 .admin-cards {
 	display: grid;
@@ -46,7 +51,9 @@
 	border-radius: 24px;
 	height: 420px;
 	opacity: 0;
-	transition: border-color 0.4s ease;
+	transition:
+		border-color 0.4s ease,
+		transform 0.4s ease;
 	animation:
 		adminCardAppear 1.6s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards,
 		adminRespiration 4s ease-in-out infinite;
@@ -54,30 +61,24 @@
 
 .admin-card:nth-child(1) {
 	animation-delay: 0.2s, 1.8s;
-	animation-duration: 1.6s, 4s;
 }
-
 .admin-card:nth-child(2) {
 	animation-delay: 0.45s, 2.05s;
-	animation-duration: 1.6s, 4s;
 }
-
 .admin-card:nth-child(3) {
 	animation-delay: 0.7s, 2.3s;
-	animation-duration: 1.6s, 4s;
 }
-
 .admin-card:nth-child(4) {
 	animation-delay: 0.95s, 2.55s;
-	animation-duration: 1.6s, 4s;
 }
 
 .admin-card:hover {
-	border-color: rgba(255, 255, 255, 0.6);
+	border-color: var(--color-text);
+	transform: translateY(-4px);
 }
 
 .admin-card__icon {
-	font-size: 3.5rem;
+	font-size: 2.5rem;
 	filter: drop-shadow(0 2px 6px rgba(0, 0, 0, 0.3));
 }
 
@@ -88,8 +89,8 @@
 }
 
 .admin-card p {
-	color: rgba(255, 255, 255, 0.6);
-	font-size: 0.95rem;
+	color: rgba(255, 255, 255, 0.5);
+	font-size: 0.9rem;
 	line-height: 1.6;
 	padding: 0 24px;
 }
@@ -123,51 +124,39 @@
 	}
 }
 
-.admin-card:hover {
-	border-color: var(--color-text);
-	transform: translateY(-4px);
-}
-
-.admin-card__icon {
-	font-size: 2.5rem;
-}
-
-.admin-card h2 {
-	color: #fff;
-	font-size: 1.4rem;
-	letter-spacing: 3px;
-}
-
-.admin-card p {
-	color: rgba(255, 255, 255, 0.5);
-	font-size: 0.9rem;
-}
-
-/* Bouton retour */
+/* ==========================================================================
+   BOUTON RETOUR
+   ========================================================================== */
 
 .admin-retour {
+	display: inline-flex;
+	align-items: center;
 	background: none;
 	border: none;
 	color: var(--color-text);
-	font-family: var(--font-body);
-	font-size: 0.9rem;
-	letter-spacing: 1px;
 	cursor: pointer;
 	margin-bottom: 32px;
-	padding: 0;
-	transition: opacity 0.2s;
+	margin-left: -60px;
+	padding: 4px;
+	transition: transform 0.4s ease;
 }
 
-.admin-retour:hover {
-	opacity: 0.7;
+.admin-retour svg {
+	transition: transform 0.4s ease;
 }
 
-/* Liste des éléments */
+.admin-retour:hover svg {
+	transform: translateX(-16px);
+}
+
+/* ==========================================================================
+   LISTE DES ÉLÉMENTS (ADMIN ITEMS)
+   ========================================================================== */
 
 .admin-liste {
 	display: flex;
 	flex-direction: column;
-	gap: 12px;
+	gap: 16px;
 	margin-top: 32px;
 }
 
@@ -175,29 +164,46 @@
 	display: flex;
 	align-items: center;
 	justify-content: space-between;
-	padding: 20px 24px;
-	border: 1px solid rgba(150, 88, 70, 0.2);
-	transition: border-color 0.2s;
+	padding: 24px 28px;
+	background: rgba(150, 88, 70, 0.06);
+	border: 1px solid rgba(150, 88, 70, 0.15);
+	border-radius: 18px;
+	transition:
+		background 0.35s ease,
+		border-color 0.35s ease,
+		transform 0.35s ease,
+		box-shadow 0.35s ease;
+	/* opacity: 0;
+	transform: translateY(20px);
+	animation: adminItemAppear 0.6s ease forwards; */
+}
+
+@keyframes adminItemAppear {
+	to {
+		opacity: 1;
+		transform: translateY(0);
+	}
 }
 
 .admin-item:hover {
-	border-color: var(--color-text);
+	background: rgba(150, 88, 70, 0.14);
+	border-color: rgba(150, 88, 70, 0.4);
+	transform: translateY(-3px);
+	box-shadow: 0 12px 28px rgba(150, 88, 70, 0.12);
+}
+
+.admin-item:hover .admin-item__fleche {
+	transform: translateX(4px);
 }
 
 .admin-item--cliquable {
 	cursor: pointer;
 }
 
-.admin-item__info {
-	display: flex;
-	flex-direction: column;
-	gap: 4px;
-}
-
 .admin-item__titre {
 	font-family: var(--font-title);
-	font-size: 1rem;
-	color: var(--color-primary);
+	font-size: 1.05rem;
+	color: var(--color-text);
 	letter-spacing: 1px;
 }
 
@@ -216,89 +222,163 @@
 
 .admin-item__prix {
 	font-family: var(--font-title);
-	font-size: 1.1rem;
+	font-size: 1.2rem;
 	color: var(--color-text);
 }
 
 .admin-item__fleche {
 	color: var(--color-text);
-	font-size: 1.2rem;
+	font-size: 1.3rem;
+	transition: transform 0.3s ease;
 }
 
-/* Actions produits */
+.admin-item__droite {
+	display: flex;
+	flex-direction: column;
+	align-items: flex-end;
+	gap: 8px;
+}
 
 .admin-item__actions {
 	display: flex;
 	gap: 8px;
 }
 
+/* ==========================================================================
+   BOUTONS ET FILTRES (BOUTONS PILULES)
+   ========================================================================== */
+
 .admin-btn {
-	padding: 8px 16px;
+	padding: 9px 18px;
 	border: none;
+	border-radius: 10px;
 	font-family: var(--font-body);
 	font-size: 0.8rem;
 	letter-spacing: 1px;
 	text-transform: uppercase;
 	cursor: pointer;
-	transition: opacity 0.2s;
+	transition:
+		opacity 0.25s,
+		transform 0.25s;
 }
 
 .admin-btn:hover {
-	opacity: 0.8;
+	opacity: 0.85;
+	transform: translateY(-2px);
 }
 
-.admin-btn--modifier {
-	background-color: var(--color-text);
-	color: #fff;
+.admin-action-btn {
+	padding: 8px 18px !important;
+	font-size: 0.8rem !important;
+	border-radius: 10px !important;
 }
 
-.admin-btn--supprimer {
-	background-color: #c0392b;
-	color: #fff;
-}
-
-/* Filtres catégories */
-
-.admin-filtres {
-	display: flex;
-	gap: 12px;
-	margin-top: 24px;
-}
-
-.admin-filtre {
-	padding: 10px 24px;
+.admin-filtre,
+.admin-pill-btn {
+	padding: 10px 26px;
 	border: 1px solid rgba(150, 88, 70, 0.3);
-	background: none;
+	border-radius: 30px;
+	background: rgba(150, 88, 70, 0.04);
 	font-family: var(--font-body);
 	font-size: 0.85rem;
 	letter-spacing: 1px;
 	text-transform: uppercase;
 	color: var(--color-secondary);
 	cursor: pointer;
-	transition: all 0.2s;
+	transition: all 0.3s ease;
 }
 
-.admin-filtre:hover {
+.admin-filtre:hover,
+.admin-pill-btn:hover {
 	border-color: var(--color-text);
 	color: var(--color-text);
+	background: rgba(150, 88, 70, 0.1);
 }
 
-.admin-filtre--actif {
+.admin-filtre--actif,
+.admin-pill-btn--actif {
 	background-color: var(--color-text);
 	border-color: var(--color-text);
 	color: #fff;
 }
 
-/* Profil client */
+.admin-pill-btn--actif:hover {
+	opacity: 0.9;
+	color: #fff;
+}
+
+.admin-badge-rupture {
+	margin-left: 8px;
+	font-size: 0.68rem;
+	letter-spacing: 0.08em;
+	text-transform: uppercase;
+	background: #f5e6e2;
+	color: #a0522d;
+	padding: 2px 6px;
+	border-radius: 3px;
+}
+
+.admin-btn--rupture {
+	padding: 6px 12px;
+	font-size: 0.78rem;
+	letter-spacing: 0.05em;
+	text-transform: uppercase;
+	cursor: pointer;
+	border-radius: 4px;
+	background: #f5e6e2;
+	color: #a0522d;
+	border: 1px solid #d4a090;
+}
+
+.admin-btn--rupture:hover {
+	background: #ead5ce;
+}
+
+.admin-filtres-clean {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	gap: 16px;
+	width: 100%;
+	margin: 20px 0 35px 0;
+}
+
+.admin-filtres-clean .custom-button:not(.custom-button--inverse) {
+	background-color: var(--color-background) !important;
+	color: #ffffff !important;
+	border: 2px solid var(--color-background) !important;
+}
+
+.admin-filtres-clean .custom-button--inverse {
+	background-color: #ffffff !important;
+	color: var(--color-background) !important;
+	border: 2px solid var(--color-background) !important;
+}
+
+.admin-filtres-clean .custom-button--inverse:hover {
+	color: #ffffff !important;
+	border-color: var(--color-background) !important;
+}
+
+.admin-filtres-clean .custom-button--inverse::before {
+	background-color: var(--color-background) !important;
+}
+
+/* ==========================================================================
+   PROFIL ET HISTORIQUE CLIENT
+   ========================================================================== */
 
 .admin-profil {
-	padding: 24px;
-	border: 1px solid rgba(150, 88, 70, 0.2);
+	padding: 28px;
+	background: rgba(150, 88, 70, 0.06);
+	border: 1px solid rgba(150, 88, 70, 0.15);
+	border-radius: 18px;
 	margin-top: 24px;
 	margin-bottom: 32px;
 }
 
-.admin-profil h2 {
+.admin-profil h2,
+.admin-historique h2 {
 	font-size: 1.2rem;
 	margin-bottom: 16px;
 }
@@ -323,40 +403,52 @@
 	letter-spacing: 1px;
 }
 
-.admin-historique h2 {
-	font-size: 1.2rem;
-	margin-bottom: 16px;
-}
-
-/* Détail produit */
+/* ==========================================================================
+   DÉTAIL PRODUIT
+   ========================================================================== */
 
 .admin-produit-detail {
 	display: grid;
-	grid-template-columns: 1fr 1fr;
-	gap: 48px;
+	grid-template-columns: 360px 1fr;
+	gap: 40px;
+	align-items: start;
 	margin-top: 32px;
+	background: rgba(150, 88, 70, 0.06);
+	border: 1px solid rgba(150, 88, 70, 0.15);
+	border-radius: 18px;
+	padding: 32px;
+}
+
+.admin-produit-detail__images-wrapper {
+	display: flex;
+	flex-direction: column;
+	gap: 16px;
+	width: 100%;
 }
 
 .admin-produit-detail__image {
 	width: 100%;
-	aspect-ratio: 1;
+	aspect-ratio: 3 / 4;
 	object-fit: cover;
+	border-radius: 14px;
 }
 
 .admin-produit-detail__info {
 	display: flex;
 	flex-direction: column;
-	gap: 16px;
+	gap: 28px;
+}
+
+.admin-produit-detail__info h1 {
+	color: var(--color-text);
 }
 
 .admin-produit-detail__description {
 	color: var(--color-secondary);
-	line-height: 1.6;
+	line-height: 1.7;
 }
 
 .admin-produit-detail__prix {
-	font-family: var(--font-title);
-	font-size: 1.8rem;
 	color: var(--color-text);
 }
 
@@ -364,27 +456,154 @@
 	font-size: 0.85rem;
 	color: var(--color-secondary);
 }
+.admin-produit-detail__image--mockup {
+	width: 50%;
+	aspect-ratio: 3 / 4;
+	object-fit: cover;
+	border-radius: 14px;
+}
+/* ==========================================================================
+   SECTION DIMENSIONS ET FORMULAIRES
+   ========================================================================== */
 
-/* Chargement */
+.admin-dimensions {
+	margin-top: 56px;
+	padding: 28px;
+	border-radius: 18px;
+	border-top: none;
+}
 
-.admin-chargement {
-	display: flex;
-	align-items: center;
-	justify-content: center;
-	min-height: 100vh;
-	font-family: var(--font-title);
-	letter-spacing: 2px;
+.admin-dimensions h2 {
+	font-size: 1.1rem;
+	letter-spacing: 0.08em;
+	text-transform: uppercase;
+	margin-bottom: 20px;
 	color: var(--color-text);
 }
 
-/* ============================================
-   Edition inline
-============================================ */
+.admin-dimensions-liste {
+	display: flex;
+	flex-direction: column;
+	gap: 12px;
+}
+
+.admin-dimension-ligne {
+	background: rgba(255, 255, 255, 0.5);
+	border-radius: 12px;
+	padding: 12px 16px;
+	display: flex;
+	align-items: center;
+	gap: 16px;
+	flex-wrap: nowrap;
+}
+
+.admin-dimension-ligne > button {
+	margin-left: auto;
+	flex-shrink: 0;
+}
+
+.admin-dimension-label {
+	flex: 1;
+	min-width: 0;
+	font-size: 0.9rem;
+	color: var(--color-text);
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+.admin-dimension-prix {
+	width: 110px !important;
+	flex-shrink: 0;
+}
+
+.admin-dimension-actions {
+	display: flex;
+	gap: 8px;
+	margin-left: auto;
+	flex-shrink: 0;
+}
+
+/* Formulaire d'ajout */
+.admin-form {
+	display: flex;
+	flex-direction: column;
+	gap: 24px;
+	margin-top: 32px;
+	max-width: 600px;
+	background: rgba(150, 88, 70, 0.05);
+	border-radius: 18px;
+	padding: 32px;
+}
+
+.admin-form__field {
+	display: flex;
+	flex-direction: column;
+	gap: 8px;
+}
+
+.admin-form__section-title,
+.admin-form__field label {
+	font-family: var(--font-body);
+	font-size: 0.85rem;
+	letter-spacing: 1px;
+	text-transform: uppercase;
+	color: var(--color-secondary);
+	margin: 0;
+}
+
+.admin-form__row {
+	display: grid;
+	grid-template-columns: 1fr 1fr;
+	gap: 24px;
+}
+
+.admin-form__actions {
+	display: flex;
+	gap: 12px;
+	margin-top: 8px;
+}
+
+.admin-form__preview {
+	width: 200px;
+	height: 200px;
+	object-fit: cover;
+	margin-top: 12px;
+	border: 1px solid rgba(150, 88, 70, 0.2);
+}
+
+.admin-form__dimension-ligne {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 16px;
+	border-bottom: 1px solid rgba(150, 88, 70, 0.1);
+	border-radius: 10px;
+	padding: 12px 8px;
+}
+
+.admin-form__dimension-ligne:hover {
+	background: rgba(150, 88, 70, 0.06);
+}
+
+.admin-form__dimension-label {
+	font-size: 0.9rem;
+	color: var(--color-primary);
+}
+
+.admin-form__dimension-prix {
+	max-width: 120px;
+}
+
+/* ==========================================================================
+   ÉDITION INLINE
+   ========================================================================== */
+
 .admin-edit-input {
 	width: 100%;
 	background: transparent;
 	border: none;
-	border-bottom: 2px solid var(--color-text);
+	border-bottom: 1px solid var(--color-text);
 	outline: none;
 	font-family: var(--font-body);
 	font-size: 1rem;
@@ -418,142 +637,551 @@
 	gap: 4px;
 }
 
-.admin-edit-prix {
-	font-family: var(--font-title);
-	font-size: 1.8rem;
-	color: var(--color-text);
-	width: 120px;
-}
-
+.admin-edit-prix,
 .admin-edit-euro {
 	font-family: var(--font-title);
 	font-size: 1.8rem;
 	color: var(--color-text);
 }
-/* Formulaire ajout produit */
 
-.admin-form {
-	display: flex;
-	flex-direction: column;
-	gap: 24px;
-	margin-top: 32px;
-	max-width: 600px;
+.admin-edit-prix {
+	width: 120px;
 }
 
-.admin-form__field {
-	display: flex;
-	flex-direction: column;
-	gap: 8px;
-}
+/* ==========================================================================
+   ÉCRAN DE CHARGEMENT
+   ========================================================================== */
 
-.admin-form__field label {
-	font-family: var(--font-body);
-	font-size: 0.85rem;
-	letter-spacing: 1px;
-	text-transform: uppercase;
-	color: var(--color-secondary);
-}
-
-.admin-form__row {
-	display: grid;
-	grid-template-columns: 1fr 1fr;
-	gap: 24px;
-}
-
-.admin-form__actions {
-	display: flex;
-	gap: 12px;
-	margin-top: 8px;
-}
-.admin-form__preview {
-	width: 200px;
-	height: 200px;
-	object-fit: cover;
-	margin-top: 12px;
-	border: 1px solid rgba(150, 88, 70, 0.2);
-}
-
-/* =========================================
-   SECTION DIMENSIONS (vue produit-detail)
-   ========================================= */
-
-.admin-dimensions {
-	margin-top: 40px;
-	padding-top: 32px;
-	border-top: 1px solid rgba(150, 88, 70, 0.15);
-}
-
-.admin-dimensions h2 {
-	font-size: 1.1rem;
-	letter-spacing: 0.08em;
-	text-transform: uppercase;
-	margin-bottom: 20px;
-	color: var(--color-text);
-}
-
-.admin-dimensions-liste {
-	display: flex;
-	flex-direction: column;
-	gap: 12px;
-}
-
-.admin-dimension-ligne {
+.admin-chargement {
 	display: flex;
 	align-items: center;
-	gap: 12px;
-	flex-wrap: wrap;
-}
-
-.admin-dimension-label {
-	flex: 1;
-	min-width: 180px;
-	font-size: 0.9rem;
+	justify-content: center;
+	min-height: 100vh;
+	font-family: var(--font-title);
+	letter-spacing: 2px;
 	color: var(--color-text);
 }
 
-.admin-dimension-prix {
-	width: 110px !important;
-	flex-shrink: 0;
+/* ==========================================================================
+   EFFET POST-IT (GRILLE ET CARTES)
+   ========================================================================== */
+
+.admin-postit-grille {
+	display: grid;
+	grid-template-columns: repeat(3, 1fr);
+	gap: 24px;
+	margin-top: 24px;
 }
 
-.admin-dimension-actions {
-	display: flex;
-	gap: 8px;
-}
-
-/* Statut commande */
-.admin-item__droite {
+.admin-postit {
+	position: relative;
+	background: #fef5c1;
+	color: #333;
+	font-family: var(--font-body);
+	padding: 24px 16px 16px 16px;
+	aspect-ratio: 1 / 1;
+	border: none;
+	box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.15);
+	cursor: pointer;
 	display: flex;
 	flex-direction: column;
-	align-items: flex-end;
-	gap: 8px;
+	align-items: center;
+	justify-content: space-between;
+	text-align: center;
+	transition:
+		transform 0.2s ease,
+		box-shadow 0.2s ease;
+	box-sizing: border-box;
+	width: 100%;
 }
 
-/* Badge rupture sur la liste produits */
-.admin-badge-rupture {
-	margin-left: 8px;
-	font-size: 0.68rem;
-	letter-spacing: 0.08em;
-	text-transform: uppercase;
-	background: #f5e6e2;
-	color: #a0522d;
-	padding: 2px 6px;
-	border-radius: 3px;
+/* Effet de rotation aléatoire*/
+.admin-postit:nth-child(even) {
+	transform: rotate(2deg);
+}
+.admin-postit:nth-child(odd) {
+	transform: rotate(-1.5deg);
+}
+.admin-postit:nth-child(3n) {
+	transform: rotate(1deg);
 }
 
-/* Bouton rupture */
-.admin-btn--rupture {
-	padding: 6px 12px;
-	font-size: 0.78rem;
-	letter-spacing: 0.05em;
+.admin-postit__punaise {
+	position: absolute;
+	top: -6px;
+	left: 50%;
+	transform: translateX(-50%);
+	width: 12px;
+	height: 12px;
+	background: rgba(160, 82, 45, 0.6);
+	border-radius: 50%;
+	box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+}
+
+.admin-postit:hover {
+	transform: scale(1.05) rotate(0deg) !important;
+	box-shadow: 10px 10px 20px rgba(0, 0, 0, 0.2);
+	z-index: 10;
+}
+
+.admin-postit__titre {
+	font-family: var(--font-title);
+	font-size: 1.1rem;
+	font-weight: bold;
+	border-bottom: 1px dashed rgba(0, 0, 0, 0.2);
+	width: 100%;
+	padding-bottom: 6px;
+}
+
+.admin-postit__date {
+	font-size: 0.85rem;
+	color: #666;
+}
+
+.admin-postit__prix {
+	font-family: var(--font-title);
+	font-size: 1.4rem;
+	font-weight: bold;
+}
+
+.admin-postit__cliquez {
+	font-size: 0.7rem;
 	text-transform: uppercase;
+	letter-spacing: 1px;
+	color: #888;
+}
+
+/* ==========================================================================
+   POP-IN (MODALE DE DÉTAIL EN MODE POST-IT)
+   ========================================================================== */
+
+.admin-popin-overlay {
+	position: fixed;
+	top: 0;
+	left: 0;
+	width: 100vw;
+	height: 100vh;
+	background: rgba(0, 0, 0, 0.4);
+	backdrop-filter: blur(4px);
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	z-index: 9999;
+	animation: fadeIn 0.25s ease-out;
+}
+
+.admin-popin {
+	position: relative;
+	background: #fef5c1;
+	color: var(--color-text);
+	padding: 40px 32px 32px 32px;
+	border-radius: 0px;
+	width: 90%;
+	max-width: 500px;
+	box-shadow: 10px 10px 25px rgba(0, 0, 0, 0.25);
+	transform: rotate(-1deg);
+	animation: slideUpPostIt 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+	font-family: "Caveat", "Comic Sans MS", cursive;
+	font-size: 1.25rem;
+}
+
+.admin-popin::before {
+	content: "";
+	position: absolute;
+	top: 12px;
+	left: 50%;
+	transform: translateX(-50%);
+	width: 16px;
+	height: 16px;
+	background: rgba(160, 82, 45, 0.8);
+	border-radius: 50%;
+	box-shadow: 0 2px 4px rgba(0, 0, 0, 0.4);
+	z-index: 2;
+}
+
+.admin-popin h3 {
+	margin-top: 0;
+	font-family: inherit;
+	font-size: 1.5rem;
+	text-align: center;
+	border-bottom: 2px dashed rgba(0, 0, 0, 0.15);
+	padding-bottom: 12px;
+}
+
+.admin-popin__date {
+	text-align: center;
+	font-size: 0.9rem;
+	color: var(--color-text);
+	margin-top: 8px;
+}
+
+.admin-popin__fermer {
+	position: absolute;
+	top: 8px;
+	right: 16px;
+	background: none;
+	border: none;
+	font-size: 2rem;
 	cursor: pointer;
-	border-radius: 4px;
-	background: #f5e6e2;
-	color: #a0522d;
-	border: 1px solid #d4a090;
+	color: rgba(0, 0, 0, 0.3);
+	transition:
+		color 0.2s,
+		transform 0.2s;
+	z-index: 3;
 }
 
-.admin-btn--rupture:hover {
-	background: #ead5ce;
+.admin-popin__fermer:hover {
+	color: #000;
+	transform: scale(1.1);
+}
+
+.admin-popin hr {
+	display: none;
+}
+
+.admin-popin__lignes {
+	display: flex;
+	flex-direction: column;
+	gap: 14px;
+	margin: 24px 0;
+}
+
+.admin-popin__lignes h4 {
+	margin: 0 0 4px 0;
+	font-size: 1rem;
+	text-transform: uppercase;
+	letter-spacing: 1px;
+	color: #444;
+}
+
+.admin-popin__ligne {
+	display: flex;
+	justify-content: space-between;
+	font-size: 0.95rem;
+	border-bottom: 1px dashed rgba(0, 0, 0, 0.1);
+	padding-bottom: 4px;
+}
+
+.admin-popin__total {
+	display: flex;
+	justify-content: space-between;
+	font-family: inherit;
+	font-size: 1.4rem;
+	font-weight: bold;
+	margin-top: 24px;
+	padding-top: 12px;
+	border-top: 2px dashed rgba(0, 0, 0, 0.15);
+}
+
+@keyframes fadeIn {
+	from {
+		opacity: 0;
+	}
+	to {
+		opacity: 1;
+	}
+}
+
+@keyframes slideUpPostIt {
+	from {
+		transform: translateY(30px) rotate(2deg);
+		opacity: 0;
+	}
+	to {
+		transform: translateY(0) rotate(-1deg);
+		opacity: 1;
+	}
+}
+
+/* --- ANIMATION DE SUPPRESSION DU POST-IT --- */
+
+.admin-postit--suppression {
+	position: relative;
+	pointer-events: none;
+	animation: chutePostIt 0.8s cubic-bezier(0.55, 0.055, 0.675, 0.19) forwards;
+	transform-origin: top center;
+}
+
+.admin-postit--suppression .admin-postit__punaise {
+	animation: ejectionPunaise 0.4s ease-out forwards;
+}
+
+@keyframes chutePostIt {
+	0% {
+		transform: rotate(var(--postit-rotation, -2deg)) translateY(0);
+		opacity: 1;
+	}
+	15% {
+		transform: rotate(5deg) translateY(5px);
+	}
+	100% {
+		transform: rotate(25deg) translateY(800px);
+		opacity: 0;
+	}
+}
+
+@keyframes ejectionPunaise {
+	0% {
+		transform: translate(0, 0) scale(1);
+		opacity: 1;
+	}
+	30% {
+		transform: translate(-10px, -40px) scale(1.2);
+		opacity: 1;
+	}
+	100% {
+		transform: translate(-20px, 100px) scale(0.8);
+		opacity: 0;
+	}
+}
+
+/* ==========================================================================
+   ALIGNEMENT VERTICAL : TITRE ET RECHERCHE EN DESSOUS
+   ========================================================================== */
+
+.admin-top {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	gap: 20px;
+	width: 100%;
+	margin-bottom: 40px;
+}
+
+.admin-top h1 {
+	margin: 0;
+	text-align: center;
+}
+
+.admin-top .gooey-wrapper {
+	position: relative;
+	justify-content: center;
+}
+
+/* ==========================================================================
+   FIX DES VIGNETTES PRODUITS (TAILLE VERROUILLÉE)
+   ========================================================================== */
+
+.admin-item--cliquable {
+	display: flex !important;
+	align-items: column !important;
+	gap: 20px !important;
+	flex: 1 !important;
+	background: none !important;
+	border: none !important;
+	text-align: left !important;
+	padding: 0 !important;
+	min-width: 0 !important;
+}
+
+.admin-liste-grille .admin-item--cliquable {
+	display: flex !important;
+	flex-direction: column !important;
+	align-items: center !important;
+	gap: 16px !important;
+	width: 100% !important;
+	background: none !important;
+	border: none !important;
+	padding: 0 !important;
+}
+
+.admin-item__vignette {
+	width: 65px !important;
+	height: 65px !important;
+	object-fit: cover !important;
+	border-radius: 10px !important;
+	border: 1px solid rgba(150, 88, 70, 0.15) !important;
+	flex-shrink: 0 !important;
+	background-color: #eaeaea;
+}
+
+.admin-item__textes {
+	display: flex !important;
+	align-items: center !important;
+	justify-content: space-between !important;
+	flex: 1 !important;
+	min-width: 0 !important;
+}
+
+.admin-item__textes-empiles {
+	display: flex !important;
+	flex-direction: column !important;
+	gap: 4px !important;
+	min-width: 0 !important;
+}
+
+/* ==========================================================================
+   FIX DES VIGNETTES PRODUITS (CERCLER ET VERROUILLER LA TAILLE)
+   ========================================================================== */
+
+.admin-item--cliquable {
+	display: flex !important;
+	align-items: center !important;
+	gap: 20px !important;
+	flex: 1 !important;
+	background: none !important;
+	border: none !important;
+	text-align: left !important;
+	padding: 0 !important;
+	min-width: 0 !important;
+}
+
+.admin-item__vignette {
+	width: 80px !important;
+	height: 80px !important;
+	border-radius: 50% !important;
+	object-fit: cover !important;
+	flex-shrink: 0 !important;
+	border: 1px solid rgba(150, 88, 70, 0.15) !important;
+	background-color: #eaeaea;
+}
+
+.admin-item__textes {
+	display: flex !important;
+	align-items: center !important;
+	justify-content: space-between !important;
+	flex: 1 !important;
+	min-width: 0 !important;
+}
+
+.admin-item__textes-empiles {
+	display: flex !important;
+	flex-direction: column !important;
+	gap: 4px !important;
+	min-width: 0 !important;
+}
+
+/* ==========================================================================
+   CONFIGURATION EN GRILLE : 4 PRODUITS PAR LIGNE
+   ========================================================================== */
+
+.admin-liste-grille {
+	display: grid !important;
+	grid-template-columns: repeat(4, 1fr) !important;
+	gap: 24px !important;
+	margin-top: 32px;
+	width: 100%;
+}
+
+/* ==========================================================================
+   STRUCTURE DES PRODUITS EN "BULLES" (RONDES)
+   ========================================================================== */
+
+.admin-liste-grille .admin-item {
+	display: flex !important;
+	flex-direction: column !important;
+	align-items: center !important;
+	justify-content: center !important;
+	width: 220px !important;
+	height: 220px !important;
+	border-radius: 50% !important;
+
+	padding: 20px !important;
+	background-color: #ffffff !important;
+	border: 1px solid rgba(150, 88, 70, 0.15) !important;
+	box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05) !important;
+	text-align: center !important;
+	overflow: hidden !important;
+	box-sizing: border-box !important;
+}
+
+.admin-liste-grille .admin-item--cliquable {
+	display: flex !important;
+	flex-direction: column !important;
+	align-items: center !important;
+	justify-content: center !important;
+	gap: 8px !important;
+	width: 100% !important;
+	height: auto !important;
+	background: none !important;
+	border: none !important;
+	padding: 0 !important;
+}
+
+/* ==========================================================================
+   VIGNETTES (IMAGES) À L'INTÉRIEUR DE LA BULLE
+   ========================================================================== */
+
+.admin-liste-grille .admin-item__vignette {
+	width: 70px !important;
+	height: 70px !important;
+	border-radius: 50% !important;
+	object-fit: cover !important;
+	flex-shrink: 0 !important;
+	border: 1px solid rgba(150, 88, 70, 0.1) !important;
+}
+
+/* ==========================================================================
+   TEXTES ET TITRES CENTRÉS
+   ========================================================================== */
+
+.admin-liste-grille .admin-item__textes {
+	display: flex !important;
+	flex-direction: column !important;
+	align-items: center !important;
+	gap: 4px !important;
+	width: 100% !important;
+}
+
+.admin-liste-grille .admin-item__textes-empiles {
+	display: flex !important;
+	flex-direction: column !important;
+	align-items: center !important;
+	gap: 2px !important;
+	max-width: 90% !important;
+}
+
+.admin-liste-grille .admin-item__textes p,
+.admin-liste-grille .admin-item__textes span {
+	font-size: 0.85rem !important;
+	margin: 0 !important;
+	white-space: nowrap !important;
+	overflow: hidden !important;
+	text-overflow: ellipsis !important;
+	width: 100% !important;
+}
+
+/* ==========================================================================
+   BOUTONS D'ACTIONS (MODIFIER / SUPPRIMER)
+   ========================================================================== */
+
+.admin-liste-grille .admin-item__actions {
+	display: flex !important;
+	gap: 6px !important;
+	width: 90% !important;
+	justify-content: center !important;
+	margin-top: 8px !important;
+}
+
+.admin-liste-grille .admin-item__actions .custom-button {
+	flex: 1 !important;
+	padding: 5px 8px !important;
+	font-size: 0.7rem !important;
+	border-radius: 20px !important;
+}
+
+/* ============================================
+   Scroll Reveal
+============================================ */
+.scroll-item {
+	transition:
+		opacity 1.35s ease-out,
+		transform 1.35s ease-out;
+	will-change: transform, opacity;
+}
+
+.scroll-hidden-left {
+	opacity: 0;
+	transform: translateX(-120px);
+}
+
+.scroll-hidden-right {
+	opacity: 0;
+	transform: translateX(120px);
+}
+
+.scroll-visible {
+	opacity: 1;
+	transform: translateX(0);
 }

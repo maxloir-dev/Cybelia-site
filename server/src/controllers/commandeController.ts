@@ -1,17 +1,21 @@
-import { Response } from "express";
+import type { Response } from "express";
+import type { AuthRequest } from "../middlewares/authMiddleware";
 import {
 	createCommande,
 	createLignesCommande,
 	getAllCommandes,
 	getCommandeById,
 	getCommandesByUserId,
-	deleteCommande,
+	deleteCommandeById,
 	type LivraisonData,
 } from "../models/commandeModel";
+import {
+	getAllDimensions,
+	getProduitDimensionPrix,
+} from "../models/dimensionModel";
 import { envoyerEmailConfirmationCommande } from "../config/email";
+
 import { getProduitById } from "../models/produitModel";
-import { getProduitDimensionPrix, getAllDimensions } from "../models/dimensionModel";
-import { AuthRequest } from "../middlewares/authMiddleware";
 
 // Routes liées aux commandes
 
@@ -27,32 +31,46 @@ export const passerCommande = async (req: AuthRequest, res: Response) => {
 		const toutesLesDimensions = await getAllDimensions();
 
 		const lignesVerifiees = await Promise.all(
-			lignes.map(async (ligne: { produit_id: number; quantite: number; dimension_id?: number }) => {
-				const produit = await getProduitById(ligne.produit_id);
-				if (!produit) throw new Error(`Produit ${ligne.produit_id} introuvable`);
+			lignes.map(
+				async (ligne: {
+					produit_id: number;
+					quantite: number;
+					dimension_id?: number;
+				}) => {
+					const produit = await getProduitById(ligne.produit_id);
+					if (!produit)
+						throw new Error(`Produit ${ligne.produit_id} introuvable`);
 
-				let prix_unitaire = Number(produit.prix);
-				let dimension_label: string | null = null;
+					let prix_unitaire = Number(produit.prix);
+					let dimension_label: string | null = null;
 
-				if (ligne.dimension_id) {
-					const prixDimension = await getProduitDimensionPrix(ligne.produit_id, ligne.dimension_id);
-					if (prixDimension === null) {
-						throw new Error(`Dimension ${ligne.dimension_id} non disponible pour le produit ${ligne.produit_id}`);
+					if (ligne.dimension_id) {
+						const prixDimension = await getProduitDimensionPrix(
+							ligne.produit_id,
+							ligne.dimension_id,
+						);
+						if (prixDimension === null) {
+							throw new Error(
+								`Dimension ${ligne.dimension_id} non disponible pour le produit ${ligne.produit_id}`,
+							);
+						}
+						prix_unitaire = Number(prixDimension);
+						const dim = toutesLesDimensions.find(
+							(d) => d.id === ligne.dimension_id,
+						);
+						dimension_label = dim?.label ?? null;
 					}
-					prix_unitaire = Number(prixDimension);
-					const dim = toutesLesDimensions.find((d) => d.id === ligne.dimension_id);
-					dimension_label = dim?.label ?? null;
-				}
 
-				return {
-					produit_id: ligne.produit_id,
-					quantite: ligne.quantite,
-					prix_unitaire,
-					dimension_id: ligne.dimension_id ?? null,
-					produit_nom: produit.nom,
-					dimension_label,
-				};
-			}),
+					return {
+						produit_id: ligne.produit_id,
+						quantite: ligne.quantite,
+						prix_unitaire,
+						dimension_id: ligne.dimension_id ?? null,
+						produit_nom: produit.nom,
+						dimension_label,
+					};
+				},
+			),
 		);
 
 		// Calcul du montant total avec les vrais prix
@@ -80,11 +98,12 @@ export const passerCommande = async (req: AuthRequest, res: Response) => {
 };
 
 // Récupère toutes les commandes (gérante uniquement)
-export const getCommandes = async (req: AuthRequest, res: Response) => {
+export const getCommandes = async (_req: AuthRequest, res: Response) => {
 	try {
 		const commandes = await getAllCommandes();
 		res.json(commandes);
 	} catch (error) {
+		console.error("ERREUR COMMANDES:", error);
 		res
 			.status(500)
 			.json({ message: "Erreur lors de la récupération des commandes" });
@@ -100,7 +119,7 @@ export const getCommande = async (req: AuthRequest, res: Response) => {
 		} else {
 			res.json(commande);
 		}
-	} catch (error) {
+	} catch {
 		res
 			.status(500)
 			.json({ message: "Erreur lors de la récupération de la commande" });
@@ -109,7 +128,7 @@ export const getCommande = async (req: AuthRequest, res: Response) => {
 // Supprime une commande (gérante uniquement)
 export const supprimerCommande = async (req: AuthRequest, res: Response) => {
 	try {
-		await deleteCommande(Number(req.params.id));
+		await deleteCommandeById(Number(req.params.id));
 		res.json({ message: "Commande supprimée" });
 	} catch (error) {
 		res.status(500).json({ message: "Erreur lors de la suppression de la commande" });
@@ -119,11 +138,36 @@ export const supprimerCommande = async (req: AuthRequest, res: Response) => {
 // Récupère les commandes du client connecté
 export const getMesCommandes = async (req: AuthRequest, res: Response) => {
 	try {
-		const commandes = await getCommandesByUserId(req.utilisateur!.id);
+		if (!req.utilisateur) {
+			res.status(401).json({ message: "Utilisateur non authentifié" });
+			return;
+		}
+		const commandes = await getCommandesByUserId(req.utilisateur.id);
 		res.json(commandes);
-	} catch (error) {
+	} catch {
 		res
 			.status(500)
 			.json({ message: "Erreur lors de la récupération de vos commandes" });
+	}
+};
+
+// Supprime définitivement une commande (gérante uniquement)
+export const deleteCommande = async (req: AuthRequest, res: Response) => {
+	try {
+		const commandeId = Number(req.params.id);
+
+		if (isNaN(commandeId)) {
+			res.status(400).json({ message: "ID de commande invalide" });
+			return;
+		}
+
+		// Appelle le modèle SQL qu'on vient de créer
+		await deleteCommandeById(commandeId);
+
+		res.status(200).json({ message: "Commande supprimée avec succès" });
+	} catch (error) {
+		res
+			.status(500)
+			.json({ message: "Erreur lors de la suppression de la commande" });
 	}
 };
