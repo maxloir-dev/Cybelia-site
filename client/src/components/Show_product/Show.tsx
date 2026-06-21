@@ -8,6 +8,7 @@ import type { Dimension } from "../../types";
 import {
 	type ChangeEvent,
 	type FormEvent,
+	useCallback,
 	useEffect,
 	useState,
 } from "react";
@@ -67,23 +68,26 @@ export default function Show({ categorieId, titre }: Props) {
 	const [dimensionSelectionnee, setDimensionSelectionnee] = useState<Dimension | null>(null);
 	const [toutesLesDimensions, setToutesLesDimensions] = useState<Dimension[]>([]);
 	const [dimensionsPrixAjout, setDimensionsPrixAjout] = useState<Record<number, string>>({});
+	const [dimensionFiltre, setDimensionFiltre] = useState<number | null>(null);
 	const { ajouterAuPanier } = useCart();
 	const { estAdmin } = useAuth();
 
-	const fetchProduits = () => {
-		fetch(`http://localhost:3001/api/produits?categorie_id=${categorieId}`)
+	const fetchProduits = useCallback(() => {
+		const url = dimensionFiltre
+			? `http://localhost:3001/api/produits?categorie_id=${categorieId}&dimension_id=${dimensionFiltre}`
+			: `http://localhost:3001/api/produits?categorie_id=${categorieId}`;
+		fetch(url)
 			.then((res) => res.json())
 			.then((data) => setProduits(data));
-	};
+	}, [categorieId, dimensionFiltre]);
 
-	// biome-ignore lint/correctness/useExhaustiveDependencies: fetchProduits est stable
 	useEffect(() => {
 		fetchProduits();
-	}, [categorieId]);
+	}, [fetchProduits]);
 
 	useEffect(() => {
-		if (estAdmin) getAllDimensions().then(setToutesLesDimensions).catch(() => {});
-	}, [estAdmin]);
+		if (categorieId === 2 || estAdmin) getAllDimensions().then(setToutesLesDimensions).catch(() => {});
+	}, [categorieId, estAdmin]);
 
 	const handleChange = (
 		e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
@@ -252,7 +256,13 @@ export default function Show({ categorieId, titre }: Props) {
 		setProduitDetail(p);
 		setSlideIndex(0);
 		setDimensionSelectionnee(null);
-		getDimensionsByProduit(p.id).then(setDimensions).catch(() => setDimensions([]));
+		getDimensionsByProduit(p.id)
+			.then((dims) => {
+				setDimensions(dims);
+				const a4 = dims.find((d) => Number(d.largeur_cm) === 21);
+				setDimensionSelectionnee(a4 ?? dims[0] ?? null);
+			})
+			.catch(() => setDimensions([]));
 	};
 
 	return (
@@ -268,6 +278,29 @@ export default function Show({ categorieId, titre }: Props) {
 					expandedOffset={48}
 				/>
 			</div>
+
+			{categorieId === 2 && toutesLesDimensions.filter((d) => d.id !== 1).length > 0 && (
+				<div className="shop-filtres">
+					<button
+						type="button"
+						className={`shop-filtre-btn${dimensionFiltre === null ? " shop-filtre-btn--actif" : ""}`}
+						onClick={() => setDimensionFiltre(null)}
+					>
+						Tous les formats
+					</button>
+					{toutesLesDimensions.filter((d) => d.id !== 1).map((d) => (
+						<button
+							key={d.id}
+							type="button"
+							className={`shop-filtre-btn${dimensionFiltre === d.id ? " shop-filtre-btn--actif" : ""}`}
+							onClick={() => setDimensionFiltre(d.id)}
+						>
+							{d.label}
+						</button>
+					))}
+				</div>
+			)}
+
 			<p className="shop-count">{produitsFiltres.length} résultats affichés</p>
 
 			<div className="shop-grid">
@@ -280,23 +313,20 @@ export default function Show({ categorieId, titre }: Props) {
 					>
 						<img src={p.image_url} alt={p.nom} className="shop-card-img" />
 						<h3 className="shop-card-nom">{p.nom}</h3>
-						<p className="shop-card-prix">{Number(p.prix).toFixed(2)} €</p>
+						<p className="shop-card-prix">
+							<span className="shop-card-prix-label">À partir de </span>
+							{Number(p.prix).toFixed(2)} €
+						</p>
 
 						<button
 							type="button"
 							className="custom-button shop-card-btn"
 							onClick={(e) => {
 								e.stopPropagation();
-								ajouterAuPanier({
-									cartKey: `${p.id}-sans`,
-									id: p.id,
-									nom: p.nom,
-									prix: Number(p.prix),
-									image_url: p.image_url,
-								});
+								ouvrirDetail(p);
 							}}
 						>
-							<span className="button-text">Ajouter au panier</span>
+							<span className="button-text">Choisir un format</span>
 						</button>
 
 						{estAdmin && (
@@ -594,11 +624,7 @@ export default function Show({ categorieId, titre }: Props) {
 													key={d.id}
 													type="button"
 													className={`dimension-btn${dimensionSelectionnee?.id === d.id ? " dimension-btn--actif" : ""}`}
-													onClick={() =>
-														setDimensionSelectionnee(
-															dimensionSelectionnee?.id === d.id ? null : d,
-														)
-													}
+													onClick={() => setDimensionSelectionnee(d)}
 												>
 													{d.label}
 													<span className="dimension-btn-prix">

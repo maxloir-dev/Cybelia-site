@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useLocation } from "react-router-dom";
-import { getAllCommandes } from "../../api/commandeService";
+import { getAllCommandes, deleteCommande } from "../../api/commandeService";
 import {
 	getProduitsByCategorie,
 	deleteProduit,
@@ -124,6 +124,12 @@ function Admin() {
 		const prixInit: Record<number, string> = {};
 		for (const d of actives) prixInit[d.id] = String(d.prix);
 		setNouveauPrix(prixInit);
+	};
+
+	const supprimerCommande = async (id: number) => {
+		if (!confirm("Supprimer définitivement cette commande ?")) return;
+		await deleteCommande(id);
+		setCommandes((prev) => prev.filter((c) => c.id !== id));
 	};
 
 	const supprimerProduit = async (id: number) => {
@@ -319,25 +325,50 @@ function Admin() {
 						<div key={commande.id} className="admin-item">
 							<div className="admin-item__info">
 								<span className="admin-item__titre">
-									Commande #{commande.id}
+									Commande #{commande.id} — {new Date(commande.created_at).toLocaleDateString("fr-FR")}
 								</span>
+
+								{/* Infos compte */}
+								<span className="admin-item__detail admin-item__detail--section">Compte</span>
 								<span className="admin-item__detail">
-									{commande.nom} {commande.prenom}
+									{commande.prenom} {commande.nom} — {commande.email}
 								</span>
-								<span className="admin-item__detail">{commande.email}</span>
-								<span className="admin-item__detail">
-									{new Date(commande.created_at).toLocaleDateString("fr-FR")}
-								</span>
+
+								{/* Livraison */}
+								{commande.prenom_livraison && (
+									<>
+										<span className="admin-item__detail admin-item__detail--section">Livraison</span>
+										<span className="admin-item__detail">
+											{commande.prenom_livraison} {commande.nom_livraison}
+										</span>
+										{commande.email_livraison && <span className="admin-item__detail">{commande.email_livraison}</span>}
+										{commande.telephone && <span className="admin-item__detail">{commande.telephone}</span>}
+										{commande.adresse && (
+											<span className="admin-item__detail">
+												{commande.adresse}, {commande.code_postal} {commande.ville}{commande.pays ? `, ${commande.pays}` : ""}
+											</span>
+										)}
+									</>
+								)}
+
+								{/* Articles */}
+								<span className="admin-item__detail admin-item__detail--section">Articles</span>
 								{commande.lignes?.map((ligne, i) => (
 									<span key={i} className="admin-item__detail">
 										{ligne.quantite}x {ligne.produit_nom}
-										{ligne.dimension_label && ` (${ligne.dimension_label})`} —{" "}
-										{ligne.prix_unitaire}€
+										{ligne.dimension_label && ` (${ligne.dimension_label})`} — {ligne.prix_unitaire}€
 									</span>
 								))}
 							</div>
 							<div className="admin-item__droite">
 								<span className="admin-item__prix">{commande.montant_total}€</span>
+								<button
+									type="button"
+									className="admin-btn admin-btn--supprimer"
+									onClick={() => supprimerCommande(commande.id)}
+								>
+									Supprimer
+								</button>
 							</div>
 						</div>
 					))}

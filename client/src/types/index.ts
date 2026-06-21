@@ -36,6 +36,18 @@ export interface Dimension {
 	prix: number;
 }
 
+// Informations de livraison
+export interface LivraisonData {
+	prenom: string;
+	nom: string;
+	email: string;
+	telephone?: string;
+	adresse: string;
+	code_postal: string;
+	ville: string;
+	pays: string;
+}
+
 // Ligne de commande
 export interface LigneCommande {
 	produit_id: number;
@@ -54,6 +66,14 @@ export interface Commande {
 	nom?: string;
 	prenom?: string;
 	email?: string;
+	prenom_livraison?: string;
+	nom_livraison?: string;
+	email_livraison?: string;
+	telephone?: string;
+	adresse?: string;
+	code_postal?: string;
+	ville?: string;
+	pays?: string;
 	lignes?: LigneCommande[];
 }
 

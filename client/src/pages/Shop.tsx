@@ -1,7 +1,8 @@
 import { Link } from "react-router-dom";
-import affichesImg from "../assets/photo/DSC00121.jpg";
-import cartesImg from "../assets/photo/dji_fly_20240617_211508_997_1719173233147_photo (3).jpg";
 import "./Shop.css";
+
+const affichesImg = "https://res.cloudinary.com/dgi4qubrq/image/upload/v1782071960/Mockup-44-Nantes-Tourlu_wvbwwf.jpg";
+const cartesImg = "https://res.cloudinary.com/dgi4qubrq/image/upload/v1782071958/Mockup_carte_postale_oc9ege.jpg";
 
 export default function Shop() {
   return (

@@ -206,6 +206,14 @@
 	color: var(--color-secondary);
 }
 
+.admin-item__detail--section {
+	font-size: 0.7rem;
+	letter-spacing: 1px;
+	text-transform: uppercase;
+	color: var(--color-text);
+	margin-top: 8px;
+}
+
 .admin-item__prix {
 	font-family: var(--font-title);
 	font-size: 1.1rem;

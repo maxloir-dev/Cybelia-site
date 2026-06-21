@@ -13,10 +13,9 @@ import {
 // Récupère tous les produits avec leur catégorie
 export const getProduits = async (req: Request, res: Response) => {
 	try {
-		const categorieId = req.query.categorie_id
-			? Number(req.query.categorie_id)
-			: undefined;
-		const produits = await getAllProduits(categorieId);
+		const categorieId = req.query.categorie_id ? Number(req.query.categorie_id) : undefined;
+		const dimensionId = req.query.dimension_id ? Number(req.query.dimension_id) : undefined;
+		const produits = await getAllProduits(categorieId, dimensionId);
 		res.json(produits);
 	} catch (error) {
 		res
