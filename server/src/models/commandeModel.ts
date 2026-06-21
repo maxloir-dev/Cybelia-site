@@ -9,14 +9,39 @@ const CHAMPS_LIGNE = [
 	"image_url",
 ];
 
+export interface LivraisonData {
+	prenom: string;
+	nom: string;
+	email: string;
+	telephone?: string;
+	adresse: string;
+	code_postal: string;
+	ville: string;
+	pays: string;
+}
+
 // Crée une nouvelle commande et retourne son id
 export const createCommande = async (
 	utilisateur_id: number,
 	montant_total: number,
+	livraison: LivraisonData,
 ) => {
 	const [result]: any = await pool.query(
-		"INSERT INTO commandes (utilisateur_id, montant_total) VALUES (?, ?)",
-		[utilisateur_id, montant_total],
+		`INSERT INTO commandes
+		 (utilisateur_id, montant_total, prenom_livraison, nom_livraison, email_livraison, telephone, adresse, code_postal, ville, pays)
+		 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+		[
+			utilisateur_id,
+			montant_total,
+			livraison.prenom,
+			livraison.nom,
+			livraison.email,
+			livraison.telephone ?? null,
+			livraison.adresse,
+			livraison.code_postal,
+			livraison.ville,
+			livraison.pays,
+		],
 	);
 	return result.insertId;
 };
@@ -53,6 +78,8 @@ export const getAllCommandes = async () => {
 	const [rows]: any = await pool.query(`
         SELECT c.id, c.montant_total, c.created_at,
                u.nom, u.prenom, u.email,
+               c.prenom_livraison, c.nom_livraison, c.email_livraison,
+               c.telephone, c.adresse, c.code_postal, c.ville, c.pays,
                lc.quantite, lc.prix_unitaire,
                COALESCE(lc.produit_nom, p.nom) AS produit_nom,
                COALESCE(lc.dimension_label, d.label) AS dimension_label,
@@ -88,6 +115,12 @@ export const getCommandeById = async (id: number) => {
 	);
 	return grouperLignesParCommande(rows, CHAMPS_LIGNE);
 };
+// Supprime une commande et ses lignes
+export const deleteCommande = async (id: number) => {
+	await pool.query("DELETE FROM lignes_commande WHERE commande_id = ?", [id]);
+	await pool.query("DELETE FROM commandes WHERE id = ?", [id]);
+};
+
 // Récupère toutes les commandes d'un client connecté
 export const getCommandesByUserId = async (utilisateur_id: number) => {
 	const [rows]: any = await pool.query(

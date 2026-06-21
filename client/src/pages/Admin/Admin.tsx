@@ -167,6 +167,12 @@ function Admin() {
 		setNouveauPrix(prixInit);
 	};
 
+	const supprimerCommande = async (id: number) => {
+		if (!confirm("Supprimer définitivement cette commande ?")) return;
+		await deleteCommande(id);
+		setCommandes((prev) => prev.filter((c) => c.id !== id));
+	};
+
 	const supprimerProduit = async (id: number) => {
 		if (!confirm("Êtes-vous sûr de vouloir supprimer ce produit ?")) return;
 		await deleteProduit(id);

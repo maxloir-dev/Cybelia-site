@@ -22,6 +22,39 @@
 	margin-bottom: 32px;
 }
 
+.shop-filtres {
+	display: flex;
+	gap: 8px;
+	flex-wrap: wrap;
+	margin-bottom: 20px;
+}
+
+.shop-filtre-btn {
+	height: 40px;
+	padding: 0 16px;
+	border-radius: 999px;
+	border: none;
+	outline: none;
+	background-color: rgba(158, 123, 101, 0.12);
+	color: #9e7b65;
+	font-size: 0.875rem;
+	font-weight: 500;
+	font-family: inherit;
+	cursor: pointer;
+	box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+	transition: background-color 0.2s, color 0.2s, box-shadow 0.2s;
+}
+
+.shop-filtre-btn:hover {
+	background-color: rgba(158, 123, 101, 0.25);
+}
+
+.shop-filtre-btn--actif {
+	background-color: #9e7b65;
+	color: white;
+	box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+}
+
 /* =========================================
    GRILLE DE PRODUITS
    Affiche les cartes produit en 4 colonnes.
@@ -103,6 +136,12 @@
 .shop-card-prix {
 	font-size: 0.9rem;
 	margin-bottom: 10px;
+}
+
+.shop-card-prix-label {
+	font-size: 0.75rem;
+	color: var(--color-secondary);
+	font-style: italic;
 }
 
 /* Bouton "Ajouter au panier" — aligné sur le style standard ActionButton */

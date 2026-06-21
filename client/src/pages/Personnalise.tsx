@@ -1,6 +1,11 @@
 import ActionButton from "../components/ActionButton/ActionButton";
-import placeholderImg from "../assets/photo/DSC00121.jpg";
 import "./Personnalise.css";
+
+const realisations = [
+	{ src: "https://res.cloudinary.com/dgi4qubrq/image/upload/v1782071959/Commande_pro_2_gg6hxw.jpg", alt: "Commande professionnelle 2" },
+	{ src: "https://res.cloudinary.com/dgi4qubrq/image/upload/v1782071959/Commande_pro_1_rvjcpt.jpg", alt: "Commande professionnelle 1" },
+	{ src: "https://res.cloudinary.com/dgi4qubrq/image/upload/v1782071959/Commande_particulier_cmi8cg.jpg", alt: "Commande particulier" },
+];
 
 export default function Personnalise() {
 	return (
@@ -27,24 +32,11 @@ export default function Personnalise() {
 				<p className="perso-section-sub">Nos créations</p>
 				<h2 className="perso-section-titre">Quelques réalisations</h2>
 				<div className="perso-realisations-grid">
-					<div className="perso-realisation-item">
-						<img src={placeholderImg} alt="Réalisation personnalisée" />
-					</div>
-					<div className="perso-realisation-item">
-						<img src={placeholderImg} alt="Réalisation personnalisée" />
-					</div>
-					<div className="perso-realisation-item">
-						<img src={placeholderImg} alt="Réalisation personnalisée" />
-					</div>
-					<div className="perso-realisation-item">
-						<img src={placeholderImg} alt="Réalisation personnalisée" />
-					</div>
-					<div className="perso-realisation-item">
-						<img src={placeholderImg} alt="Réalisation personnalisée" />
-					</div>
-					<div className="perso-realisation-item">
-						<img src={placeholderImg} alt="Réalisation personnalisée" />
-					</div>
+					{realisations.map((r) => (
+						<div key={r.src} className="perso-realisation-item">
+							<img src={r.src} alt={r.alt} />
+						</div>
+					))}
 				</div>
 			</section>
 

@@ -77,6 +77,12 @@
 	color: var(--color-primary);
 }
 
+.panier-item-dimension {
+	font-size: 0.85rem;
+	color: var(--color-secondary);
+	font-style: italic;
+}
+
 .panier-item-prix {
 	font-size: 0.9rem;
 	color: var(--color-secondary);

@@ -3,9 +3,14 @@ import { useNavigate } from "react-router-dom";
 import { PaymentElement, useStripe, useElements } from "@stripe/react-stripe-js";
 import { useCart } from "../../store/CartContext";
 import { passerCommande } from "../../api/commandeService";
+import type { LivraisonData } from "../../types";
 import "./CheckoutForm.css";
 
-function CheckoutForm() {
+interface CheckoutFormProps {
+	livraison: LivraisonData;
+}
+
+function CheckoutForm({ livraison }: CheckoutFormProps) {
 	const stripe = useStripe();
 	const elements = useElements();
 	const { items, viderPanier } = useCart();
@@ -39,7 +44,7 @@ function CheckoutForm() {
 				dimension_id: item.dimension_id ?? null,
 			}));
 
-			await passerCommande(lignes);
+			await passerCommande(lignes, livraison);
 			viderPanier();
 			navigate("/success");
 		}

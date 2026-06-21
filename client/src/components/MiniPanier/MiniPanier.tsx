@@ -48,12 +48,15 @@ function MiniPanier() {
 				{/* Dernier produit ajouté */}
 				<div className="mini-panier__produit mini-panier__produit--nouveau">
 					<img
-						src={dernierProduitAjoute.image_url}
+						src={dernierProduitAjoute.image_url || undefined}
 						alt={dernierProduitAjoute.nom}
 						className="mini-panier__image"
 					/>
 					<div className="mini-panier__info">
 						<p className="mini-panier__nom">{dernierProduitAjoute.nom}</p>
+						{dernierProduitAjoute.dimension_label && (
+							<p className="mini-panier__dimension">{dernierProduitAjoute.dimension_label}</p>
+						)}
 						<p className="mini-panier__prix">
 							{dernierProduitAjoute.prix.toFixed(2)} €
 						</p>
@@ -71,12 +74,15 @@ function MiniPanier() {
 								.map((item) => (
 									<div key={item.cartKey} className="mini-panier__produit">
 										<img
-											src={item.image_url}
+											src={item.image_url || undefined}
 											alt={item.nom}
 											className="mini-panier__image mini-panier__image--small"
 										/>
 										<div className="mini-panier__info">
 											<p className="mini-panier__nom">{item.nom}</p>
+											{item.dimension_label && (
+												<p className="mini-panier__dimension">{item.dimension_label}</p>
+											)}
 											<p className="mini-panier__prix">
 												{item.prix.toFixed(2)} €
 											</p>

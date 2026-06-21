@@ -119,6 +119,125 @@
 }
 
 /* ============================================
+   Formulaire livraison
+============================================ */
+.checkout-section-titre {
+	font-family: var(--font-title);
+	font-size: 1rem;
+	letter-spacing: 2px;
+	text-transform: uppercase;
+	color: var(--color-primary);
+	margin-bottom: 24px;
+}
+
+.checkout-ligne-double {
+	display: grid;
+	grid-template-columns: 1fr 1fr;
+	gap: 16px;
+}
+
+.checkout-champ {
+	display: flex;
+	flex-direction: column;
+	gap: 6px;
+	margin-bottom: 16px;
+}
+
+.checkout-label {
+	font-size: 0.75rem;
+	letter-spacing: 1px;
+	text-transform: uppercase;
+	color: var(--color-secondary);
+}
+
+.checkout-input {
+	height: 44px;
+	padding: 0 14px;
+	border: 1px solid rgba(150, 88, 70, 0.2);
+	background: #fff;
+	font-family: inherit;
+	font-size: 0.9rem;
+	color: var(--color-text);
+	outline: none;
+	transition: border-color 0.2s;
+}
+
+.checkout-input:focus {
+	border-color: var(--color-primary);
+}
+
+.checkout-input--erreur {
+	border-color: #c0392b;
+}
+
+.checkout-erreur-champ {
+	font-size: 0.75rem;
+	color: #c0392b;
+}
+
+select.checkout-input {
+	cursor: pointer;
+}
+
+.checkout-bouton {
+	width: 100%;
+	margin-top: 8px;
+	padding: 16px;
+	background: var(--color-primary, #965846);
+	color: #fff;
+	border: none;
+	font-family: var(--font-title);
+	font-size: 0.8rem;
+	letter-spacing: 2px;
+	text-transform: uppercase;
+	cursor: pointer;
+	transition: opacity 0.2s;
+}
+
+.checkout-bouton:hover {
+	opacity: 0.85;
+}
+
+.checkout-bouton:disabled {
+	opacity: 0.5;
+	cursor: not-allowed;
+}
+
+.checkout-asterisk {
+	color: #c0392b;
+	font-size: 0.85rem;
+}
+
+.checkout-bouton-livraison {
+	width: 100%;
+	margin-top: 8px;
+	justify-content: center;
+}
+
+.checkout-retour {
+	background: none;
+	border: none;
+	font-family: inherit;
+	font-size: 0.85rem;
+	color: var(--color-secondary);
+	cursor: pointer;
+	padding: 0;
+	margin-bottom: 20px;
+	text-decoration: underline;
+}
+
+.checkout-recap-livraison {
+	display: flex;
+	flex-direction: column;
+	gap: 2px;
+	font-size: 0.85rem;
+	color: var(--color-secondary);
+	border-left: 2px solid var(--color-primary);
+	padding-left: 12px;
+	margin-bottom: 24px;
+}
+
+/* ============================================
    Responsive
 ============================================ */
 @media (max-width: 900px) {

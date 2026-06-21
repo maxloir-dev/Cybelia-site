@@ -7,11 +7,14 @@ import {
 	getCommandeById,
 	getCommandesByUserId,
 	deleteCommandeById,
+	type LivraisonData,
 } from "../models/commandeModel";
 import {
 	getAllDimensions,
 	getProduitDimensionPrix,
 } from "../models/dimensionModel";
+import { envoyerEmailConfirmationCommande } from "../config/email";
+
 import { getProduitById } from "../models/produitModel";
 
 // Routes liées aux commandes
@@ -20,12 +23,8 @@ import { getProduitById } from "../models/produitModel";
 // Le client envoie la liste des produits avec leurs quantités
 export const passerCommande = async (req: AuthRequest, res: Response) => {
 	try {
-		if (!req.utilisateur) {
-			res.status(401).json({ message: "Utilisateur non authentifié" });
-			return;
-		}
-		const utilisateur_id = req.utilisateur.id;
-		const { lignes } = req.body;
+		const utilisateur_id = req.utilisateur!.id;
+		const { lignes, livraison } = req.body;
 		// lignes = [{ produit_id, quantite, dimension_id? }, ...]
 
 		// Re-fetch les prix depuis la DB — jamais faire confiance au client
@@ -80,16 +79,21 @@ export const passerCommande = async (req: AuthRequest, res: Response) => {
 			0,
 		);
 
-		const commande_id = await createCommande(utilisateur_id, montant_total);
+		const livraisonTypee: LivraisonData = livraison;
+		const commande_id = await createCommande(utilisateur_id, montant_total, livraisonTypee);
 		await createLignesCommande(commande_id, lignesVerifiees);
 
-		res
-			.status(201)
-			.json({ message: "Commande passée avec succès", commande_id });
-	} catch {
-		res
-			.status(500)
-			.json({ message: "Erreur lors de la création de la commande" });
+		envoyerEmailConfirmationCommande(
+			livraisonTypee.email,
+			livraisonTypee.prenom,
+			commande_id,
+			lignesVerifiees,
+			montant_total,
+		).catch((err) => console.error("[EMAIL] Échec envoi confirmation:", err));
+
+		res.status(201).json({ message: "Commande passée avec succès", commande_id });
+	} catch (error) {
+		res.status(500).json({ message: "Erreur lors de la création de la commande" });
 	}
 };
 
@@ -121,6 +125,16 @@ export const getCommande = async (req: AuthRequest, res: Response) => {
 			.json({ message: "Erreur lors de la récupération de la commande" });
 	}
 };
+// Supprime une commande (gérante uniquement)
+export const supprimerCommande = async (req: AuthRequest, res: Response) => {
+	try {
+		await deleteCommandeById(Number(req.params.id));
+		res.json({ message: "Commande supprimée" });
+	} catch (error) {
+		res.status(500).json({ message: "Erreur lors de la suppression de la commande" });
+	}
+};
+
 // Récupère les commandes du client connecté
 export const getMesCommandes = async (req: AuthRequest, res: Response) => {
 	try {

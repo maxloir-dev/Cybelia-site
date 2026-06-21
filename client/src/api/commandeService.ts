@@ -1,4 +1,4 @@
-import type { Commande, LigneCommande } from "../types";
+import type { Commande, LigneCommande, LivraisonData } from "../types";
 import api from "./axios";
 
 // Appels API liés aux commandes
@@ -6,8 +6,9 @@ import api from "./axios";
 // Passer une nouvelle commande
 export const passerCommande = async (
 	lignes: LigneCommande[],
+	livraison: LivraisonData,
 ): Promise<{ message: string; commande_id: number }> => {
-	const response = await api.post("/commandes", { lignes });
+	const response = await api.post("/commandes", { lignes, livraison });
 	return response.data;
 };
 
