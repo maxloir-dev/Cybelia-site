@@ -255,8 +255,12 @@
 	gap: 80px;
 }
 
-.home-apropos-image-wrapper {
+.home-apropos-image-reveal {
 	flex: 0 0 40%;
+}
+
+.home-apropos-image-wrapper {
+	width: 100%;
 }
 
 .home-apropos-image {
@@ -265,8 +269,11 @@
 	object-fit: cover;
 }
 
-.home-apropos-content {
+.home-apropos-content-reveal {
 	flex: 1;
+}
+
+.home-apropos-content {
 	display: flex;
 	flex-direction: column;
 	gap: 20px;

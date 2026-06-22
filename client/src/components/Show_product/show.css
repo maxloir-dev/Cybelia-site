@@ -62,10 +62,24 @@
    ========================================= */
 
 .shop-grid {
-	display: grid !important;
-	grid-template-columns: repeat(4, 1fr) !important;
+	display: grid;
+	grid-template-columns: repeat(4, 1fr);
 	gap: 60px;
 	margin-bottom: 60px;
+}
+
+@media (max-width: 1024px) {
+	.shop-grid {
+		grid-template-columns: repeat(2, 1fr);
+		gap: 40px;
+	}
+}
+
+@media (max-width: 767px) {
+	.shop-grid {
+		grid-template-columns: repeat(2, 1fr);
+		gap: 20px;
+	}
 }
 
 /* =========================================
