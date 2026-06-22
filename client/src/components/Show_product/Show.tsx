@@ -1,6 +1,7 @@
 import "./show.css";
 import ActionButton from "../ActionButton/ActionButton";
-import { GooeyInput } from "../Ui/GooeyInput";
+import { GooeyInput } from "../ui/GooeyInput";
+import RevealCard from "../RevealCard";
 import { useCart } from "../../store/CartContext";
 import { useAuth } from "../../store/AuthContext";
 import {
@@ -311,9 +312,13 @@ export default function Show({ categorieId, titre }: Props) {
 			<p className="shop-count">{produitsFiltres.length} résultats affichés</p>
 
 			<div className="shop-grid">
-				{produitsFiltres.map((p) => (
-					<div
+				{produitsFiltres.map((p, index) => (
+					<RevealCard
 						key={p.id}
+						direction={index % 2 === 0 ? "left" : "right"}
+						delay={(index % 4) * 0.08}
+					>
+					<div
 						className="shop-card"
 						onClick={() => ouvrirDetail(p)}
 						onKeyUp={(e) => e.key === "Enter" && ouvrirDetail(p)}
@@ -361,6 +366,7 @@ export default function Show({ categorieId, titre }: Props) {
 							</div>
 						)}
 					</div>
+					</RevealCard>
 				))}
 			</div>
 

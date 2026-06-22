@@ -23,7 +23,7 @@ import {
 import type { Commande, Produit, Utilisateur, Dimension } from "../../types";
 import "./Admin.css";
 import { uploadImage } from "../../api/uploadService";
-import { GooeyInput } from "../../components/Ui/GooeyInput";
+import { GooeyInput } from "../../components/ui/GooeyInput";
 import { useScrollReveal } from "../../hooks/useScrollReveal";
 
 // Types des vues possibles
@@ -38,11 +38,6 @@ type Vue =
 
 // Page Admin
 function Admin() {
-	useEffect(() => {
-		getAllDimensions()
-			.then(setTousLesDimensions)
-			.catch(() => {});
-	}, []);
 	const location = useLocation();
 	const [vue, setVue] = useState<Vue>("accueil");
 	const containerRef = useScrollReveal(vue);
@@ -93,6 +88,12 @@ function Admin() {
 	>(null);
 	const [rechercheProduits, setRechercheProduits] = useState<string>("");
 	const [rechercheClients, setRechercheClients] = useState<string>("");
+
+	useEffect(() => {
+		getAllDimensions()
+			.then(setTousLesDimensions)
+			.catch(() => {});
+	}, []);
 
 	// Navigation vers les vues
 	const allerCommandes = async () => {
@@ -165,12 +166,6 @@ function Admin() {
 		const prixInit: Record<number, string> = {};
 		for (const d of actives) prixInit[d.id] = String(d.prix);
 		setNouveauPrix(prixInit);
-	};
-
-	const supprimerCommande = async (id: number) => {
-		if (!confirm("Supprimer définitivement cette commande ?")) return;
-		await deleteCommande(id);
-		setCommandes((prev) => prev.filter((c) => c.id !== id));
 	};
 
 	const supprimerProduit = async (id: number) => {
@@ -566,7 +561,7 @@ function Admin() {
 								(client.email || "").toLowerCase().includes(q)
 							);
 						})
-						.map((client, index) => (
+						.map((client) => (
 							<div key={client.id} className="admin-item scroll-item">
 								<button
 									type="button"
@@ -822,7 +817,7 @@ function Admin() {
 								String(produit.prix).includes(q)
 							);
 						})
-						.map((produit, index) => (
+						.map((produit) => (
 							<div key={produit.id} className="admin-item scroll-item">
 								<button
 									type="button"
@@ -985,11 +980,7 @@ function Admin() {
 						{/* ZONE DE GESTION DES IMAGES */}
 						{modeEdition ? (
 							<div className="admin-form__images-row">
-								{(() => {
-									console.log("produitSelectionne:", produitSelectionne);
-									return null;
-								})()}
-								{/* BLOC 1 : IMAGE PRINCIPALE */}
+									{/* BLOC 1 : IMAGE PRINCIPALE */}
 								<div className="admin-form__field">
 									<span
 										style={{
@@ -1101,35 +1092,17 @@ function Admin() {
 											let imagePrincipaleFinale = produitSelectionne.image_url;
 											let mockupFinal = produitSelectionne.mockup_url;
 
-											console.log(
-												"DEBUT - fichierMockupEdit:",
-												fichierMockupEdit,
-											);
-
 											if (fichierImageEdit) {
 												const reponse1 = await uploadImage(fichierImageEdit);
-												console.log("reponse1:", reponse1);
 												if (reponse1?.image_url)
 													imagePrincipaleFinale = reponse1.image_url;
 											}
 
 											if (fichierMockupEdit) {
 												const reponse2 = await uploadImage(fichierMockupEdit);
-												console.log("reponse2:", reponse2);
 												if (reponse2?.image_url)
 													mockupFinal = reponse2.image_url;
 											}
-
-											console.log("AVANT SAVE - mockupFinal:", mockupFinal);
-											console.log(
-												"AVANT SAVE - imagePrincipaleFinale:",
-												imagePrincipaleFinale,
-											);
-											console.log("mockupFinal avant save:", mockupFinal);
-											console.log(
-												"imagePrincipaleFinale avant save:",
-												imagePrincipaleFinale,
-											);
 
 											await updateProduit(produitSelectionne.id, {
 												nom: produitEdite.nom,
@@ -1139,7 +1112,7 @@ function Admin() {
 												mockup_url: mockupFinal || null,
 												categorie_id:
 													produitEdite.categorie === "Carte postale" ? 1 : 2,
-											} as any);
+											});
 
 											// Recharge le produit frais depuis la base
 											const produitFrais = await getProduitById(
