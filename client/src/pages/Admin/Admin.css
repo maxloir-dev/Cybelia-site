@@ -738,6 +738,12 @@
 	color: #666;
 }
 
+.admin-postit__info {
+	font-size: 0.78rem;
+	color: #555;
+	word-break: break-word;
+}
+
 .admin-postit__prix {
 	font-family: var(--font-title);
 	font-size: 1.4rem;

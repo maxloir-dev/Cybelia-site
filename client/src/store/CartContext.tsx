@@ -43,6 +43,7 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
 		CartItem,
 		"quantite"
 	> | null>(null);
+	const [nbAjouts, setNbAjouts] = useState(0);
 
 	useEffect(() => {
 		localStorage.setItem("panier", JSON.stringify(items));
@@ -61,7 +62,11 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
 			return [...prev, { ...produit, quantite: 1 }];
 		});
 		setDernierProduitAjoute(produit);
-		setMiniPanierOuvert(true);
+		const nouveauNb = nbAjouts + 1;
+		setNbAjouts(nouveauNb);
+		if (nouveauNb % 2 === 1) {
+			setMiniPanierOuvert(true);
+		}
 	};
 
 	const supprimerDuPanier = (cartKey: string) => {

@@ -7,7 +7,7 @@ const features = [
 			<svg
 				className="feature-icon-svg"
 				width="35"
-				height="35s"
+				height="35"
 				viewBox="0 0 64 64"
 				fill="currentColor"
 				xmlns="http://www.w3.org/2000/svg"
