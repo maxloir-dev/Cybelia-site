@@ -672,6 +672,7 @@ export default function Show({ categorieId, titre }: Props) {
 											dimension_id: dimensionSelectionnee?.id ?? null,
 											dimension_label: dimensionSelectionnee?.label ?? null,
 										});
+										setProduitDetail(null);
 									}}
 								>
 									Ajouter au panier

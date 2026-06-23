@@ -257,6 +257,7 @@
 
 .home-apropos-image-reveal {
 	flex: 0 0 40%;
+	will-change: transform;
 }
 
 .home-apropos-image-wrapper {

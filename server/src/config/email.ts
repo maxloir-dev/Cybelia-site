@@ -34,7 +34,7 @@ export const envoyerEmailConfirmationCommande = async (
 		html: `
 		<div style="font-family: sans-serif; max-width: 520px; margin: 0 auto; padding: 40px 20px; color: #111;">
 			<h2 style="font-size: 1.4rem; margin-bottom: 8px;">Merci pour votre commande, ${prenom} !</h2>
-			<p style="color: #666; margin-bottom: 32px;">Votre commande <strong>#${commande_id}</strong> a bien été enregistrée. Nous vous contacterons dès qu'elle sera expédiée.</p>
+			<p style="color: #666; margin-bottom: 32px;">Nous avons bien reçu votre achat et nous le préparons avec soin. Vous le recevrez dans les meilleurs délais. À très vite !</p>
 			<table style="width: 100%; border-collapse: collapse; margin-bottom: 24px;">
 				<thead>
 					<tr style="border-bottom: 1px solid #eee;">

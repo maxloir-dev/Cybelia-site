@@ -399,9 +399,11 @@ function Admin() {
 							if (!q) return true;
 							return (
 								String(c.id).includes(q) ||
-								c.nom?.toLowerCase().includes(q) ||
-								c.prenom?.toLowerCase().includes(q) ||
-								c.email?.toLowerCase().includes(q) ||
+								c.nom_livraison?.toLowerCase().includes(q) ||
+								c.prenom_livraison?.toLowerCase().includes(q) ||
+								c.email_livraison?.toLowerCase().includes(q) ||
+								c.adresse?.toLowerCase().includes(q) ||
+								c.ville?.toLowerCase().includes(q) ||
 								new Date(c.created_at).toLocaleDateString("fr-FR").includes(q)
 							);
 						})
@@ -420,8 +422,22 @@ function Admin() {
 										Commande #{commande.id}
 									</div>
 									<div className="admin-postit__date">
-										{commande.nom} {commande.prenom}
+										{commande.nom_livraison} {commande.prenom_livraison}
 									</div>
+									{commande.email_livraison && (
+										<div className="admin-postit__info">{commande.email_livraison}</div>
+									)}
+									{commande.telephone && (
+										<div className="admin-postit__info">{commande.telephone}</div>
+									)}
+									{commande.adresse && (
+										<div className="admin-postit__info">{commande.adresse}</div>
+									)}
+									{(commande.ville || commande.code_postal) && (
+										<div className="admin-postit__info">
+											{commande.code_postal} {commande.ville}
+										</div>
+									)}
 									<div className="admin-postit__date">
 										{new Date(commande.created_at).toLocaleDateString("fr-FR")}
 									</div>
@@ -456,9 +472,20 @@ function Admin() {
 							</button>
 							<h3>Commande #{commandeSelectionnee.id}</h3>
 							<p className="admin-popin__date">
-								{commandeSelectionnee.nom} {commandeSelectionnee.prenom} —{" "}
-								{commandeSelectionnee.email}
+								{commandeSelectionnee.nom_livraison} {commandeSelectionnee.prenom_livraison} —{" "}
+								{commandeSelectionnee.email_livraison}
 							</p>
+							{commandeSelectionnee.telephone && (
+								<p className="admin-popin__date">{commandeSelectionnee.telephone}</p>
+							)}
+							{commandeSelectionnee.adresse && (
+								<p className="admin-popin__date">{commandeSelectionnee.adresse}</p>
+							)}
+							{(commandeSelectionnee.ville || commandeSelectionnee.code_postal) && (
+								<p className="admin-popin__date">
+									{commandeSelectionnee.code_postal} {commandeSelectionnee.ville}
+								</p>
+							)}
 							<p className="admin-popin__date">
 								Le{" "}
 								{new Date(commandeSelectionnee.created_at).toLocaleDateString(
@@ -657,6 +684,20 @@ function Admin() {
 									<div className="admin-postit__titre">
 										Commande #{commande.id}
 									</div>
+									{commande.email_livraison && (
+										<div className="admin-postit__info">{commande.email_livraison}</div>
+									)}
+									{commande.telephone && (
+										<div className="admin-postit__info">{commande.telephone}</div>
+									)}
+									{commande.adresse && (
+										<div className="admin-postit__info">{commande.adresse}</div>
+									)}
+									{(commande.ville || commande.code_postal) && (
+										<div className="admin-postit__info">
+											{commande.code_postal} {commande.ville}
+										</div>
+									)}
 									<div className="admin-postit__date">
 										{new Date(commande.created_at).toLocaleDateString("fr-FR")}
 									</div>
@@ -691,6 +732,23 @@ function Admin() {
 								</button>
 
 								<h3>Détails de la Commande #{commandeSelectionnee.id}</h3>
+								<p className="admin-popin__date">
+									{commandeSelectionnee.nom_livraison} {commandeSelectionnee.prenom_livraison}
+								</p>
+								{commandeSelectionnee.email_livraison && (
+									<p className="admin-popin__date">{commandeSelectionnee.email_livraison}</p>
+								)}
+								{commandeSelectionnee.telephone && (
+									<p className="admin-popin__date">{commandeSelectionnee.telephone}</p>
+								)}
+								{commandeSelectionnee.adresse && (
+									<p className="admin-popin__date">{commandeSelectionnee.adresse}</p>
+								)}
+								{(commandeSelectionnee.ville || commandeSelectionnee.code_postal) && (
+									<p className="admin-popin__date">
+										{commandeSelectionnee.code_postal} {commandeSelectionnee.ville}
+									</p>
+								)}
 								<p className="admin-popin__date">
 									Faite le :{" "}
 									{new Date(commandeSelectionnee.created_at).toLocaleDateString(

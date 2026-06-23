@@ -8,7 +8,7 @@ type Props = {
 	children: ReactNode;
 };
 
-export default function RevealCard({ direction, delay = 0, className, children }: Props) {
+export default function RevealCard({ direction, delay = 0.1, className, children }: Props) {
 	const ref = useRef<HTMLDivElement>(null);
 	const isInView = useInView(ref, { margin: "-60px", once: false });
 
@@ -21,7 +21,7 @@ export default function RevealCard({ direction, delay = 0, className, children }
 			className={className}
 			initial={{ opacity: 0, x: xIn }}
 			animate={isInView ? { opacity: 1, x: 0 } : { opacity: 0, x: xOut }}
-			transition={{ duration: 0.5, ease: "easeOut", delay: isInView ? delay : 0 }}
+			transition={{ duration: 0.7, ease: "easeOut", delay: isInView ? delay : 0.1 }}
 		>
 			{children}
 		</motion.div>
