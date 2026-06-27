@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import "../Login/Login.css";
+import { API_URL } from "../../api/config";
 
 export default function ResetPassword() {
 	const { token } = useParams<{ token: string }>();
@@ -25,7 +26,7 @@ export default function ResetPassword() {
 
 		setChargement(true);
 		try {
-			const res = await fetch("http://localhost:3001/api/auth/reset-password", {
+			const res = await fetch(`${API_URL}/auth/reset-password`, {
 				method: "POST",
 				headers: { "Content-Type": "application/json" },
 				body: JSON.stringify({ token, nouveau_mot_de_passe: motDePasse }),

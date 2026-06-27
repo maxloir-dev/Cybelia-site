@@ -4,6 +4,7 @@ import { GooeyInput } from "../ui/GooeyInput";
 import RevealCard from "../RevealCard";
 import { useCart } from "../../store/CartContext";
 import { useAuth } from "../../store/AuthContext";
+import { API_URL } from "../../api/config";
 import {
 	getAllDimensions,
 	getDimensionsByProduit,
@@ -79,8 +80,8 @@ export default function Show({ categorieId, titre }: Props) {
 
 	const fetchProduits = useCallback(() => {
 		const url = dimensionFiltre
-			? `http://localhost:3001/api/produits?categorie_id=${categorieId}&dimension_id=${dimensionFiltre}`
-			: `http://localhost:3001/api/produits?categorie_id=${categorieId}`;
+			? `${API_URL}/produits?categorie_id=${categorieId}&dimension_id=${dimensionFiltre}`
+			: `${API_URL}/produits?categorie_id=${categorieId}`;
 		fetch(url)
 			.then((res) => res.json())
 			.then((data) => setProduits(data));
@@ -118,7 +119,7 @@ export default function Show({ categorieId, titre }: Props) {
 		const formData = new FormData();
 		if (principale) formData.append("images", principale);
 		if (mockup) formData.append("images", mockup);
-		const res = await fetch("http://localhost:3001/api/upload/multiple", {
+		const res = await fetch(`${API_URL}/upload/multiple`, {
 			method: "POST",
 			headers: authHeader,
 			body: formData,
@@ -158,7 +159,7 @@ export default function Show({ categorieId, titre }: Props) {
 				prixFinal = prixA4;
 			}
 
-			const res = await fetch("http://localhost:3001/api/produits", {
+			const res = await fetch(`${API_URL}/produits`, {
 				method: "POST",
 				headers: { "Content-Type": "application/json", ...authHeader },
 				body: JSON.stringify({
@@ -225,7 +226,7 @@ export default function Show({ categorieId, titre }: Props) {
 				mockup_url = urls.mockup_url;
 			}
 			await fetch(
-				`http://localhost:3001/api/produits/${produitEnEdition!.id}`,
+				`${API_URL}/produits/${produitEnEdition!.id}`,
 				{
 					method: "PUT",
 					headers: { "Content-Type": "application/json", ...authHeader },
@@ -247,7 +248,7 @@ export default function Show({ categorieId, titre }: Props) {
 
 	const handleDelete = async (id: number) => {
 		if (!confirm("Supprimer ce produit ?")) return;
-		await fetch(`http://localhost:3001/api/produits/${id}`, {
+		await fetch(`${API_URL}/produits/${id}`, {
 			method: "DELETE",
 			headers: authHeader,
 		});
