@@ -1,6 +1,7 @@
 import { useState, type ChangeEvent, type FormEvent } from "react";
 import "./Contact.css";
 import ActionButton from "../components/ActionButton/ActionButton";
+import { API_URL } from "../api/config";
 
 type Form = {
 	nom: string;
@@ -43,7 +44,7 @@ export default function Contact() {
 		}
 
 		// Remplacer par ton URL d'API réelle si nécessaire
-		await fetch("http://localhost:3001/api/contact", {
+		await fetch(`${API_URL}/contact`, {
 			method: "POST",
 			headers: { "Content-Type": "application/json" },
 			body: JSON.stringify(form),
