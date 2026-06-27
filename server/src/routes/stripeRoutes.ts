@@ -1,27 +1,13 @@
-import { Router, Request, Response } from 'express';
-import Stripe from 'stripe';
+import { Router } from "express";
+import { verifierToken } from "../middlewares/authMiddleware";
+import { createPaymentIntent } from "../controllers/stripeController";
 
 const router = Router();
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string);
 
-router.post('/create-payment-intent', async (req: Request, res: Response) => {
-  const { amount } = req.body;
-
-  if (!amount || typeof amount !== 'number' || amount <= 0) {
-    res.status(400).json({ error: 'Montant invalide' });
-    return;
-  }
-
-  try {
-    const paymentIntent = await stripe.paymentIntents.create({
-      amount,
-      currency: 'eur',
-      payment_method_types: ['card'],
-    });
-    res.json({ clientSecret: paymentIntent.client_secret });
-  } catch (err: any) {
-    res.status(400).json({ error: err.message });
-  }
-});
+// Création du PaymentIntent — réservée aux utilisateurs connectés
+// (le webhook a besoin de l'utilisateur_id pour rattacher la commande).
+// NB : la route /webhook n'est PAS ici : elle est montée dans index.ts avec
+// express.raw() car la vérification de signature exige le body brut.
+router.post("/create-payment-intent", verifierToken, createPaymentIntent);
 
 export default router;

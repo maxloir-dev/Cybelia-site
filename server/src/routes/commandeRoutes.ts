@@ -1,6 +1,5 @@
 import { Router } from "express";
 import {
-	passerCommande,
 	getCommandes,
 	getCommande,
 	getMesCommandes,
@@ -12,8 +11,9 @@ const router = Router();
 // Récupère les commandes du client connecté
 router.get("/mes-commandes", verifierToken, getMesCommandes);
 
-// Passer une commande (client connecté uniquement)
-router.post("/", verifierToken, passerCommande);
+// NB : la création de commande se fait désormais côté serveur via le webhook
+// Stripe (payment_intent.succeeded), voir stripeController. Il n'y a plus de
+// route publique de création de commande (pas de commande sans paiement vérifié).
 
 // Récupère toutes les commandes (gérante uniquement)
 router.get("/", verifierToken, verifierAdmin, getCommandes);

@@ -20,16 +20,19 @@ export interface LivraisonData {
 	pays: string;
 }
 
-// Crée une nouvelle commande et retourne son id
+// Crée une nouvelle commande et retourne son id.
+// payment_intent_id : id du PaymentIntent Stripe associé (null pour les
+// commandes créées hors flux de paiement). Sert à l'idempotence du webhook.
 export const createCommande = async (
 	utilisateur_id: number,
 	montant_total: number,
 	livraison: LivraisonData,
+	payment_intent_id: string | null = null,
 ) => {
 	const [result]: any = await pool.query(
 		`INSERT INTO commandes
-		 (utilisateur_id, montant_total, prenom_livraison, nom_livraison, email_livraison, telephone, adresse, code_postal, ville, pays)
-		 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+		 (utilisateur_id, montant_total, prenom_livraison, nom_livraison, email_livraison, telephone, adresse, code_postal, ville, pays, stripe_payment_intent_id)
+		 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
 		[
 			utilisateur_id,
 			montant_total,
@@ -41,9 +44,21 @@ export const createCommande = async (
 			livraison.code_postal,
 			livraison.ville,
 			livraison.pays,
+			payment_intent_id,
 		],
 	);
 	return result.insertId;
+};
+
+// Retrouve une commande par l'id de son PaymentIntent (idempotence webhook)
+export const getCommandeByPaymentIntentId = async (
+	payment_intent_id: string,
+): Promise<{ id: number } | null> => {
+	const [rows]: any = await pool.query(
+		"SELECT id FROM commandes WHERE stripe_payment_intent_id = ? LIMIT 1",
+		[payment_intent_id],
+	);
+	return rows[0] ?? null;
 };
 
 // Crée les lignes de commande associées à une commande
