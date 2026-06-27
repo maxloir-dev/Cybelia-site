@@ -17,6 +17,7 @@ import uploadRoutes from "./routes/uploadRoutes"; // Routes /api/upload
 import contactRoutes from "./routes/contactRoutes"; // Routes /api/contact
 import dimensionRoutes from "./routes/dimensionRoutes"; // Routes /api/dimensions
 import stripeRoutes from "./routes/stripeRoutes";
+import { handleWebhook } from "./controllers/stripeController";
 
 // Chargement des variables d'environnement
 dotenv.config();
@@ -32,6 +33,15 @@ app.use(cors({
 	origin: process.env.CLIENT_URL,
 	methods: ["GET", "POST", "PUT", "DELETE"],
 }));
+
+// Webhook Stripe : DOIT être monté avant express.json() car la vérification
+// de signature exige le body brut (Buffer), non parsé en JSON.
+app.post(
+	"/api/stripe/webhook",
+	express.raw({ type: "application/json" }),
+	handleWebhook,
+);
+
 app.use(express.json({ limit: "50mb" }));
 app.use(express.urlencoded({ limit: "50mb", extended: true }));
 

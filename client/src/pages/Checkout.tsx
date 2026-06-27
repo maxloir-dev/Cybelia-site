@@ -29,15 +29,35 @@ function Checkout() {
 	const [livraison, setLivraison] = useState<LivraisonData>(livraisonVide);
 	const [erreurs, setErreurs] = useState<Partial<Record<keyof LivraisonData, string>>>({});
 	const [clientSecret, setClientSecret] = useState("");
+	const [erreurPaiement, setErreurPaiement] = useState("");
 	const navigate = useNavigate();
 
 	useEffect(() => {
-		if (etape === 2) {
+		// items.length > 0 : évite un appel parasite quand le panier est vidé
+		// après un paiement réussi (l'effet se re-déclenche alors avec un panier vide).
+		if (etape === 2 && items.length > 0) {
+			// On envoie les lignes du panier (pas le montant) : le serveur
+			// recalcule lui-même le prix depuis la DB.
+			const lignes = items.map((item) => ({
+				produit_id: item.id,
+				quantite: item.quantite,
+				dimension_id: item.dimension_id ?? null,
+			}));
+			// La livraison est envoyée dès maintenant : elle est stockée dans la
+			// metadata du PaymentIntent pour que le webhook puisse créer la commande.
 			api
-				.post("/stripe/create-payment-intent", { amount: Math.round(total * 100) })
-				.then(({ data }) => setClientSecret(data.clientSecret));
+				.post("/stripe/create-payment-intent", { lignes, livraison })
+				.then(({ data }) => {
+					setClientSecret(data.clientSecret);
+					setErreurPaiement("");
+				})
+				.catch(() =>
+					setErreurPaiement(
+						"Impossible d'initialiser le paiement. Réessayez dans un instant.",
+					),
+				);
 		}
-	}, [etape, total]);
+	}, [etape, items, livraison]);
 
 	const valider = () => {
 		const e: Partial<Record<keyof LivraisonData, string>> = {};
@@ -161,7 +181,9 @@ function Checkout() {
 								<span>{livraison.adresse}, {livraison.code_postal} {livraison.ville}</span>
 								<span>{livraison.email}</span>
 							</div>
-							{!clientSecret ? (
+							{erreurPaiement ? (
+								<p className="checkout-erreur">{erreurPaiement}</p>
+							) : !clientSecret ? (
 								<p className="checkout-chargement">Chargement...</p>
 							) : (
 								<Elements
@@ -181,7 +203,7 @@ function Checkout() {
                         },
                     }}
                 >
-                    <CheckoutForm livraison={livraison} />
+                    <CheckoutForm />
                 </Elements>
 							)}
 						</div>

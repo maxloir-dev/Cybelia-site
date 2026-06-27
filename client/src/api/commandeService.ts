@@ -1,16 +1,9 @@
-import type { Commande, LigneCommande, LivraisonData } from "../types";
+import type { Commande } from "../types";
 import api from "./axios";
 
 // Appels API liés aux commandes
-
-// Passer une nouvelle commande
-export const passerCommande = async (
-	lignes: LigneCommande[],
-	livraison: LivraisonData,
-): Promise<{ message: string; commande_id: number }> => {
-	const response = await api.post("/commandes", { lignes, livraison });
-	return response.data;
-};
+// NB : la création de commande n'est plus déclenchée par le client : elle se
+// fait côté serveur via le webhook Stripe après paiement vérifié.
 
 // Récupère les commandes du client connecté
 export const getMesCommandes = async (): Promise<Commande[]> => {

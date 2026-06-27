@@ -2,18 +2,12 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { PaymentElement, useStripe, useElements } from "@stripe/react-stripe-js";
 import { useCart } from "../../store/CartContext";
-import { passerCommande } from "../../api/commandeService";
-import type { LivraisonData } from "../../types";
 import "./CheckoutForm.css";
 
-interface CheckoutFormProps {
-	livraison: LivraisonData;
-}
-
-function CheckoutForm({ livraison }: CheckoutFormProps) {
+function CheckoutForm() {
 	const stripe = useStripe();
 	const elements = useElements();
-	const { items, viderPanier } = useCart();
+	const { viderPanier } = useCart();
 	const navigate = useNavigate();
 	const [chargement, setChargement] = useState(false);
 	const [erreur, setErreur] = useState("");
@@ -37,14 +31,8 @@ function CheckoutForm({ livraison }: CheckoutFormProps) {
 		}
 
 		if (paymentIntent?.status === "succeeded") {
-			const lignes = items.map((item) => ({
-				produit_id: item.id,
-				quantite: item.quantite,
-				prix_unitaire: item.prix,
-				dimension_id: item.dimension_id ?? null,
-			}));
-
-			await passerCommande(lignes, livraison);
+			// La commande est créée côté serveur par le webhook Stripe
+			// (payment_intent.succeeded) — fiable même si l'onglet se ferme ici.
 			viderPanier();
 			navigate("/success");
 		}
