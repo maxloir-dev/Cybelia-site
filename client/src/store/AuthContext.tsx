@@ -45,7 +45,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 			setUtilisateur(data);
 		} catch (error) {
 			console.error("Erreur lors du chargement du profil:", error);
-			// Optionnel : deconnexion();
 		}
 	}, []);
 
@@ -55,7 +54,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
 		if (tokenStocke) {
 			setToken(tokenStocke);
-			// Au lieu de juste mettre l'ID, on va chercher tout le profil sur l'API
 			chargerProfilComplet();
 		}
 	}, [chargerProfilComplet]);

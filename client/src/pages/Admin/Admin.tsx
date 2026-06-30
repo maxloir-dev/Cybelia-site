@@ -23,7 +23,7 @@ import {
 import type { Commande, Produit, Utilisateur, Dimension } from "../../types";
 import "./Admin.css";
 import { uploadImage } from "../../api/uploadService";
-import { GooeyInput } from "../../components/ui/GooeyInput";
+import { GooeyInput } from "../../components/Ui/GooeyInput";
 import { useScrollReveal } from "../../hooks/useScrollReveal";
 
 // Types des vues possibles

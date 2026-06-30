@@ -1,6 +1,6 @@
 "use client";
 import { useEffect, useState } from "react";
-import { LayoutTextFlip } from "./ui/layout-text-flip";
+import { LayoutTextFlip } from "./Ui/layout-text-flip";
 import "./UserGreeting.css";
 
 interface UserGreetingProps {
