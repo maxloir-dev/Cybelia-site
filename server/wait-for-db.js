@@ -13,14 +13,16 @@ const DELAI_MS = 2000;
 async function attendreLaBase() {
 	for (let tentative = 1; tentative <= MAX_TENTATIVES; tentative++) {
 		try {
-			const connexion = await mysql.createConnection({
-				host: process.env.DB_HOST,
-				user: process.env.DB_USER,
-				password: process.env.DB_PASSWORD,
-				database: process.env.DB_NAME,
-				port: process.env.DB_PORT ? Number(process.env.DB_PORT) : undefined,
-				connectTimeout: 5000,
-			});
+			const connexion = process.env.DATABASE_URL
+				? await mysql.createConnection(process.env.DATABASE_URL)
+				: await mysql.createConnection({
+						host: process.env.DB_HOST,
+						user: process.env.DB_USER,
+						password: process.env.DB_PASSWORD,
+						database: process.env.DB_NAME,
+						port: process.env.DB_PORT ? Number(process.env.DB_PORT) : undefined,
+						connectTimeout: 5000,
+					});
 			await connexion.end();
 			console.log(`✅ Base joignable (tentative ${tentative}). Lancement des migrations.`);
 			process.exit(0);
