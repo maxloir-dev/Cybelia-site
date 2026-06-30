@@ -10,11 +10,11 @@ export async function up(knex: Knex): Promise<void> {
 	});
 
 	// Table de liaison produit ↔ dimension avec prix personnalisé
-	// produit_id : int (signé) pour correspondre à produits.id créé par l'ancienne migration
+	// produit_id : int unsigned pour correspondre à produits.id (increments = unsigned)
 	// dimension_id : int unsigned pour correspondre à dimensions.id créé ci-dessus
 	await knex.schema.createTable("produit_dimensions", (table) => {
 		table.increments("id").primary();
-		table.integer("produit_id").notNullable();
+		table.integer("produit_id").unsigned().notNullable();
 		table.integer("dimension_id").unsigned().notNullable();
 		table.decimal("prix", 10, 2).notNullable();
 		table.unique(["produit_id", "dimension_id"]);
