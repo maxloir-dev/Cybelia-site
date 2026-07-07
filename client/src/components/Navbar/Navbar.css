@@ -138,20 +138,17 @@
 	transform: translateY(-7px) rotate(-45deg);
 }
 
-/* ============================================================
-   STRUCTURE DU MENU MOBILE BURGER
-   ============================================================ */
 .navbar-mobile-menu {
 	position: fixed;
 	top: 145px;
 	left: 50%;
 	width: 60vw;
-	height: 75vh; /* Permet au menu de s'adapter au contenu si celui-ci est court */ /* Limite la hauteur maximale à 70% ou 80% de la hauteur de l'écran */
+	height: 75vh;
 	overflow-y: auto;
 	background-color: #fff;
 	box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
 	display: flex;
-	flex-direction: column; /* Aligne le greeting au-dessus des liens */
+	flex-direction: column;
 	justify-content: flex-start;
 	align-items: center;
 	opacity: 0;
@@ -172,17 +169,14 @@
 	transform: translate(-50%, 0);
 }
 
-/* --- Style de l'en-tête utilisateur dans le menu burger --- */
 .navbar-menu-greeting {
 	padding: 50px 0 20px 0;
 	margin-bottom: 35px;
 	border-bottom: 1px solid rgba(0, 0, 0, 0.06);
-	width: 80%; /* Reste aligné sur la largeur du menu mobile */
-
-	/* MODIFICATIONS ICI : On stabilise le bloc */
-	display: block; /* On passe en block pour occuper tout l'espace horizontal */
-	text-align: center; /* C'est le texte qui se centre, pas la boîte globale */
-	min-height: 40px; /* Optionnel : évite aussi les sauts verticaux si le texte disparaît un court instant */
+	width: 80%;
+	display: block;
+	text-align: center;
+	min-height: 40px;
 }
 
 .navbar-menu-greeting .greeting-container {
@@ -191,7 +185,7 @@
 	letter-spacing: 0.05em;
 	max-width: none !important;
 	overflow: visible !important;
-	display: inline-block; /* Permet de garder le contrôle sans casser l'alignement */
+	display: inline-block;
 }
 
 .navbar-links {
@@ -219,7 +213,6 @@
 	padding-bottom: 4px;
 }
 
-/* La petite ligne magique sous le lien */
 .navbar-links a::after {
 	content: "";
 	position: absolute;
@@ -241,9 +234,6 @@
 	background-color: #b5936b;
 }
 
-/* ============================================================
-   CENTRE : Logo
-   ============================================================ */
 .navbar-logo-link {
 	display: flex;
 	align-items: center;
@@ -255,9 +245,6 @@
 	margin-top: 7px;
 }
 
-/* ============================================================
-   DROITE : Style des Icônes avec effet au survol (Hover Circle)
-   ============================================================ */
 .navbar-icon {
 	background-color: transparent !important;
 	border: none;
@@ -295,12 +282,10 @@
 }
 
 .navbar-icon:hover {
-	background-color: var(
-		--color-background
-	) !important; /* Se remplit avec ta couleur principale */
-	color: #ffffff !important; /* Le SVG passe en blanc */
-	box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15); /* L'ombre du mode is-floating (légèrement renforcée pour le noir) */
-	transform: translateY(-2px); /* Léger effet de soulèvement "flottant" */
+	background-color: var(--color-background) !important;
+	color: #ffffff !important;
+	box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+	transform: translateY(-2px);
 }
 
 .navbar-icon:hover svg[viewBox="0 0 32 32"] path {
@@ -347,11 +332,6 @@
 	opacity: 1 !important;
 }
 
-/* ============================================================
-   RESPONSIVE : Gestion des écrans (Tablettes et Mobiles)
-   ============================================================ */
-
-/* 1. POUR LES ÉCRANS INTERMÉDIAIRES (Tablettes < 1024px) */
 @media screen and (max-width: 1024px) {
 	.navbar {
 		padding: 0 24px;
@@ -373,7 +353,6 @@
 	}
 }
 
-/* 2. POUR LES ÉCRANS MOBILES (Smartphones < 768px) */
 @media screen and (max-width: 768px) {
 	.navbar {
 		padding: 0 16px;
@@ -413,6 +392,6 @@
 	.navbar-mobile-menu {
 		top: 70px;
 		height: calc(100vh - 70px);
-		width: 100vw; /* Prend tout l'écran sur mobile pour un confort total */
+		width: 100vw;
 	}
 }

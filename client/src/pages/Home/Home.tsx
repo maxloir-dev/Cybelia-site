@@ -63,9 +63,7 @@ function Home({ onIntroComplete }: HomeProps) {
 					<Hero />
 				</div>
 				<div className="features-container">
-					<RevealCard direction="left">
-						<Features />
-					</RevealCard>
+					<Features />
 				</div>
 				<div className="section">
 					<RevealCard direction="left">
@@ -73,10 +71,11 @@ function Home({ onIntroComplete }: HomeProps) {
 							<h2 className="nouveautes-title">Nouveautés</h2>
 							<div className="nouveautes-text">
 								<p>
-									Découvrez régulièrement de nouvelles illustrations inspirées de
-									villes, lieux emblématiques et architectures du monde entier.
-									Chaque création réalisée à la main vient enrichir la collection
-									pour faire voyager votre intérieur au fil des découvertes.
+									Découvrez régulièrement de nouvelles illustrations inspirées
+									de villes, lieux emblématiques et architectures du monde
+									entier. Chaque création réalisée à la main vient enrichir la
+									collection pour faire voyager votre intérieur au fil des
+									découvertes.
 								</p>
 							</div>
 						</div>
@@ -240,7 +239,11 @@ function Home({ onIntroComplete }: HomeProps) {
 								/>
 							</div>
 						</RevealCard>
-						<RevealCard direction="right" delay={0.1} className="home-apropos-content-reveal">
+						<RevealCard
+							direction="right"
+							delay={0.1}
+							className="home-apropos-content-reveal"
+						>
 							<div className="home-apropos-content">
 								<p className="home-apropos-sub">À propos</p>
 								<h2 className="home-apropos-titre">Cybele Architecture</h2>
@@ -260,8 +263,8 @@ function Home({ onIntroComplete }: HomeProps) {
 								</p>
 								<p className="home-apropos-citation">
 									« Le nom Cybele trouve son origine dans Cybèle, déesse de la
-									nature et protectrice des lieux dans la mythologie grecque — un
-									symbole qui reflète ma volonté de révéler la beauté et
+									nature et protectrice des lieux dans la mythologie grecque —
+									un symbole qui reflète ma volonté de révéler la beauté et
 									l'identité des espaces à travers chacun de mes projets. »
 								</p>
 								<a href="/about" className="custom-button home-apropos-btn">

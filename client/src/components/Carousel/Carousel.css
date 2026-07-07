@@ -75,3 +75,26 @@
 	background: rgba(255, 255, 255, 0.95);
 	transform: scale(1.3);
 }
+
+@media (max-width: 1024px) {
+	.carousel {
+		height: 450px;
+		margin-top: 90px;
+	}
+}
+
+@media (max-width: 768px) {
+	.carousel {
+		height: 440px !important;
+		margin-top: 70px;
+	}
+
+	.carousel__image {
+		object-position: center center;
+	}
+
+	.carousel__dots {
+		bottom: 16px;
+		gap: 8px;
+	}
+}

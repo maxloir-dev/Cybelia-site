@@ -5,13 +5,13 @@
 	transform: translateY(-50%);
 	height: auto !important;
 	width: 100%;
-	z-index: 999;
 	background: transparent !important;
 	display: flex;
 	align-items: center;
 	justify-content: flex-start;
 	padding-left: 80px;
 	pointer-events: none;
+	z-index: 5;
 }
 
 .hero-content {
@@ -62,4 +62,65 @@
 
 .hero-btn:hover {
 	opacity: 0.8;
+}
+
+@media (max-width: 768px) {
+	.hero {
+		position: absolute;
+		top: 0;
+		left: 0;
+		width: 100%;
+		height: 440px !important; /* Calé sur la même hauteur que le carousel */
+		margin-top: 70px;
+		padding: 40px 24px 20px !important; /* Plus d'espace en haut */
+		display: flex;
+		align-items: center; /* Centre tout le bloc verticalement */
+		box-sizing: border-box;
+		z-index: 20;
+	}
+
+	.hero-content {
+		gap: 16px !important;
+		align-items: flex-start !important;
+		text-align: left !important;
+		width: 100%;
+	}
+
+	.hero-title {
+		display: block !important; /* Force le titre à réapparaître */
+		font-size: 1.6rem !important;
+		line-height: 1.3 !important;
+		text-align: left !important;
+		margin: 0 !important;
+		color: #ffffff; /* Assure-toi qu'il soit bien blanc */
+	}
+
+	.hero-title br {
+		display: none;
+	}
+
+	.hero-subtitle {
+		font-size: 0.9rem !important;
+		line-height: 1.4 !important;
+		text-align: left !important;
+		margin: 0 !important;
+		max-width: 100%;
+		color: #ffffff;
+	}
+
+	.hero-buttons {
+		display: flex;
+		flex-direction: column !important; /* On les empile pour éviter les chevauchements */
+		gap: 10px !important;
+		width: 100%;
+		align-items: flex-start !important;
+	}
+
+	.hero-buttons > * {
+		width: 100% !important;
+		max-width: 220px !important; /* Largeur de bouton idéale et élégante */
+		padding: 10px 16px !important;
+		font-size: 0.85rem !important;
+		text-align: center;
+	}
 }
