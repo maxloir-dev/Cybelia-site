@@ -1191,3 +1191,165 @@
 	opacity: 1;
 	transform: translateX(0);
 }
+
+/* ==========================================================================
+   CORRECTIONS RESPONSIVE COMPLÉMENTAIRES - ESPACE ADMIN
+   ========================================================================== */
+
+/* Écrans de taille intermédiaire et tablettes (Moins de 1024px) */
+@media (max-width: 1024px) {
+	.admin-cards {
+		grid-template-columns: repeat(
+				2,
+				1fr
+			) !important; /* Passe en 2x2 sur tablette */
+		gap: 20px !important;
+		padding: 0 20px;
+	}
+
+	.admin-postit-grille {
+		grid-template-columns: repeat(
+				2,
+				1fr
+			) !important; /* Post-its sur 2 colonnes */
+		gap: 24px !important;
+	}
+}
+
+/* ==========================================================================
+   ÉCRANS MOBILES (Moins de 768px)
+   ========================================================================== */
+@media (max-width: 768px) {
+	/* 1. Structure globale & Fix Titres / Bouton Retour */
+	.admin-main {
+		padding: 24px 16px !important;
+		padding-top: 130px !important; /* Réduit le gros espace blanc du haut sur mobile */
+	}
+
+	.admin-retour {
+		display: flex !important;
+		margin-left: 0 !important; /* Annule le -60px UNIQUEMENT sur mobile */
+		margin-top: 10px !important;
+		margin-bottom: 20px !important;
+		position: relative !important;
+		z-index: 10 !important;
+	}
+
+	.admin-header {
+		text-align: center;
+		margin-bottom: 30px;
+	}
+
+	.admin-header h1,
+	.admin-top h1,
+	.admin-edit-titre {
+		font-size: 1.8rem !important; /* FIX : Assure une taille lisible et adaptée pour tous les titres */
+		line-height: 1.2 !important;
+		word-break: break-word !important;
+	}
+
+	.admin-top {
+		flex-direction: column !important;
+		align-items: stretch !important;
+		gap: 16px !important;
+		margin-bottom: 24px !important;
+	}
+
+	/* 2. Dashboard - Cartes d'accueil */
+	.admin-cards {
+		grid-template-columns: 1fr !important;
+		gap: 16px !important;
+		padding: 0;
+	}
+
+	.admin-card {
+		padding: 24px 16px !important;
+		height: auto !important; /* Évite de bloquer la hauteur à 420px sur mobile */
+	}
+
+	.admin-card svg {
+		width: 48px !important;
+		height: 48px !important;
+	}
+
+	/* 3. Listes de commandes (Post-its) */
+	.admin-postit-grille {
+		grid-template-columns: 1fr !important;
+		gap: 20px !important;
+	}
+
+	.admin-postit {
+		padding: 20px !important;
+		width: 100% !important;
+		aspect-ratio: auto !important; /* Permet au post-it de s'adapter si le texte est long */
+		box-sizing: border-box;
+	}
+
+	/* 4. Fenêtres Modales / Pop-in */
+	.admin-popin-overlay {
+		padding: 16px !important;
+		align-items: flex-end !important;
+	}
+
+	.admin-popin {
+		width: 100% !important;
+		max-width: 100% !important;
+		border-radius: 24px 24px 0 0 !important;
+		padding: 32px 20px 24px !important;
+		margin: 0 !important;
+		max-height: 85vh !important;
+		overflow-y: auto !important;
+	}
+
+	.admin-popin__fermer {
+		top: 12px !important;
+		right: 16px !important;
+		font-size: 2rem !important;
+	}
+
+	.admin-popin__lignes {
+		font-size: 1.1rem !important; /* Ajustement police cursive */
+	}
+
+	.admin-popin__ligne {
+		flex-direction: column !important;
+		align-items: flex-start !important;
+		gap: 4px;
+		padding: 10px 0 !important;
+	}
+
+	/* 5. Vues Liste classique (Clients / Produits) */
+	.admin-item {
+		padding: 16px !important;
+		flex-direction: column !important;
+		align-items: flex-start !important;
+		gap: 12px;
+	}
+
+	.admin-item__info {
+		width: 100% !important;
+		text-align: left;
+	}
+
+	.admin-item__titre {
+		font-size: 1.1rem !important;
+		display: block;
+	}
+
+	/* Fix pour les textes coupés dans les bulles/vignettes */
+	.admin-liste-grille {
+		grid-template-columns: 1fr 1fr !important; /* Passe la grille de produits en 2 colonnes au lieu de 4 */
+		gap: 16px !important;
+	}
+
+	.admin-liste-grille .admin-item {
+		width: 100% !important; /* Laisse la bulle prendre sa place */
+		height: auto !important;
+		border-radius: 24px !important; /* Des bords arrondis classiques plutôt qu'un cercle parfait qui écrase tout */
+	}
+
+	.admin-liste-grille .admin-item__textes p,
+	.admin-liste-grille .admin-item__textes span {
+		white-space: normal !important; /* Permet au titre du produit de passer à la ligne s'il est long */
+	}
+}

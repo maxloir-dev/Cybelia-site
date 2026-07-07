@@ -425,10 +425,14 @@ function Admin() {
 										{commande.nom_livraison} {commande.prenom_livraison}
 									</div>
 									{commande.email_livraison && (
-										<div className="admin-postit__info">{commande.email_livraison}</div>
+										<div className="admin-postit__info">
+											{commande.email_livraison}
+										</div>
 									)}
 									{commande.telephone && (
-										<div className="admin-postit__info">{commande.telephone}</div>
+										<div className="admin-postit__info">
+											{commande.telephone}
+										</div>
 									)}
 									{commande.adresse && (
 										<div className="admin-postit__info">{commande.adresse}</div>
@@ -472,18 +476,25 @@ function Admin() {
 							</button>
 							<h3>Commande #{commandeSelectionnee.id}</h3>
 							<p className="admin-popin__date">
-								{commandeSelectionnee.nom_livraison} {commandeSelectionnee.prenom_livraison} —{" "}
+								{commandeSelectionnee.nom_livraison}{" "}
+								{commandeSelectionnee.prenom_livraison} —{" "}
 								{commandeSelectionnee.email_livraison}
 							</p>
 							{commandeSelectionnee.telephone && (
-								<p className="admin-popin__date">{commandeSelectionnee.telephone}</p>
+								<p className="admin-popin__date">
+									{commandeSelectionnee.telephone}
+								</p>
 							)}
 							{commandeSelectionnee.adresse && (
-								<p className="admin-popin__date">{commandeSelectionnee.adresse}</p>
-							)}
-							{(commandeSelectionnee.ville || commandeSelectionnee.code_postal) && (
 								<p className="admin-popin__date">
-									{commandeSelectionnee.code_postal} {commandeSelectionnee.ville}
+									{commandeSelectionnee.adresse}
+								</p>
+							)}
+							{(commandeSelectionnee.ville ||
+								commandeSelectionnee.code_postal) && (
+								<p className="admin-popin__date">
+									{commandeSelectionnee.code_postal}{" "}
+									{commandeSelectionnee.ville}
 								</p>
 							)}
 							<p className="admin-popin__date">
@@ -685,10 +696,14 @@ function Admin() {
 										Commande #{commande.id}
 									</div>
 									{commande.email_livraison && (
-										<div className="admin-postit__info">{commande.email_livraison}</div>
+										<div className="admin-postit__info">
+											{commande.email_livraison}
+										</div>
 									)}
 									{commande.telephone && (
-										<div className="admin-postit__info">{commande.telephone}</div>
+										<div className="admin-postit__info">
+											{commande.telephone}
+										</div>
 									)}
 									{commande.adresse && (
 										<div className="admin-postit__info">{commande.adresse}</div>
@@ -733,20 +748,29 @@ function Admin() {
 
 								<h3>Détails de la Commande #{commandeSelectionnee.id}</h3>
 								<p className="admin-popin__date">
-									{commandeSelectionnee.nom_livraison} {commandeSelectionnee.prenom_livraison}
+									{commandeSelectionnee.nom_livraison}{" "}
+									{commandeSelectionnee.prenom_livraison}
 								</p>
 								{commandeSelectionnee.email_livraison && (
-									<p className="admin-popin__date">{commandeSelectionnee.email_livraison}</p>
+									<p className="admin-popin__date">
+										{commandeSelectionnee.email_livraison}
+									</p>
 								)}
 								{commandeSelectionnee.telephone && (
-									<p className="admin-popin__date">{commandeSelectionnee.telephone}</p>
+									<p className="admin-popin__date">
+										{commandeSelectionnee.telephone}
+									</p>
 								)}
 								{commandeSelectionnee.adresse && (
-									<p className="admin-popin__date">{commandeSelectionnee.adresse}</p>
-								)}
-								{(commandeSelectionnee.ville || commandeSelectionnee.code_postal) && (
 									<p className="admin-popin__date">
-										{commandeSelectionnee.code_postal} {commandeSelectionnee.ville}
+										{commandeSelectionnee.adresse}
+									</p>
+								)}
+								{(commandeSelectionnee.ville ||
+									commandeSelectionnee.code_postal) && (
+									<p className="admin-popin__date">
+										{commandeSelectionnee.code_postal}{" "}
+										{commandeSelectionnee.ville}
 									</p>
 								)}
 								<p className="admin-popin__date">
@@ -1038,7 +1062,7 @@ function Admin() {
 						{/* ZONE DE GESTION DES IMAGES */}
 						{modeEdition ? (
 							<div className="admin-form__images-row">
-									{/* BLOC 1 : IMAGE PRINCIPALE */}
+								{/* BLOC 1 : IMAGE PRINCIPALE */}
 								<div className="admin-form__field">
 									<span
 										style={{
