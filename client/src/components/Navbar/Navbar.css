@@ -143,15 +143,16 @@
    ============================================================ */
 .navbar-mobile-menu {
 	position: fixed;
-	top: 105px;
+	top: 145px;
 	left: 50%;
 	width: 60vw;
-	height: calc(100vh - 105px);
+	height: 75vh; /* Permet au menu de s'adapter au contenu si celui-ci est court */ /* Limite la hauteur maximale à 70% ou 80% de la hauteur de l'écran */
+	overflow-y: auto;
 	background-color: #fff;
 	box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
 	display: flex;
 	flex-direction: column; /* Aligne le greeting au-dessus des liens */
-	justify-content: center;
+	justify-content: flex-start;
 	align-items: center;
 	opacity: 0;
 	visibility: hidden;
@@ -161,6 +162,8 @@
 		transform 0.4s ease,
 		visibility 0.4s ease;
 	z-index: 1000;
+	padding-bottom: 40px;
+	border-radius: 12px;
 }
 
 .navbar-mobile-menu.is-open {
@@ -171,18 +174,24 @@
 
 /* --- Style de l'en-tête utilisateur dans le menu burger --- */
 .navbar-menu-greeting {
-	padding: 20px 0;
-	margin-bottom: 25px;
+	padding: 50px 0 20px 0;
+	margin-bottom: 35px;
 	border-bottom: 1px solid rgba(0, 0, 0, 0.06);
-	display: flex;
-	justify-content: center;
-	width: 80%; /* Aligné proportionnellement sur la largeur du menu mobile */
+	width: 80%; /* Reste aligné sur la largeur du menu mobile */
+
+	/* MODIFICATIONS ICI : On stabilise le bloc */
+	display: block; /* On passe en block pour occuper tout l'espace horizontal */
+	text-align: center; /* C'est le texte qui se centre, pas la boîte globale */
+	min-height: 40px; /* Optionnel : évite aussi les sauts verticaux si le texte disparaît un court instant */
 }
 
 .navbar-menu-greeting .greeting-container {
-	font-size: 1.25rem !important;
+	font-size: 1.65rem !important;
+	font-weight: 700;
+	letter-spacing: 0.05em;
 	max-width: none !important;
 	overflow: visible !important;
+	display: inline-block; /* Permet de garder le contrôle sans casser l'alignement */
 }
 
 .navbar-links {
@@ -262,8 +271,10 @@
 	height: 44px !important;
 	box-sizing: border-box;
 	transition:
-		background-color 0.45s cubic-bezier(0.16, 1, 0.3, 1),
-		color 0.45s cubic-bezier(0.16, 1, 0.3, 1) !important;
+		background-color 0.4s cubic-bezier(0.16, 1, 0.3, 1),
+		color 0.4s cubic-bezier(0.16, 1, 0.3, 1),
+		box-shadow 0.4s cubic-bezier(0.16, 1, 0.3, 1),
+		transform 0.4s cubic-bezier(0.16, 1, 0.3, 1) !important;
 }
 
 .navbar-icon svg {
@@ -284,8 +295,12 @@
 }
 
 .navbar-icon:hover {
-	background-color: var(--color-background) !important;
-	color: #ffffff !important;
+	background-color: var(
+		--color-background
+	) !important; /* Se remplit avec ta couleur principale */
+	color: #ffffff !important; /* Le SVG passe en blanc */
+	box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15); /* L'ombre du mode is-floating (légèrement renforcée pour le noir) */
+	transform: translateY(-2px); /* Léger effet de soulèvement "flottant" */
 }
 
 .navbar-icon:hover svg[viewBox="0 0 32 32"] path {
