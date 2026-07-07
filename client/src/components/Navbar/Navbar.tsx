@@ -1,5 +1,5 @@
-import { Link } from "react-router-dom";
-import { useState } from "react";
+import { Link, useLocation } from "react-router-dom";
+import { useState, useEffect } from "react";
 import "./Navbar.css";
 import cybeliaLogo from "../../assets/logo_cybele_complet.svg";
 import { useAuth } from "../../store/AuthContext";
@@ -7,149 +7,174 @@ import { useCart } from "../../store/CartContext";
 import { UserGreeting } from "../UserGreeting";
 
 function Navbar() {
-	const [searchOpen, setSearchOpen] = useState(false);
+	const [menuOpen, setMenuOpen] = useState(false);
+	const [visible, setVisible] = useState(true);
+	const [prevScrollPos, setPrevScrollPos] = useState(0);
+
 	const { estConnecte, estAdmin, deconnexion, utilisateur } = useAuth();
 	const { nombreArticles } = useCart();
+	const location = useLocation();
+
+	const fermerMenu = () => {
+		setMenuOpen(false);
+	};
+
+	useEffect(() => {
+		fermerMenu();
+	}, [location]);
+
+	useEffect(() => {
+		const handleScroll = () => {
+			const currentScrollPos = window.scrollY;
+			if (menuOpen) return;
+			const isVisible =
+				prevScrollPos > currentScrollPos || currentScrollPos < 10;
+			setVisible(isVisible);
+			setPrevScrollPos(currentScrollPos);
+		};
+
+		window.addEventListener("scroll", handleScroll);
+		return () => window.removeEventListener("scroll", handleScroll);
+	}, [prevScrollPos, menuOpen]);
 
 	return (
-		<nav className="navbar">
-			<div className="navbar-logo">
-				<Link to="/">
-					<img src={cybeliaLogo} alt="Cybelia" className="navbar-logo-img" />
-				</Link>
-			</div>
-			<ul className="navbar-links">
-				<li>
-					<Link to="/">Accueil</Link>
-				</li>
-				<li className="navbar-dropdown-wrapper">
-					<span className="navbar-dropdown-trigger">
-						Shop
+		<>
+			{/* Bouton Burger indépendant */}
+			<button
+				type="button"
+				className={`navbar-burger-trigger ${menuOpen ? "is-active" : ""} ${!visible ? "is-floating" : ""}`}
+				onClick={() => setMenuOpen(!menuOpen)}
+				aria-label="Menu de navigation"
+			>
+				<span></span>
+				<span></span>
+				<span></span>
+			</button>
+
+			{/* Arrière-plan qui s'assombrit (Overlay) */}
+			<div
+				className={`navbar-overlay ${menuOpen ? "is-visible" : ""}`}
+				onClick={fermerMenu}
+			/>
+
+			<nav className={`navbar ${!visible ? "navbar--masquee" : ""}`}>
+				{/* GAUCHE : Vide sur la barre principale (le menu burger est géré en fixed) */}
+				<div className="navbar-left-side">
+					{/* Le menu déroulant mobile / latéral */}
+					<div className={`navbar-mobile-menu ${menuOpen ? "is-open" : ""}`}>
+						{/* DEPLACÉ ICI : Les salutations s'affichent tout en haut du menu burger */}
+						{estConnecte && utilisateur?.prenom && (
+							<div className="navbar-menu-greeting">
+								<UserGreeting
+									prenom={utilisateur.prenom}
+									nom={utilisateur.nom}
+								/>
+							</div>
+						)}
+
+						<ul className="navbar-links">
+							<li>
+								<Link to="/">Accueil</Link>
+							</li>
+							<li>
+								<Link to="/shop">Shop</Link>
+							</li>
+							<li>
+								<Link to="/personnalise" className="navbar-link--highlight">
+									Personnalisé
+								</Link>
+							</li>
+							<li>
+								<Link to="/contact">Contact</Link>
+							</li>
+							<li>
+								<Link to="/about">À propos</Link>
+							</li>
+							{estAdmin && (
+								<li>
+									<Link to="/admin" className="navbar-admin-link">
+										Admin
+									</Link>
+								</li>
+							)}
+						</ul>
+					</div>
+				</div>
+
+				{/* CENTRE : Le Logo */}
+				<div className="navbar-center-side">
+					<Link to="/" className="navbar-logo-link">
+						<img src={cybeliaLogo} alt="Cybelia" className="navbar-logo-img" />
+					</Link>
+				</div>
+
+				{/* DROITE : Les Icônes */}
+				<div className="navbar-right-side">
+					<Link
+						to={estConnecte ? "/profil" : "/login"}
+						className="navbar-icon"
+						aria-label="Compte"
+					>
 						<svg
 							aria-hidden="true"
-							width="10"
-							height="6"
-							viewBox="0 0 10 6"
+							width="20"
+							height="20"
+							viewBox="0 0 24 24"
 							fill="none"
 							stroke="currentColor"
 							strokeWidth="1.5"
 						>
-							<path d="M1 1l4 4 4-4" />
+							<path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+							<circle cx="12" cy="7" r="4" />
 						</svg>
-					</span>
-					<ul className="navbar-dropdown">
-						<li>
-							<Link to="/shop/affiches">Affiches</Link>
-						</li>
-						<li>
-							<Link to="/shop/cartes">Cartes postales</Link>
-						</li>
-					</ul>
-				</li>
-				<li>
-					<Link to="/personnalise" className="navbar-link--highlight">
-						Personnalisé
 					</Link>
-				</li>
-				<li>
-					<Link to="/contact">Contact</Link>
-				</li>
-				<li>
-					<Link to="/about">À propos</Link>
-				</li>
-				{/* Lien admin visible uniquement par la gérante */}
-				{estAdmin && (
-					<li>
-						<Link to="/admin">Admin</Link>
-					</li>
-				)}
-			</ul>
-			<div className="navbar-icons">
-				{estConnecte && utilisateur?.prenom && (
-					<UserGreeting prenom={utilisateur.prenom} nom={utilisateur.nom} />
-				)}
-				{/* Si connecté → profil, sinon → login */}
-				<Link
-					to={estConnecte ? "/profil" : "/login"}
-					className="navbar-icon"
-					aria-label="Compte"
-				>
-					<svg
-						aria-hidden="true"
-						width="20"
-						height="20"
-						viewBox="0 0 24 24"
-						fill="none"
-						stroke="currentColor"
-						strokeWidth="1.5"
-					>
-						<path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
-						<circle cx="12" cy="7" r="4" />
-					</svg>
-				</Link>
 
-				{/* Bouton déconnexion si connecté */}
-				{estConnecte && (
-					<button
-						type="button"
-						className="navbar-icon"
-						aria-label="Déconnexion"
-						onClick={deconnexion}
-					>
-						<svg width="20" height="20" viewBox="0 0 32 32" aria-hidden="true">
-							<g fill="none" fillRule="evenodd">
-								<path d="m0 0h32v32h-32z" />
-								<path
-									d="m0 32v-2h5v-30h22v30h5v2zm25-30h-18v28h18zm-3 11v8h-2v-8z"
-									fill="currentColor"
-									fillRule="nonzero"
-								/>
-							</g>
-						</svg>
-					</button>
-				)}
-
-				<Link
-					to="/panier"
-					className="navbar-icon navbar-icon--panier"
-					aria-label="Panier"
-				>
-					<svg
-						aria-hidden="true"
-						width="20"
-						height="20"
-						viewBox="0 0 24 24"
-						fill="none"
-						stroke="currentColor"
-						strokeWidth="1.5"
-					>
-						<path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z" />
-						<line x1="3" y1="6" x2="21" y2="6" />
-						<path d="M16 10a4 4 0 0 1-8 0" />
-					</svg>
-					{nombreArticles > 0 && (
-						<span className="navbar-panier-badge">{nombreArticles}</span>
+					{estConnecte && (
+						<button
+							type="button"
+							className="navbar-icon"
+							aria-label="Déconnexion"
+							onClick={deconnexion}
+						>
+							<svg
+								width="20"
+								height="20"
+								viewBox="0 0 24 24"
+								fill="none"
+								stroke="currentColor"
+								strokeWidth="1.5"
+								aria-hidden="true"
+							>
+								<path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9" />
+							</svg>
+						</button>
 					)}
-				</Link>
-			</div>
-			{searchOpen && (
-				<div className="navbar-search">
-					<input
-						type="text"
-						placeholder="Rechercher..."
-						className="navbar-search-input"
-					/>
-					<button
-						type="button"
-						className="navbar-search-close"
-						onClick={() => setSearchOpen(false)}
-						aria-label="Fermer la recherche"
+
+					<Link
+						to="/panier"
+						className="navbar-icon navbar-icon--panier"
+						aria-label="Panier"
 					>
-						✕
-					</button>
+						<svg
+							aria-hidden="true"
+							width="20"
+							height="20"
+							viewBox="0 0 24 24"
+							fill="none"
+							stroke="currentColor"
+							strokeWidth="1.5"
+						>
+							<path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z" />
+							<line x1="3" y1="6" x2="21" y2="6" />
+							<path d="M16 10a4 4 0 0 1-8 0" />
+						</svg>
+						{nombreArticles > 0 && (
+							<span className="navbar-panier-badge">{nombreArticles}</span>
+						)}
+					</Link>
 				</div>
-			)}
-		</nav>
+			</nav>
+		</>
 	);
 }
 

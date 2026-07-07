@@ -1,264 +1,403 @@
+/* ============================================================
+   Structure globale en 3 colonnes (Gauche, Centre, Droite)
+   ============================================================ */
 .navbar {
 	display: flex;
 	align-items: center;
 	justify-content: space-between;
 	padding: 0 40px 0 20px;
 	height: 105px;
-	background-color: #fff;
-	border-bottom: 1px var(--color-text) solid;
+	background-color: rgba(255, 255, 255, 0.95);
+	backdrop-filter: blur(10px);
+	box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
 	position: fixed;
 	top: 0;
 	z-index: 1000;
 	width: 100%;
+	box-sizing: border-box;
+	transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-.navbar-logo a {
-	font-size: 1.4rem;
-	font-weight: 700;
-	letter-spacing: 0.2em;
-	color: var(--color-text);
-	text-decoration: none;
+.navbar--masquee {
+	transform: translateY(-100%);
+}
+
+.navbar-left-side,
+.navbar-center-side,
+.navbar-right-side {
+	flex: 1;
+	display: flex;
+	gap: 30px;
+	align-items: center;
+}
+
+.navbar-left-side {
+	justify-content: flex-start;
+}
+
+.navbar-center-side {
+	justify-content: center;
+}
+
+.navbar-right-side {
+	justify-content: flex-end;
+	gap: 20px;
+}
+
+/* ============================================================
+   L'OVERLAY (Arrière-plan qui s'assombrit)
+   ============================================================ */
+.navbar-overlay {
+	position: fixed;
+	top: 0;
+	left: 0;
+	width: 100vw;
+	height: 100vh;
+	background-color: rgba(0, 0, 0, 0.5);
+	backdrop-filter: blur(4px);
+	z-index: 999;
+	opacity: 0;
+	pointer-events: none;
+	transition: opacity 0.4s ease;
+}
+
+.navbar-overlay.is-visible {
+	opacity: 1;
+	pointer-events: auto;
+}
+
+/* ============================================================
+   LE BOUTON BURGER (Structure globale fixée à l'écran)
+   ============================================================ */
+.navbar-burger-trigger {
+	background: none;
+	border: none;
+	cursor: pointer;
+	width: 28px;
+	height: 20px;
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+	padding: 0;
+	position: fixed;
+	top: 42px;
+	left: 40px;
+	z-index: 1002;
+	transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.navbar-burger-trigger span {
+	display: block;
+	width: 100%;
+	height: 2px;
+	background-color: var(--color-background);
+	transition:
+		transform 0.3s ease,
+		opacity 0.3s ease;
+}
+
+/* --- ANIMATION EN CROIX (Quand le menu est ouvert) --- */
+.navbar-burger-trigger.is-active span:nth-child(1) {
+	transform: translateY(9px) rotate(45deg);
+}
+
+.navbar-burger-trigger.is-active span:nth-child(2) {
+	opacity: 0;
+}
+
+.navbar-burger-trigger.is-active span:nth-child(3) {
+	transform: translateY(-9px) rotate(-45deg);
+}
+
+/* ============================================================
+   MODE FLOTTANT : Quand l'utilisateur descend (la navbar se masque)
+   ============================================================ */
+.navbar-burger-trigger.is-floating {
+	top: 25px;
+	left: 25px;
+	background-color: #fff;
+	padding: 12px 10px;
+	width: 44px;
+	height: 44px;
+	border-radius: 50%;
+	box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+	justify-content: center;
+	gap: 5px;
+}
+
+.navbar-burger-trigger.is-floating span {
+	width: 24px;
+	margin: 0 auto;
+}
+
+.navbar-burger-trigger.is-floating.is-active span:nth-child(1) {
+	transform: translateY(7px) rotate(45deg);
+}
+
+.navbar-burger-trigger.is-floating.is-active span:nth-child(3) {
+	transform: translateY(-7px) rotate(-45deg);
+}
+
+/* ============================================================
+   STRUCTURE DU MENU MOBILE BURGER
+   ============================================================ */
+.navbar-mobile-menu {
+	position: fixed;
+	top: 105px;
+	left: 50%;
+	width: 60vw;
+	height: calc(100vh - 105px);
+	background-color: #fff;
+	box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
+	display: flex;
+	flex-direction: column; /* Aligne le greeting au-dessus des liens */
+	justify-content: center;
+	align-items: center;
+	opacity: 0;
+	visibility: hidden;
+	transform: translate(-50%, -30px);
+	transition:
+		opacity 0.4s ease,
+		transform 0.4s ease,
+		visibility 0.4s ease;
+	z-index: 1000;
+}
+
+.navbar-mobile-menu.is-open {
+	opacity: 1;
+	visibility: visible;
+	transform: translate(-50%, 0);
+}
+
+/* --- Style de l'en-tête utilisateur dans le menu burger --- */
+.navbar-menu-greeting {
+	padding: 20px 0;
+	margin-bottom: 25px;
+	border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+	display: flex;
+	justify-content: center;
+	width: 80%; /* Aligné proportionnellement sur la largeur du menu mobile */
+}
+
+.navbar-menu-greeting .greeting-container {
+	font-size: 1.25rem !important;
+	max-width: none !important;
+	overflow: visible !important;
 }
 
 .navbar-links {
 	display: flex;
+	flex-direction: column;
 	align-items: center;
-	gap: 60px;
+	gap: 35px;
 	list-style: none;
 	margin: 0;
 	padding: 0;
+	text-align: center;
+	width: 100%;
 }
 
-.navbar-links a,
-.navbar-links span {
+.navbar-links a {
+	position: relative;
 	font-size: 0.95rem;
 	font-weight: 700;
 	letter-spacing: 0.2em;
 	text-transform: uppercase;
-	color: var(--color-text);
+	color: var(--color-background);
 	text-decoration: none;
-	transition: opacity 0.2s;
 	font-family: var(--font-title);
-	cursor: default;
-}
-
-.navbar-links a:hover,
-.navbar-links span:hover {
-	opacity: 0.5;
-}
-
-.navbar-link--highlight {
-	color: #b5936b !important;
-}
-
-.navbar-icons {
-	display: flex;
-	align-items: center;
-	gap: 35px;
-	font-weight: 100;
-}
-
-.navbar-icon {
-    background: none;
-    border: none;
-    cursor: pointer;
-    color: var(--color-background);
-    padding: 8px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: background 0.3s ease, color 0.3s ease;
-    font-family: var(--font-signature);
-    font-size: 2rem;
-    font-weight: 400;
-    border-radius: 50%;
-    width: 38px;
-    height: 38px;
-}
-
-.navbar-icon:hover {
-    background: var(--color-background);
-    color: #fff;
-    opacity: 1;
-}
-
-.navbar-search {
-	position: absolute;
-	top: 110px;
-	right: 0;
-	width: 25%;
-	background-color: glass;
-	/* border-bottom: 1px solid var(--color-text); */
-	padding: 16px 40px;
-	display: flex;
-	align-items: center;
-	gap: 16px;
-	animation: slideDown 0.2s ease;
-}
-
-.navbar-search-input {
-	flex: 1;
-	border: none;
-	border-bottom: 1px solid var(--color-background);
-	outline: none;
-	font-family: var(--font-body);
-	font-size: 1rem;
-	color: var(--color-background);
-	padding: 8px 0;
-	background: transparent;
-}
-
-.navbar-search-close {
-	background: none;
-	border: none;
 	cursor: pointer;
-	font-size: 1rem;
-	color: var(--color-background);
-	transition: opacity 0.2s;
+	padding-bottom: 4px;
 }
 
-.navbar-search-close:hover {
-	opacity: 0.5;
-}
-
-@keyframes slideDown {
-	from {
-		opacity: 0;
-		transform: translateY(-10px);
-	}
-	to {
-		opacity: 1;
-		transform: translateY(0);
-	}
-}
-
-.navbar-icon--panier {
-	position: relative;
-}
-
-.navbar-panier-badge {
+/* La petite ligne magique sous le lien */
+.navbar-links a::after {
+	content: "";
 	position: absolute;
-	top: -6px;
-	right: -6px;
-	background: var(--color-text);
-	color: white;
-	font-size: 0.65rem;
-	font-family: var(--font-body);
-	width: 17px;
-	height: 17px;
-	border-radius: 50%;
+	width: 100%;
+	transform: scaleX(0);
+	height: 1px;
+	bottom: 0;
+	left: 0;
+	background-color: var(--color-background);
+	transform-origin: bottom left;
+	transition: transform 0.3s ease-out;
+}
+
+.navbar-links a:hover::after {
+	transform: scaleX(1);
+}
+
+.navbar-links a.navbar-link--highlight::after {
+	background-color: #b5936b;
+}
+
+/* ============================================================
+   CENTRE : Logo
+   ============================================================ */
+.navbar-logo-link {
 	display: flex;
 	align-items: center;
-	justify-content: center;
 }
 
 .navbar-logo-img {
 	height: 70px;
 	width: auto;
 	margin-top: 7px;
-	margin-right: 15px;
 }
 
-.navbar-dropdown-wrapper {
+/* ============================================================
+   DROITE : Style des Icônes avec effet au survol (Hover Circle)
+   ============================================================ */
+.navbar-icon {
+	background-color: transparent !important;
+	border: none;
+	cursor: pointer;
+	color: var(--color-background) !important;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	border-radius: 50% !important;
+	width: 44px !important;
+	height: 44px !important;
+	box-sizing: border-box;
+	transition:
+		background-color 0.45s cubic-bezier(0.16, 1, 0.3, 1),
+		color 0.45s cubic-bezier(0.16, 1, 0.3, 1) !important;
+}
+
+.navbar-icon svg {
+	width: 20px;
+	height: 20px;
+	transition: color 0.45s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.navbar-icon svg path,
+.navbar-icon svg circle,
+.navbar-icon svg line,
+.navbar-icon svg rect {
+	stroke: inherit;
+	fill: inherit;
+	transition:
+		stroke 0.45s cubic-bezier(0.16, 1, 0.3, 1),
+		fill 0.45s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.navbar-icon:hover {
+	background-color: var(--color-background) !important;
+	color: #ffffff !important;
+}
+
+.navbar-icon:hover svg[viewBox="0 0 32 32"] path {
+	fill: #ffffff !important;
+}
+
+.navbar-icon--panier {
 	position: relative;
 }
 
-.navbar-dropdown-trigger {
-	display: flex;
-	align-items: center;
-	gap: 6px;
+.navbar-icon:hover .navbar-panier-badge {
+	transform: scale(1.05);
+	transition: transform 0.45s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-.navbar-dropdown-trigger svg {
-	transition: transform 0.2s;
-}
-
-.navbar-dropdown-wrapper:hover .navbar-dropdown-trigger svg {
-	transform: rotate(180deg);
-}
-
-.navbar-dropdown {
-	display: none;
+.navbar-panier-badge {
 	position: absolute;
-	top: 100%;
-	left: 50%;
-	transform: translateX(-50%);
-	background: white;
-	border: 1px solid #eee;
-	list-style: none;
-	padding: 16px 0 8px 0;
-	margin: 0;
-	min-width: 160px;
-	box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-}
-
-.navbar-dropdown-wrapper:hover .navbar-dropdown {
-	display: block;
-}
-
-.navbar-dropdown li a {
-	display: block;
-	padding: 10px 20px;
-	font-size: 0.85rem;
-	font-weight: 700;
-	letter-spacing: 0.1em;
-	text-transform: uppercase;
-	color: var(--color-text);
-	text-decoration: none;
-	white-space: nowrap;
-}
-
-.navbar-dropdown li a:hover {
-	opacity: 0.5;
-}
-
-.navbar-greeting {
-	position: relative;
-	width: 200px;
-	height: 100%;
-	flex-shrink: 0;
+	top: -2px;
+	right: -2px;
+	background: var(--color-background);
+	color: white;
+	font-size: 0.65rem;
+	font-weight: bold;
+	font-family: var(--font-body);
+	width: 16px;
+	height: 16px;
+	border-radius: 50%;
 	display: flex;
 	align-items: center;
+	justify-content: center;
+	box-shadow: 0 2px 5px rgba(139, 94, 60, 0.3);
 }
 
-/* Conteneur pour aligner Logo et Admin horizontalement */
-.navbar-left-group {
-	display: flex;
-	align-items: center;
-	gap: 30px; /* Espace entre le logo et le lien Admin */
-	flex: 1; /* Force ce bloc à prendre de l'espace pour aider au centrage du milieu */
-}
-
-/* Style du lien Admin (basé sur tes styles .navbar-links a) */
+/* Bouton Spécial Admin */
 .navbar-admin-link {
-	font-size: 0.95rem;
-	font-weight: 700;
-	letter-spacing: 0.2em;
-	text-transform: uppercase;
-	color: var(--color-text);
-	text-decoration: none;
-	transition: opacity 0.2s;
-	font-family: var(--font-title);
-
-	/* Petit badge discret pour le différencier */
-	border: 1px solid var(--color-text);
-	padding: 8px 15px;
+	border: 1px solid var(--color-background);
+	padding: 6px 12px;
 	border-radius: 2px;
 }
 
 .navbar-admin-link:hover {
-	opacity: 0.5;
-	background-color: var(--color-text);
+	background-color: var(--color-background);
 	color: #fff !important;
+	opacity: 1 !important;
 }
 
-/* Ajustements pour garantir que les liens du milieu restent bien au centre */
-.navbar-links {
-	flex: 2;
-	justify-content: center;
+/* ============================================================
+   RESPONSIVE : Gestion des écrans (Tablettes et Mobiles)
+   ============================================================ */
+
+/* 1. POUR LES ÉCRANS INTERMÉDIAIRES (Tablettes < 1024px) */
+@media screen and (max-width: 1024px) {
+	.navbar {
+		padding: 0 24px;
+		height: 85px;
+	}
+
+	.navbar-burger-trigger {
+		top: 32px;
+		left: 24px;
+	}
+
+	.navbar-burger-trigger.is-floating {
+		top: 15px;
+		left: 15px;
+	}
+
+	.navbar-logo-img {
+		height: 45px;
+	}
 }
 
-.navbar-icons {
-	flex: 1;
-	justify-content: flex-end;
+/* 2. POUR LES ÉCRANS MOBILES (Smartphones < 768px) */
+@media screen and (max-width: 768px) {
+	.navbar {
+		padding: 0 16px;
+		height: 70px;
+	}
+
+	.navbar-burger-trigger {
+		top: 25px;
+		left: 16px;
+	}
+
+	.navbar-burger-trigger.is-floating {
+		top: 12px;
+		left: 12px;
+		width: 40px;
+		height: 40px;
+		padding: 10px 8px;
+	}
+
+	.navbar-burger-trigger.is-floating span {
+		width: 20px;
+	}
+
+	.navbar-logo-img {
+		height: 35px;
+	}
+
+	.navbar-right-side {
+		gap: 5px;
+	}
+
+	.navbar-icon {
+		width: 38px !important;
+		height: 38px !important;
+	}
+
+	.navbar-mobile-menu {
+		top: 70px;
+		height: calc(100vh - 70px);
+		width: 100vw; /* Prend tout l'écran sur mobile pour un confort total */
+	}
 }

@@ -1,16 +1,14 @@
 .greeting-container {
-	position: absolute; /* Sort du flux pour ne pas créer de micro-mouvements */
-	left: 0; /* Aligné au début de la boîte .navbar-greeting */
+	/* Suppression du position absolute et du padding de 1000px */
 	white-space: nowrap;
 	display: flex;
-	align-items: baseline;
-	gap: 4px;
-	z-index: 1010;
-	padding-left: 1000px;
+	align-items: baseline; /* Aligne le bas des lettres du texte fixe et du texte qui défile */
+	gap: 6px; /* Petit espace naturel entre "Bonjour," et le prénom */
 	pointer-events: none;
 	font-weight: 600;
-	font-size: 1.2rem;
+	font-size: 1.1rem; /* Légèrement ajusté pour une harmonie parfaite dans la navbar */
 	font-family: var(--font-title);
+	color: var(--color-text);
 }
 
 .flip-wrapper {
@@ -19,11 +17,14 @@
 	height: 1.2em;
 	overflow: hidden;
 	pointer-events: none;
+	/* On lui donne une largeur minimale ou flexible selon tes besoins si nécessaire */
+	min-width: 120px;
 }
+
 .flip-word {
-	/* Absolu permet au mot de "flotter" dans la boîte sans la déformer */
+	/* Laisse absolu pour l'effet de flip du composant LayoutTextFlip */
 	position: absolute;
 	left: 0;
 	font-weight: 600;
-	color: #8b5e3c;
+	color: #8b5e3c; /* Ta couleur dorée/marron pour le mot mis en avant */
 }
