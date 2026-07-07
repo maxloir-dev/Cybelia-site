@@ -1,7 +1,6 @@
 import { useState, useEffect, useCallback } from "react";
 import "./Carousel.css";
 const slides = [
-	{ image: "https://res.cloudinary.com/dgi4qubrq/image/upload/v1782071960/Tour_lu_et_passage_sable__zlzngc.jpg", alt: "Tour Lu et passage sable" },
 	{ image: "https://res.cloudinary.com/dgi4qubrq/image/upload/v1782071958/Mockup-44-TourLu_orzwhu.jpg", alt: "Mockup Tour Lu" },
 	{ image: "https://res.cloudinary.com/dgi4qubrq/image/upload/v1782071960/Mockup-44-Nantes-passagepommeraye_2_zgkyvy.jpg", alt: "Mockup Nantes passage Pommeraye" },
 	{ image: "https://res.cloudinary.com/dgi4qubrq/image/upload/v1782071961/Photo_de_moi_a72vwx.jpg", alt: "Photo de moi" },

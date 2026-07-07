@@ -9,7 +9,9 @@ import CircularGallery from "../../components/CircularGallery/CircularGallery";
 import { getProduits } from "../../api/produitService";
 import type { Produit } from "../../types";
 import Carousel from "../../components/Carousel/Carousel";
-import aproposImg from "../../assets/photo/DSC00121.jpg";
+
+const aproposImg =
+	"https://res.cloudinary.com/dgi4qubrq/image/upload/v1783414640/photo_cybe%CC%81lia_c6dutv.jpg";
 
 interface HomeProps {
 	onIntroComplete: () => void;
