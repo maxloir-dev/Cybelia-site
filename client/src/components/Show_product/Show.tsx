@@ -324,7 +324,7 @@ export default function Show({ categorieId, titre }: Props) {
 						onClick={() => ouvrirDetail(p)}
 						onKeyUp={(e) => e.key === "Enter" && ouvrirDetail(p)}
 					>
-						<img src={p.image_url} alt={p.nom} className="shop-card-img" />
+						<img src={p.image_url || undefined} alt={p.nom} className="shop-card-img" />
 						<h3 className="shop-card-nom">{p.nom}</h3>
 						<p className="shop-card-prix">
 							<span className="shop-card-prix-label">À partir de </span>
@@ -590,9 +590,10 @@ export default function Show({ categorieId, titre }: Props) {
 							<div className="detail-image">
 								<img
 									src={
-										slideIndex === 0
+										(slideIndex === 0
 											? produitDetail.image_url
-											: (produitDetail.mockup_url ?? produitDetail.image_url)
+											: (produitDetail.mockup_url ?? produitDetail.image_url)) ||
+										undefined
 									}
 									alt={produitDetail.nom}
 								/>

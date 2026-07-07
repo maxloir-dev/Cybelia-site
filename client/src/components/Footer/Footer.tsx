@@ -2,7 +2,7 @@ import { Link } from "react-router-dom";
 import "./Footer.css";
 import instagramIcon from "../../assets/instagram.svg";
 import pinterestIcon from "../../assets/pinterest.svg";
-import cybeliaLogoBlanc from "../../assets/CybeliaLogoBlanc.svg";
+import cybeliaLogoBlanc from "../../assets/logo_cybele_complet_blanc.svg";
 
 function Footer() {
 	return (

@@ -10,7 +10,7 @@ const config: { [key: string]: Knex.Config } = {
 	// Environnement de développement
 	development: {
 		client: "mysql2",
-		connection: {
+		connection: process.env.DATABASE_URL || {
 			host: process.env.DB_HOST,
 			user: process.env.DB_USER,
 			password: process.env.DB_PASSWORD,
@@ -26,7 +26,7 @@ const config: { [key: string]: Knex.Config } = {
 	// Environnement de production
 	production: {
 		client: "mysql2",
-		connection: {
+		connection: process.env.DATABASE_URL || {
 			host: process.env.DB_HOST,
 			user: process.env.DB_USER,
 			password: process.env.DB_PASSWORD,

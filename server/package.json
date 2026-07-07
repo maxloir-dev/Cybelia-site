@@ -7,7 +7,7 @@
 		"dev": "nodemon --watch src --ext ts --exec ts-node src/index.ts",
 		"build": "tsc",
 		"start": "node dist/index.js",
-		"db:migrate": "knex --knexfile knexfile.ts migrate:latest",
+		"db:migrate": "node wait-for-db.js && knex --knexfile knexfile.ts migrate:latest",
 		"db:rollback": "knex --knexfile knexfile.ts migrate:rollback",
 		"db:status": "knex --knexfile knexfile.ts migrate:status"
 	},
