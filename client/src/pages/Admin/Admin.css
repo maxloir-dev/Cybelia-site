@@ -1223,12 +1223,12 @@
 	/* 1. Structure globale & Fix Titres / Bouton Retour */
 	.admin-main {
 		padding: 24px 16px !important;
-		padding-top: 130px !important; /* Réduit le gros espace blanc du haut sur mobile */
+		padding-top: 130px !important;
 	}
 
 	.admin-retour {
 		display: flex !important;
-		margin-left: 0 !important; /* Annule le -60px UNIQUEMENT sur mobile */
+		margin-left: 0 !important;
 		margin-top: 10px !important;
 		margin-bottom: 20px !important;
 		position: relative !important;
@@ -1243,7 +1243,7 @@
 	.admin-header h1,
 	.admin-top h1,
 	.admin-edit-titre {
-		font-size: 1.8rem !important; /* FIX : Assure une taille lisible et adaptée pour tous les titres */
+		font-size: 1.8rem !important;
 		line-height: 1.2 !important;
 		word-break: break-word !important;
 	}
@@ -1264,7 +1264,7 @@
 
 	.admin-card {
 		padding: 24px 16px !important;
-		height: auto !important; /* Évite de bloquer la hauteur à 420px sur mobile */
+		height: auto !important;
 	}
 
 	.admin-card svg {
@@ -1281,7 +1281,7 @@
 	.admin-postit {
 		padding: 20px !important;
 		width: 100% !important;
-		aspect-ratio: auto !important; /* Permet au post-it de s'adapter si le texte est long */
+		aspect-ratio: auto !important;
 		box-sizing: border-box;
 	}
 
@@ -1308,7 +1308,7 @@
 	}
 
 	.admin-popin__lignes {
-		font-size: 1.1rem !important; /* Ajustement police cursive */
+		font-size: 1.1rem !important;
 	}
 
 	.admin-popin__ligne {
@@ -1338,18 +1338,18 @@
 
 	/* Fix pour les textes coupés dans les bulles/vignettes */
 	.admin-liste-grille {
-		grid-template-columns: 1fr 1fr !important; /* Passe la grille de produits en 2 colonnes au lieu de 4 */
+		grid-template-columns: 1fr 1fr !important;
 		gap: 16px !important;
 	}
 
 	.admin-liste-grille .admin-item {
-		width: 100% !important; /* Laisse la bulle prendre sa place */
+		width: 100% !important;
 		height: auto !important;
-		border-radius: 24px !important; /* Des bords arrondis classiques plutôt qu'un cercle parfait qui écrase tout */
+		border-radius: 24px !important;
 	}
 
 	.admin-liste-grille .admin-item__textes p,
 	.admin-liste-grille .admin-item__textes span {
-		white-space: normal !important; /* Permet au titre du produit de passer à la ligne s'il est long */
+		white-space: normal !important;
 	}
 }
