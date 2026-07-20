@@ -151,3 +151,64 @@
 	color: var(--color-text) !important;
 	font-weight: 400 !important;
 }
+
+/* ── Responsive Mobile Page Contact ── */
+@media (max-width: 992px) {
+	.contact-contenu {
+		grid-template-columns: 1fr;
+		gap: 50px;
+	}
+
+	.contact-infos {
+		border-left: none;
+		border-top: 1px solid rgba(0, 0, 0, 0.1);
+		padding-left: 0;
+		padding-top: 30px;
+	}
+}
+
+@media (max-width: 768px) {
+	.contact-page {
+		padding: 100px 20px 60px 20px;
+	}
+
+	.contact-header {
+		margin-bottom: 40px;
+		text-align: center;
+	}
+
+	.contact-titre {
+		font-size: 2rem;
+	}
+
+	.contact-sous-titre {
+		font-size: 0.95rem;
+		line-height: 1.5;
+	}
+
+	.contact-form-ligne {
+		grid-template-columns: 1fr;
+		gap: 24px;
+	}
+
+	.contact-btn {
+		width: 100%;
+		max-width: 260px;
+		align-self: center;
+		text-align: center;
+	}
+
+	.contact-succes {
+		align-items: center;
+		text-align: center;
+	}
+
+	.contact-succes button {
+		align-self: center;
+	}
+
+	.contact-infos {
+		align-items: center;
+		text-align: center;
+	}
+}
