@@ -64,35 +64,42 @@
 	opacity: 0.8;
 }
 
+/* REMPLACEMENT DANS HERO.CSS (Mobile) */
 @media (max-width: 768px) {
 	.hero {
-		position: absolute;
-		top: 0;
+		position: absolute; /* On revient en absolu pour survoler le carousel */
+		top: 50%; /* On le positionne au milieu vertical */
 		left: 0;
+		transform: translateY(-50%); /* Parfait centrage vertical */
 		width: 100%;
-		height: 440px !important; /* Calé sur la même hauteur que le carousel */
-		margin-top: 70px;
-		padding: 40px 24px 20px !important; /* Plus d'espace en haut */
+		height: auto !important;
+
+		/* Sécurité anti-navbar : 
+           On pousse le contenu du hero vers le bas pour ne pas qu'il touche le haut de l'écran */
+		padding: 80px 24px 20px !important;
+
 		display: flex;
-		align-items: center; /* Centre tout le bloc verticalement */
+		align-items: center;
 		box-sizing: border-box;
 		z-index: 20;
+		pointer-events: none; /* Laisse le swipe du carousel fonctionner en arrière-plan */
 	}
 
 	.hero-content {
-		gap: 16px !important;
+		pointer-events: auto; /* Permet de cliquer sur les boutons du Hero */
+		gap: 14px !important;
 		align-items: flex-start !important;
 		text-align: left !important;
 		width: 100%;
 	}
 
 	.hero-title {
-		display: block !important; /* Force le titre à réapparaître */
-		font-size: 1.6rem !important;
+		display: block !important;
+		font-size: 1.5rem !important; /* Légèrement réduit pour être sûr que ça loge dans les 440px */
 		line-height: 1.3 !important;
 		text-align: left !important;
 		margin: 0 !important;
-		color: #ffffff; /* Assure-toi qu'il soit bien blanc */
+		color: #ffffff;
 	}
 
 	.hero-title br {
@@ -100,7 +107,7 @@
 	}
 
 	.hero-subtitle {
-		font-size: 0.9rem !important;
+		font-size: 0.85rem !important; /* Légèrement réduit aussi */
 		line-height: 1.4 !important;
 		text-align: left !important;
 		margin: 0 !important;
@@ -110,17 +117,18 @@
 
 	.hero-buttons {
 		display: flex;
-		flex-direction: column !important; /* On les empile pour éviter les chevauchements */
-		gap: 10px !important;
+		flex-direction: column !important;
+		gap: 8px !important;
 		width: 100%;
 		align-items: flex-start !important;
+		margin-top: 4px;
 	}
 
 	.hero-buttons > * {
 		width: 100% !important;
-		max-width: 220px !important; /* Largeur de bouton idéale et élégante */
+		max-width: 200px !important;
 		padding: 10px 16px !important;
-		font-size: 0.85rem !important;
+		font-size: 0.8rem !important;
 		text-align: center;
 	}
 }
