@@ -20,8 +20,10 @@ function Navbar() {
 	};
 
 	useEffect(() => {
-		fermerMenu();
-	}, [location]);
+		if (location.pathname) {
+			setMenuOpen(false);
+		}
+	}, [location.pathname]);
 
 	useEffect(() => {
 		const handleScroll = () => {
@@ -52,9 +54,11 @@ function Navbar() {
 			</button>
 
 			{/* Arrière-plan qui s'assombrit (Overlay) */}
-			<div
+			<button
+				type="button"
 				className={`navbar-overlay ${menuOpen ? "is-visible" : ""}`}
 				onClick={fermerMenu}
+				aria-label="Fermer le menu"
 			/>
 
 			<nav className={`navbar ${!visible ? "navbar--masquee" : ""}`}>
@@ -63,14 +67,12 @@ function Navbar() {
 					{/* Le menu déroulant mobile / latéral */}
 					<div className={`navbar-mobile-menu ${menuOpen ? "is-open" : ""}`}>
 						{/* DEPLACÉ ICI : Les salutations s'affichent tout en haut du menu burger */}
-						{estConnecte && utilisateur?.prenom && (
-							<div className="navbar-menu-greeting">
-								<UserGreeting
-									prenom={utilisateur.prenom}
-									nom={utilisateur.nom}
-								/>
-							</div>
-						)}
+						<div className="navbar-menu-greeting">
+							<UserGreeting
+								prenom={utilisateur?.prenom}
+								nom={utilisateur?.nom}
+							/>
+						</div>
 
 						<ul className="navbar-links">
 							<li>

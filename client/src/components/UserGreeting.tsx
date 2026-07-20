@@ -4,18 +4,16 @@ import { LayoutTextFlip } from "./ui/layout-text-flip";
 import "./UserGreeting.css";
 
 interface UserGreetingProps {
-	prenom: string;
-	nom: string;
+	// On les rend optionnels (avec le ?) pour éviter les bugs si déconnecté
+	prenom?: string;
+	nom?: string;
 }
 
 export function UserGreeting({ prenom }: UserGreetingProps) {
 	const [salutation, setSalutation] = useState("Bonjour");
 
 	useEffect(() => {
-		// Calcul de l'heure locale
 		const heure = new Date().getHours();
-
-		// Entre 18h et 5h du matin, on dit Bonsoir
 		if (heure >= 18 || heure < 5) {
 			setSalutation("Bonsoir");
 		} else {
@@ -23,8 +21,11 @@ export function UserGreeting({ prenom }: UserGreetingProps) {
 		}
 	}, []);
 
+	// Si prenom existe, on affiche le prénom. Sinon, on met "par ici" (ou "à vous", "visiteur")
+	const premierMot = prenom && prenom.trim() !== "" ? prenom : "par ici";
+
 	const displayWords = [
-		`${prenom || "à vous"}`,
+		premierMot,
 		"des idées ?",
 		"une envie ?",
 		"un projet ?",
@@ -33,7 +34,7 @@ export function UserGreeting({ prenom }: UserGreetingProps) {
 	return (
 		<div className="greeting-container">
 			<span>{salutation},</span>
-			{/* On passe la constante au composant enfant */}
+			{/* Le composant reste là et tourne toujours, la structure est 100% identique */}
 			<LayoutTextFlip words={displayWords} />
 		</div>
 	);
