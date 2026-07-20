@@ -64,29 +64,25 @@
 	opacity: 0.8;
 }
 
-/* REMPLACEMENT DANS HERO.CSS (Mobile) */
 @media (max-width: 768px) {
 	.hero {
-		position: absolute; /* On revient en absolu pour survoler le carousel */
-		top: 50%; /* On le positionne au milieu vertical */
+		position: absolute;
+		top: 50%;
 		left: 0;
-		transform: translateY(-50%); /* Parfait centrage vertical */
+		transform: translateY(-50%);
 		width: 100%;
 		height: auto !important;
-
-		/* Sécurité anti-navbar : 
-           On pousse le contenu du hero vers le bas pour ne pas qu'il touche le haut de l'écran */
 		padding: 80px 24px 20px !important;
 
 		display: flex;
 		align-items: center;
 		box-sizing: border-box;
 		z-index: 20;
-		pointer-events: none; /* Laisse le swipe du carousel fonctionner en arrière-plan */
+		pointer-events: none;
 	}
 
 	.hero-content {
-		pointer-events: auto; /* Permet de cliquer sur les boutons du Hero */
+		pointer-events: auto;
 		gap: 14px !important;
 		align-items: flex-start !important;
 		text-align: left !important;
@@ -95,7 +91,7 @@
 
 	.hero-title {
 		display: block !important;
-		font-size: 1.5rem !important; /* Légèrement réduit pour être sûr que ça loge dans les 440px */
+		font-size: 1.5rem !important;
 		line-height: 1.3 !important;
 		text-align: left !important;
 		margin: 0 !important;
@@ -107,7 +103,7 @@
 	}
 
 	.hero-subtitle {
-		font-size: 0.85rem !important; /* Légèrement réduit aussi */
+		font-size: 0.85rem !important;
 		line-height: 1.4 !important;
 		text-align: left !important;
 		margin: 0 !important;

@@ -469,14 +469,13 @@
 
 @media (max-width: 768px) {
 	.hero-container {
-		display: block; /* On s'assure qu'il ne passe pas en flex-column */
+		display: block;
 		position: relative;
-		height: 440px !important; /* On force le conteneur à faire la hauteur de ton Carousel mobile */
+		height: 440px !important;
 		width: 100%;
 		overflow: hidden;
 	}
 
-	/* La section Features en dessous reprend sa place naturellement sans espace anormal */
 	.features-container {
 		margin-top: 0 !important;
 		padding-top: 40px !important;
