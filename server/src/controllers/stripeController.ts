@@ -28,6 +28,11 @@ export const createPaymentIntent = async (req: AuthRequest, res: Response) => {
 	};
 	const utilisateur_id = req.utilisateur!.id;
 
+	if (!livraison || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(livraison.email)) {
+		res.status(400).json({ error: "Email de livraison invalide" });
+		return;
+	}
+
 	try {
 		// Le montant est recalculé depuis la DB — jamais celui fourni par le client.
 		const { montant_total } = await calculerPanier(lignes);

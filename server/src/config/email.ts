@@ -1,5 +1,6 @@
 import nodemailer from "nodemailer";
 import dotenv from "dotenv";
+import { escapeHtml } from "../utils/escapeHtml";
 dotenv.config();
 
 const transporter = nodemailer.createTransport({
@@ -33,7 +34,7 @@ export const envoyerEmailConfirmationCommande = async (
 		subject: `Confirmation de votre commande #${commande_id}`,
 		html: `
 		<div style="font-family: sans-serif; max-width: 520px; margin: 0 auto; padding: 40px 20px; color: #111;">
-			<h2 style="font-size: 1.4rem; margin-bottom: 8px;">Merci pour votre commande, ${prenom} !</h2>
+			<h2 style="font-size: 1.4rem; margin-bottom: 8px;">Merci pour votre commande, ${escapeHtml(prenom)} !</h2>
 			<p style="color: #666; margin-bottom: 32px;">Nous avons bien reçu votre achat et nous le préparons avec soin. Vous le recevrez dans les meilleurs délais. À très vite !</p>
 			<table style="width: 100%; border-collapse: collapse; margin-bottom: 24px;">
 				<thead>

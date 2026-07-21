@@ -54,6 +54,14 @@ const authLimiter = rateLimit({
 	legacyHeaders: false,
 });
 
+const contactLimiter = rateLimit({
+	windowMs: 30 * 60 * 1000,
+	max: 3,
+	message: { message: "Trop de messages envoyés, réessayez dans 30 minutes." },
+	standardHeaders: true,
+	legacyHeaders: false,
+});
+
 // Routes
 
 app.use("/api/produits", produitRoutes);
@@ -62,7 +70,7 @@ app.use("/api/commandes", commandeRoutes);
 app.use("/api/utilisateurs", utilisateurRoutes);
 app.use("/api/categories", categorieRoutes);
 app.use("/api/upload", uploadRoutes);
-app.use("/api/contact", contactRoutes);
+app.use("/api/contact", contactLimiter, contactRoutes);
 app.use("/api/dimensions", dimensionRoutes);
 app.use("/api/stripe", stripeRoutes);
 

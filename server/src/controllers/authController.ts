@@ -23,6 +23,19 @@ export const register = async (req: Request, res: Response) => {
 	try {
 		const { nom, prenom, email, mot_de_passe } = req.body;
 
+		if (!nom?.trim() || !prenom?.trim()) {
+			res.status(400).json({ message: "Nom et prénom obligatoires" });
+			return;
+		}
+		if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+			res.status(400).json({ message: "Email invalide" });
+			return;
+		}
+		if (!mot_de_passe || mot_de_passe.length < 8) {
+			res.status(400).json({ message: "Le mot de passe doit contenir au moins 8 caractères" });
+			return;
+		}
+
 		// Vérifier si l'email existe déjà
 		const utilisateurExistant = await getUserByEmail(email);
 		if (utilisateurExistant) {
