@@ -20,6 +20,8 @@ import Show from "./components/Show_product/Show";
 import ProtectedRoute from "./components/ProtectedRoute";
 import Profil from "./pages/Profil/Profil";
 import Cgu from "./pages/Cgu";
+import Cgv from "./pages/Cgv";
+import Confidentialite from "./pages/Confidentialite";
 import "tailwindcss";
 import MiniPanier from "./components/MiniPanier/MiniPanier";
 
@@ -86,6 +88,8 @@ function App() {
 					<Route path="/contact" element={<Contact />} />
 					<Route path="/personnalise" element={<Personnalise />} />
 					<Route path="/cgu" element={<Cgu />} />
+					<Route path="/cgv" element={<Cgv />} />
+					<Route path="/confidentialite" element={<Confidentialite />} />
 
 					{/* Routes client connecté */}
 					<Route
