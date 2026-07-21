@@ -1,5 +1,6 @@
 import { useCart } from "../../store/CartContext";
 import ActionButton from "../ActionButton/ActionButton";
+import { cloudinaryUrl } from "../../lib/cloudinary";
 import "./MiniPanier.css";
 import { useEffect } from "react";
 import { useLocation } from "react-router-dom"
@@ -48,9 +49,10 @@ function MiniPanier() {
 				{/* Dernier produit ajouté */}
 				<div className="mini-panier__produit mini-panier__produit--nouveau">
 					<img
-						src={dernierProduitAjoute.image_url || undefined}
+						src={cloudinaryUrl(dernierProduitAjoute.image_url, 300)}
 						alt={dernierProduitAjoute.nom}
 						className="mini-panier__image"
+						loading="lazy"
 					/>
 					<div className="mini-panier__info">
 						<p className="mini-panier__nom">{dernierProduitAjoute.nom}</p>
@@ -74,9 +76,10 @@ function MiniPanier() {
 								.map((item) => (
 									<div key={item.cartKey} className="mini-panier__produit">
 										<img
-											src={item.image_url || undefined}
+											src={cloudinaryUrl(item.image_url, 150)}
 											alt={item.nom}
 											className="mini-panier__image mini-panier__image--small"
+											loading="lazy"
 										/>
 										<div className="mini-panier__info">
 											<p className="mini-panier__nom">{item.nom}</p>

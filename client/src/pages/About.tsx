@@ -1,7 +1,5 @@
-import BookPortfolio from "../components/BookPortfolio/BookPortfolio";
-
 function Home() {
-	return <div>{/* <BookPortfolio /> */}</div>;
+	return <div />;
 }
 
 export default Home;

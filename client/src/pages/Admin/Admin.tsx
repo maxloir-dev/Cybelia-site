@@ -25,6 +25,7 @@ import "./Admin.css";
 import { uploadImage } from "../../api/uploadService";
 import { GooeyInput } from "../../components/ui/GooeyInput";
 import { useScrollReveal } from "../../hooks/useScrollReveal";
+import { cloudinaryUrl } from "../../lib/cloudinary";
 
 // Types des vues possibles
 type Vue =
@@ -98,18 +99,30 @@ function Admin() {
 	// Navigation vers les vues
 	const allerCommandes = async () => {
 		setChargement(true);
-		const data = await getAllCommandes();
-		setCommandes(data);
-		setVue("commandes");
-		setChargement(false);
+		try {
+			const data = await getAllCommandes();
+			setCommandes(data);
+			setVue("commandes");
+		} catch (error) {
+			console.error("Erreur chargement commandes :", error);
+			alert("Impossible de charger les commandes. Réessayez plus tard.");
+		} finally {
+			setChargement(false);
+		}
 	};
 
 	const allerClients = async () => {
 		setChargement(true);
-		const data = await getAllUtilisateurs();
-		setClients(data);
-		setVue("clients");
-		setChargement(false);
+		try {
+			const data = await getAllUtilisateurs();
+			setClients(data);
+			setVue("clients");
+		} catch (error) {
+			console.error("Erreur chargement clients :", error);
+			alert("Impossible de charger les clients. Réessayez plus tard.");
+		} finally {
+			setChargement(false);
+		}
 	};
 
 	const allerDetailClient = async (client: Utilisateur) => {
@@ -117,10 +130,16 @@ function Admin() {
 		setCommandeEnSuppression(null);
 		setCommandeSelectionnee(null);
 		setClientSelectionne(client);
-		const data = await getHistoriqueClient(client.id);
-		setHistoriqueClient(data);
-		setVue("client-detail");
-		setChargement(false);
+		try {
+			const data = await getHistoriqueClient(client.id);
+			setHistoriqueClient(data);
+			setVue("client-detail");
+		} catch (error) {
+			console.error("Erreur chargement historique client :", error);
+			alert("Impossible de charger l'historique de ce client. Réessayez plus tard.");
+		} finally {
+			setChargement(false);
+		}
 	};
 
 	const supprimerClient = async (id: number) => {
@@ -142,11 +161,17 @@ function Admin() {
 
 	const allerProduits = async (categorie: number = 1) => {
 		setChargement(true);
-		const data = await getProduitsByCategorie(categorie);
-		setProduits(data);
-		setCategorieFiltre(categorie);
-		setVue("produits");
-		setChargement(false);
+		try {
+			const data = await getProduitsByCategorie(categorie);
+			setProduits(data);
+			setCategorieFiltre(categorie);
+			setVue("produits");
+		} catch (error) {
+			console.error("Erreur chargement produits :", error);
+			alert("Impossible de charger les produits. Réessayez plus tard.");
+		} finally {
+			setChargement(false);
+		}
 	};
 
 	const allerDetailProduit = async (
@@ -907,9 +932,10 @@ function Admin() {
 									onClick={() => allerDetailProduit(produit)}
 								>
 									<img
-										src={produit.image_url || "/placeholder.jpg"}
+										src={cloudinaryUrl(produit.image_url, 150) || "/placeholder.jpg"}
 										alt={produit.nom}
 										className="admin-item__vignette"
+										loading="lazy"
 									/>
 									<div className="admin-item__textes">
 										<div className="admin-item__textes-empiles">
@@ -973,16 +999,18 @@ function Admin() {
 					<div className="admin-produit-detail__images-wrapper">
 						{produitSelectionne.image_url && (
 							<img
-								src={produitSelectionne.image_url}
+								src={cloudinaryUrl(produitSelectionne.image_url, 800)}
 								alt={produitSelectionne.nom}
 								className="admin-produit-detail__image"
+								loading="lazy"
 							/>
 						)}
 						{produitSelectionne.mockup_url && (
 							<img
-								src={produitSelectionne.mockup_url}
+								src={cloudinaryUrl(produitSelectionne.mockup_url, 800)}
 								alt={`${produitSelectionne.nom} - Mockup`}
 								className="admin-produit-detail__image--mockup"
+								loading="lazy"
 							/>
 						)}
 					</div>
@@ -1089,7 +1117,10 @@ function Admin() {
 									/>
 									{(previewImageEdit || produitSelectionne.image_url) && (
 										<img
-											src={previewImageEdit || produitSelectionne.image_url}
+											src={
+												previewImageEdit ||
+												cloudinaryUrl(produitSelectionne.image_url, 400)
+											}
 											alt="Prévisualisation principale"
 											className="admin-form__preview"
 										/>
@@ -1124,7 +1155,8 @@ function Admin() {
 									{(previewMockupEdit || produitSelectionne.mockup_url) && (
 										<img
 											src={
-												previewMockupEdit || produitSelectionne.mockup_url || ""
+												previewMockupEdit ||
+												cloudinaryUrl(produitSelectionne.mockup_url, 400)
 											}
 											alt="Prévisualisation mockup"
 											className="admin-form__preview"
