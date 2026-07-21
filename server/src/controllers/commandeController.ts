@@ -38,19 +38,11 @@ export const getCommande = async (req: AuthRequest, res: Response) => {
 		} else {
 			res.json(commande);
 		}
-	} catch {
+	} catch (error) {
+		console.error("ERREUR COMMANDE:", error);
 		res
 			.status(500)
 			.json({ message: "Erreur lors de la récupération de la commande" });
-	}
-};
-// Supprime une commande (gérante uniquement)
-export const supprimerCommande = async (req: AuthRequest, res: Response) => {
-	try {
-		await deleteCommandeById(Number(req.params.id));
-		res.json({ message: "Commande supprimée" });
-	} catch (error) {
-		res.status(500).json({ message: "Erreur lors de la suppression de la commande" });
 	}
 };
 
@@ -85,6 +77,7 @@ export const deleteCommande = async (req: AuthRequest, res: Response) => {
 
 		res.status(200).json({ message: "Commande supprimée avec succès" });
 	} catch (error) {
+		console.error("ERREUR SUPPRESSION COMMANDE:", error);
 		res
 			.status(500)
 			.json({ message: "Erreur lors de la suppression de la commande" });

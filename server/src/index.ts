@@ -79,6 +79,12 @@ app.get("/health", (req, res) => {
 	res.json({ status: "ok" });
 });
 
+// Filet de sécurité : capture toute erreur non gérée par un try/catch dans une route
+app.use((err: Error, _req: express.Request, res: express.Response, _next: express.NextFunction) => {
+	console.error("ERREUR NON GÉRÉE:", err);
+	res.status(500).json({ message: "Erreur serveur inattendue" });
+});
+
 // Connexion à MySQL
 
 pool
