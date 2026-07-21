@@ -63,6 +63,20 @@ export const addProduit = async (req: Request, res: Response) => {
 	try {
 		const { nom, description, prix, image_url, mockup_url, categorie_id } =
 			req.body;
+
+		if (!nom?.trim()) {
+			res.status(400).json({ message: "Le nom du produit est obligatoire" });
+			return;
+		}
+		if (prix == null || Number.isNaN(Number(prix)) || Number(prix) < 0) {
+			res.status(400).json({ message: "Le prix doit être un nombre positif" });
+			return;
+		}
+		if (!categorie_id || Number.isNaN(Number(categorie_id))) {
+			res.status(400).json({ message: "Catégorie invalide" });
+			return;
+		}
+
 		const id = await createProduit(
 			nom,
 			description,
@@ -80,10 +94,30 @@ export const addProduit = async (req: Request, res: Response) => {
 // Modifie un produit existant par son id
 export const editProduit = async (req: Request, res: Response) => {
 	try {
+		const id = Number(req.params.id);
+		if (Number.isNaN(id)) {
+			res.status(400).json({ message: "ID de produit invalide" });
+			return;
+		}
+
 		const { nom, description, prix, image_url, mockup_url, categorie_id } =
 			req.body;
+
+		if (!nom?.trim()) {
+			res.status(400).json({ message: "Le nom du produit est obligatoire" });
+			return;
+		}
+		if (prix == null || Number.isNaN(Number(prix)) || Number(prix) < 0) {
+			res.status(400).json({ message: "Le prix doit être un nombre positif" });
+			return;
+		}
+		if (!categorie_id || Number.isNaN(Number(categorie_id))) {
+			res.status(400).json({ message: "Catégorie invalide" });
+			return;
+		}
+
 		await updateProduit(
-			Number(req.params.id),
+			id,
 			nom,
 			description,
 			prix,

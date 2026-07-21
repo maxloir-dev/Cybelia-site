@@ -130,12 +130,6 @@ export const getCommandeById = async (id: number) => {
 	);
 	return grouperLignesParCommande(rows, CHAMPS_LIGNE);
 };
-// Supprime une commande et ses lignes
-export const deleteCommande = async (id: number) => {
-	await pool.query("DELETE FROM lignes_commande WHERE commande_id = ?", [id]);
-	await pool.query("DELETE FROM commandes WHERE id = ?", [id]);
-};
-
 // Récupère toutes les commandes d'un client connecté
 export const getCommandesByUserId = async (utilisateur_id: number) => {
 	const [rows]: any = await pool.query(
