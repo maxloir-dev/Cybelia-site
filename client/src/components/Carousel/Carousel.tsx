@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback } from "react";
+import { cloudinaryUrl } from "../../lib/cloudinary";
 import "./Carousel.css";
 const slides = [
 	{ image: "https://res.cloudinary.com/dgi4qubrq/image/upload/v1782071958/Mockup-44-TourLu_orzwhu.jpg", alt: "Mockup Tour Lu" },
@@ -42,7 +43,7 @@ function Carousel() {
 						className={`carousel__slide ${i === current ? "carousel__slide--actif" : ""}`}
 					>
 						<img
-							src={slide.image}
+							src={cloudinaryUrl(slide.image, 1200)}
 							alt={slide.alt}
 							className="carousel__image"
 						/>

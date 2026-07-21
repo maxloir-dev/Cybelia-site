@@ -31,10 +31,18 @@ export const addProduit = async (
 	return response.data;
 };
 
+// Champs modifiables d'un produit existant
+type ProduitModifiable = Partial<
+	Pick<
+		Produit,
+		"nom" | "description" | "prix" | "image_url" | "mockup_url" | "categorie_id"
+	>
+>;
+
 // Modifie un produit (gérante)
 export const updateProduit = async (
 	id: number,
-	produit: FormData | Record<string, any>,
+	produit: FormData | ProduitModifiable,
 ): Promise<{ message: string }> => {
 	const response = await api.put(`/produits/${id}`, produit);
 	return response.data;

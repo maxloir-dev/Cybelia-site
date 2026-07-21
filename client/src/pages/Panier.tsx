@@ -3,6 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { useCart } from "../store/CartContext";
 import { useAuth } from "../store/AuthContext";
 import ActionButton from "../components/ActionButton/ActionButton";
+import { cloudinaryUrl } from "../lib/cloudinary";
 import "./Panier.css";
 
 function Panier() {
@@ -49,9 +50,10 @@ function Panier() {
 						{items.map((item) => (
 							<div key={item.cartKey} className="panier-item">
 								<img
-									src={item.image_url || undefined}
+									src={cloudinaryUrl(item.image_url, 200)}
 									alt={item.nom}
 									className="panier-item-img"
+									loading="lazy"
 								/>
 								<div className="panier-item-info">
 									<p className="panier-item-nom">{item.nom}</p>

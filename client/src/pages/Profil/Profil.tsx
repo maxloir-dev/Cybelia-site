@@ -9,6 +9,7 @@ import { getMesCommandes } from "../../api/commandeService";
 import type { Utilisateur, Commande } from "../../types";
 import "./Profil.css";
 import ActionButton from "../../components/ActionButton/ActionButton";
+import { cloudinaryUrl } from "../../lib/cloudinary";
 
 // ============================================
 // Types des vues possibles
@@ -44,11 +45,16 @@ function Profil() {
 	// Chargement du profil au démarrage
 	useEffect(() => {
 		const chargerProfil = async () => {
-			const data = await getProfil();
-			setUtilisateur(data);
-			setNom(data.nom);
-			setPrenom(data.prenom);
-			setEmail(data.email);
+			try {
+				const data = await getProfil();
+				setUtilisateur(data);
+				setNom(data.nom);
+				setPrenom(data.prenom);
+				setEmail(data.email);
+			} catch (error) {
+				console.error("Erreur chargement profil :", error);
+				setErreur("Impossible de charger votre profil. Réessayez plus tard.");
+			}
 		};
 		chargerProfil();
 	}, []);
@@ -126,10 +132,17 @@ function Profil() {
 
 	const allerCommandes = async () => {
 		setChargement(true);
-		const data = await getMesCommandes();
-		setCommandes(data);
-		setVue("commandes");
-		setChargement(false);
+		setErreur("");
+		try {
+			const data = await getMesCommandes();
+			setCommandes(data);
+			setVue("commandes");
+		} catch (error) {
+			console.error("Erreur chargement commandes :", error);
+			setErreur("Impossible de charger vos commandes. Réessayez plus tard.");
+		} finally {
+			setChargement(false);
+		}
 	};
 
 	const handleModifierProfil = async (e: React.FormEvent) => {
@@ -182,6 +195,8 @@ function Profil() {
 					</h1>
 					<p className="subtitle">{utilisateur?.email}</p>
 				</div>
+
+				{erreur && <p className="profil-erreur">{erreur}</p>}
 
 				<div className="profil-cards">
 					{/* Carte Mes commandes */}
@@ -371,9 +386,10 @@ function Profil() {
 												{produitImageSelectionnee === ligne.image_url &&
 													ligne.image_url && (
 														<img
-															src={ligne.image_url}
+															src={cloudinaryUrl(ligne.image_url, 300)}
 															alt={ligne.produit_nom}
 															className="profil-popin__produit-image"
+															loading="lazy"
 														/>
 													)}
 											</button>

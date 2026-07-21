@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+import { cloudinaryUrl } from "../lib/cloudinary";
 import "./Shop.css";
 
 const affichesImg = "https://res.cloudinary.com/dgi4qubrq/image/upload/v1782071960/Mockup-44-Nantes-Tourlu_wvbwwf.jpg";
@@ -17,7 +18,12 @@ export default function Shop() {
 
       <div className="shop-categories">
         <Link to="/shop/affiches" className="shop-categorie-card">
-          <img src={affichesImg} alt="Affiches" className="shop-categorie-img" />
+          <img
+            src={cloudinaryUrl(affichesImg, 800)}
+            alt="Affiches"
+            className="shop-categorie-img"
+            loading="lazy"
+          />
           <div className="shop-categorie-overlay">
             <div className="shop-categorie-content">
               <span className="shop-categorie-label">Affiches</span>
@@ -27,7 +33,12 @@ export default function Shop() {
         </Link>
 
         <Link to="/shop/cartes" className="shop-categorie-card">
-          <img src={cartesImg} alt="Cartes postales" className="shop-categorie-img" />
+          <img
+            src={cloudinaryUrl(cartesImg, 800)}
+            alt="Cartes postales"
+            className="shop-categorie-img"
+            loading="lazy"
+          />
           <div className="shop-categorie-overlay">
             <div className="shop-categorie-content">
               <span className="shop-categorie-label">Cartes postales</span>

@@ -1,5 +1,6 @@
 import ActionButton from "../components/ActionButton/ActionButton";
 import RevealCard from "../components/RevealCard";
+import { cloudinaryUrl } from "../lib/cloudinary";
 import "./Personnalise.css";
 
 const realisations = [
@@ -43,7 +44,7 @@ export default function Personnalise() {
 							delay={index * 0.08}
 						>
 							<div className="perso-realisation-item">
-								<img src={r.src} alt={r.alt} />
+								<img src={cloudinaryUrl(r.src, 500)} alt={r.alt} loading="lazy" />
 							</div>
 						</RevealCard>
 					))}

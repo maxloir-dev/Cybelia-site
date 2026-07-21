@@ -11,6 +11,7 @@ import {
 	upsertDimensionProduit,
 } from "../../api/dimensionService";
 import type { Dimension } from "../../types";
+import { cloudinaryUrl } from "../../lib/cloudinary";
 import {
 	type ChangeEvent,
 	type FormEvent,
@@ -324,7 +325,12 @@ export default function Show({ categorieId, titre }: Props) {
 						onClick={() => ouvrirDetail(p)}
 						onKeyUp={(e) => e.key === "Enter" && ouvrirDetail(p)}
 					>
-						<img src={p.image_url || undefined} alt={p.nom} className="shop-card-img" />
+						<img
+							src={cloudinaryUrl(p.image_url, 400)}
+							alt={p.nom}
+							className="shop-card-img"
+							loading="lazy"
+						/>
 						<h3 className="shop-card-nom">{p.nom}</h3>
 						<p className="shop-card-prix">
 							<span className="shop-card-prix-label">À partir de </span>

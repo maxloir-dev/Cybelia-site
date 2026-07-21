@@ -1,11 +1,22 @@
 import { motion, useInView } from "framer-motion";
 import { useRef, type ReactNode } from "react";
 
+type Direction = "up" | "down" | "left" | "right";
+
 type Props = {
-	direction: "up" | "down"; // Changement ici : de haut en bas
+	direction: Direction;
 	delay?: number;
 	className?: string;
 	children: ReactNode;
+};
+
+// Axe et sens de départ de la carte selon la direction demandée :
+// up/down bougent sur l'axe vertical (y), left/right sur l'axe horizontal (x).
+const DEPART: Record<Direction, { axe: "x" | "y"; valeur: number }> = {
+	up: { axe: "y", valeur: 80 },
+	down: { axe: "y", valeur: -80 },
+	left: { axe: "x", valeur: -80 },
+	right: { axe: "x", valeur: 80 },
 };
 
 export default function RevealCard({
@@ -17,18 +28,20 @@ export default function RevealCard({
 	const ref = useRef<HTMLDivElement>(null);
 	const isInView = useInView(ref, { margin: "-60px", once: false });
 
-	// Remplacement de X par Y pour l'axe vertical
-	// "up" fait monter la carte (elle part de plus bas : +80)
-	// "down" fait descendre la carte (elle part de plus haut : -80)
-	const yIn = direction === "up" ? 80 : -80;
-	const yOut = direction === "up" ? -80 : 80;
+	const { axe, valeur } = DEPART[direction];
+	const positionDepart = { [axe]: valeur };
+	const positionSortie = { [axe]: -valeur };
 
 	return (
 		<motion.div
 			ref={ref}
 			className={className}
-			initial={{ opacity: 0, y: yIn }}
-			animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: yOut }}
+			initial={{ opacity: 0, ...positionDepart }}
+			animate={
+				isInView
+					? { opacity: 1, x: 0, y: 0 }
+					: { opacity: 0, ...positionSortie }
+			}
 			transition={{
 				duration: 0.7,
 				ease: "easeOut",

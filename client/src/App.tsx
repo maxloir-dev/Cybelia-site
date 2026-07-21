@@ -19,6 +19,10 @@ import ResetPassword from "./pages/ResetPassword/ResetPassword";
 import Show from "./components/Show_product/Show";
 import ProtectedRoute from "./components/ProtectedRoute";
 import Profil from "./pages/Profil/Profil";
+import Cgu from "./pages/Cgu";
+import Cgv from "./pages/Cgv";
+import Confidentialite from "./pages/Confidentialite";
+import MentionsLegales from "./pages/MentionsLegales";
 import "tailwindcss";
 import MiniPanier from "./components/MiniPanier/MiniPanier";
 
@@ -84,6 +88,10 @@ function App() {
 					<Route path="/about" element={<About />} />
 					<Route path="/contact" element={<Contact />} />
 					<Route path="/personnalise" element={<Personnalise />} />
+					<Route path="/cgu" element={<Cgu />} />
+					<Route path="/cgv" element={<Cgv />} />
+					<Route path="/confidentialite" element={<Confidentialite />} />
+					<Route path="/mentions-legales" element={<MentionsLegales />} />
 
 					{/* Routes client connecté */}
 					<Route

@@ -9,6 +9,7 @@ import CircularGallery from "../../components/CircularGallery/CircularGallery";
 import { getProduits } from "../../api/produitService";
 import type { Produit } from "../../types";
 import Carousel from "../../components/Carousel/Carousel";
+import { cloudinaryUrl } from "../../lib/cloudinary";
 
 const aproposImg =
 	"https://res.cloudinary.com/dgi4qubrq/image/upload/v1783414640/photo_cybe%CC%81lia_c6dutv.jpg";
@@ -26,17 +27,21 @@ function Home({ onIntroComplete }: HomeProps) {
 	// Récupère les derniers produits pour la galerie
 	useEffect(() => {
 		const chargerProduits = async () => {
-			const produits: Produit[] = await getProduits();
-			// On prend les 8 derniers produits ajoutés
-			const derniersProduits = produits
-				.slice(-8)
-				.reverse()
-				.filter((p) => p.image_url)
-				.map((p) => ({
-					image: p.image_url!,
-					text: p.nom,
-				}));
-			setGalerie(derniersProduits);
+			try {
+				const produits: Produit[] = await getProduits();
+				// On prend les 8 derniers produits ajoutés
+				const derniersProduits = produits
+					.slice(-8)
+					.reverse()
+					.filter((p) => p.image_url)
+					.map((p) => ({
+						image: cloudinaryUrl(p.image_url, 600)!,
+						text: p.nom,
+					}));
+				setGalerie(derniersProduits);
+			} catch (error) {
+				console.error("Erreur chargement galerie produits :", error);
+			}
 		};
 		chargerProduits();
 	}, []);
@@ -233,9 +238,10 @@ function Home({ onIntroComplete }: HomeProps) {
 						<RevealCard direction="left" className="home-apropos-image-reveal">
 							<div className="home-apropos-image-wrapper">
 								<img
-									src={aproposImg}
+									src={cloudinaryUrl(aproposImg, 800)}
 									alt="Cybélia Charrier, illustratrice"
 									className="home-apropos-image"
+									loading="lazy"
 								/>
 							</div>
 						</RevealCard>
