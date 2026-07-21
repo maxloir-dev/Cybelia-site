@@ -24,6 +24,7 @@ function Footer() {
 					<Link to="/contact">Contact</Link>
 					<Link to="/mentions-legales">Mentions légales</Link>
 					<Link to="/confidentialite">Confidentialité</Link>
+					<Link to="/cgu">CGU</Link>
 					<Link to="/cgv">CGV</Link>
 				</nav>
 			</div>
