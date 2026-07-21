@@ -27,7 +27,12 @@ export const getCommandes = async (_req: AuthRequest, res: Response) => {
 // Récupère le détail d'une commande par son id (gérante uniquement)
 export const getCommande = async (req: AuthRequest, res: Response) => {
 	try {
-		const commande = await getCommandeById(Number(req.params.id));
+		const id = Number(req.params.id);
+		if (Number.isNaN(id)) {
+			res.status(400).json({ message: "ID de commande invalide" });
+			return;
+		}
+		const commande = await getCommandeById(id);
 		if (!commande.length) {
 			res.status(404).json({ message: "Commande non trouvée" });
 		} else {

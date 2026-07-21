@@ -26,7 +26,12 @@ export const getHistoriqueCommandes = async (
 	res: Response,
 ) => {
 	try {
-		const commandes = await getCommandesByUtilisateur(Number(req.params.id));
+		const id = Number(req.params.id);
+		if (Number.isNaN(id)) {
+			res.status(400).json({ message: "ID de client invalide" });
+			return;
+		}
+		const commandes = await getCommandesByUtilisateur(id);
 		if (!commandes) {
 			res
 				.status(404)
@@ -43,7 +48,12 @@ export const getHistoriqueCommandes = async (
 // Supprime un client par son id (gérante uniquement)
 export const deleteUtilisateur = async (req: AuthRequest, res: Response) => {
 	try {
-		await deleteUser(Number(req.params.id));
+		const id = Number(req.params.id);
+		if (Number.isNaN(id)) {
+			res.status(400).json({ message: "ID de client invalide" });
+			return;
+		}
+		await deleteUser(id);
 		res.json({ message: "Client supprimé avec succès" });
 	} catch {
 		res

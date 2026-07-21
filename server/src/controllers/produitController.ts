@@ -27,7 +27,12 @@ export const getProduits = async (req: Request, res: Response) => {
 // Récupère un seul produit par son id
 export const getProduit = async (req: Request, res: Response) => {
 	try {
-		const produit = await getProduitById(Number(req.params.id));
+		const id = Number(req.params.id);
+		if (Number.isNaN(id)) {
+			res.status(400).json({ message: "ID de produit invalide" });
+			return;
+		}
+		const produit = await getProduitById(id);
 		if (!produit) {
 			res.status(404).json({ message: "Produit non trouvé" });
 		} else {
@@ -75,7 +80,6 @@ export const addProduit = async (req: Request, res: Response) => {
 // Modifie un produit existant par son id
 export const editProduit = async (req: Request, res: Response) => {
 	try {
-		console.log("BODY RECU:", req.body);
 		const { nom, description, prix, image_url, mockup_url, categorie_id } =
 			req.body;
 		await updateProduit(
@@ -98,7 +102,12 @@ export const editProduit = async (req: Request, res: Response) => {
 // Désactive un produit (soft delete)
 export const removeProduit = async (req: Request, res: Response) => {
 	try {
-		await deleteProduit(Number(req.params.id));
+		const id = Number(req.params.id);
+		if (Number.isNaN(id)) {
+			res.status(400).json({ message: "ID de produit invalide" });
+			return;
+		}
+		await deleteProduit(id);
 		res.json({ message: "Produit désactivé avec succès" });
 	} catch {
 		res
