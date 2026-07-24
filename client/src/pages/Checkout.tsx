@@ -6,7 +6,7 @@ import api from "../api/axios";
 import CheckoutForm from "../components/Checkout/CheckoutForm";
 import type { LivraisonData } from "../types";
 import "./Checkout.css";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 
 const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLIC_KEY);
@@ -30,6 +30,8 @@ function Checkout() {
 	const [erreurs, setErreurs] = useState<Partial<Record<keyof LivraisonData, string>>>({});
 	const [clientSecret, setClientSecret] = useState("");
 	const [erreurPaiement, setErreurPaiement] = useState("");
+	const [cgvAcceptees, setCgvAcceptees] = useState(false);
+	const [erreurCgv, setErreurCgv] = useState("");
 	const navigate = useNavigate();
 
 	useEffect(() => {
@@ -79,7 +81,12 @@ function Checkout() {
 			setErreurs(e_);
 			return;
 		}
+		if (!cgvAcceptees) {
+			setErreurCgv("Vous devez accepter les CGV pour continuer");
+			return;
+		}
 		setErreurs({});
+		setErreurCgv("");
 		setEtape(2);
 	};
 
@@ -158,6 +165,24 @@ function Checkout() {
 							</div>
 
 							{champ("pays", "Pays")}
+
+							<div className="checkout-cgv">
+								<label className="checkout-cgv-label">
+									<input
+										type="checkbox"
+										checked={cgvAcceptees}
+										onChange={(e) => {
+											setCgvAcceptees(e.target.checked);
+											setErreurCgv("");
+										}}
+									/>
+									J'ai lu et j'accepte les{" "}
+									<Link to="/cgv" target="_blank" rel="noopener noreferrer">
+										Conditions Générales de Vente
+									</Link>
+								</label>
+								{erreurCgv && <span className="checkout-erreur-champ">{erreurCgv}</span>}
+							</div>
 
 							<button type="submit" className="custom-button checkout-bouton-livraison">
 								<span className="button-text">Continuer vers le paiement →</span>
