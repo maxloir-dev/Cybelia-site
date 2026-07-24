@@ -43,6 +43,18 @@
 	gap: 8px;
 }
 
+@media (max-width: 600px) {
+	.register-container {
+		padding: 100px 20px 40px 20px;
+		align-items: flex-start;
+	}
+
+	.register-row {
+		grid-template-columns: 1fr;
+		gap: 20px;
+	}
+}
+
 .register-field label {
 	font-family: var(--font-body);
 	font-size: 0.85rem;

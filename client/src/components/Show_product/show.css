@@ -76,9 +76,33 @@
 }
 
 @media (max-width: 767px) {
+	.shop-page {
+		padding: 100px 20px 40px 20px;
+	}
+
+	.shop-title {
+		font-size: 1.6rem;
+	}
+
+	.shop-top {
+		flex-direction: column;
+		align-items: flex-start;
+		gap: 12px;
+	}
+
+	.shop-top .gooey-wrapper {
+		width: 100%;
+	}
+
 	.shop-grid {
 		grid-template-columns: repeat(2, 1fr);
 		gap: 20px;
+	}
+
+	.shop-card .shop-card-btn {
+		width: 100%;
+		padding-left: 8px;
+		padding-right: 8px;
 	}
 }
 
@@ -94,6 +118,7 @@
 	flex-direction: column !important;
 	align-items: center;
 	text-align: center;
+	height: 100%;
 	cursor: pointer;
 	transition:
 		transform 0.2s,
@@ -114,10 +139,11 @@
 		background-color 0.2s;
 }
 
-/* Photo du produit, taille fixe avec recadrage automatique */
+/* Photo du produit, remplit la largeur de la carte, recadrage automatique */
 .shop-card-img {
-	width: 200px;
-	height: 250px;
+	width: 100%;
+	height: auto;
+	aspect-ratio: 4 / 5;
 	object-fit: cover;
 	margin-bottom: 12px;
 	border-radius: 6px;
@@ -160,7 +186,7 @@
 
 /* Bouton "Ajouter au panier" — aligné sur le style standard ActionButton */
 .shop-card-btn {
-	margin-top: 8px;
+	margin-top: auto;
 }
 
 /* =========================================
@@ -659,4 +685,31 @@
 	color: var(--color-secondary);
 	font-style: italic;
 	margin-top: 8px;
+}
+
+/* =========================================
+   RESPONSIVE MOBILE — FICHE PRODUIT
+   Image en haut, informations en dessous.
+   ========================================= */
+@media (max-width: 700px) {
+	.modal-detail {
+		padding: 1.25rem;
+		width: 94%;
+	}
+
+	.detail-contenu {
+		flex-direction: column;
+		gap: 1.25rem;
+	}
+
+	.detail-image {
+		height: 50vh;
+		overflow: visible;
+	}
+
+	.detail-image img {
+		height: 50vh;
+		width: 100%;
+		object-fit: contain;
+	}
 }

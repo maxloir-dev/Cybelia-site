@@ -217,3 +217,24 @@
 	font-size: 1.1rem;
 	color: var(--color-text);
 }
+
+/* ============================================
+   Responsive mobile
+============================================ */
+@media (max-width: 600px) {
+	.mini-panier {
+		top: auto;
+		bottom: 0;
+		right: 0;
+		left: 0;
+		width: auto;
+		max-height: 85vh;
+		border-radius: 16px 16px 0 0;
+		padding: 24px 20px;
+		transform: translateY(100%);
+	}
+
+	.mini-panier--ouvert {
+		transform: translateY(0);
+	}
+}
