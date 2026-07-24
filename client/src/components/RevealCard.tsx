@@ -26,7 +26,7 @@ export default function RevealCard({
 	children,
 }: Props) {
 	const ref = useRef<HTMLDivElement>(null);
-	const isInView = useInView(ref, { margin: "-60px", once: false });
+	const isInView = useInView(ref, { margin: "-60px", once: true });
 
 	const { axe, valeur } = DEPART[direction];
 	const positionDepart = { [axe]: valeur };

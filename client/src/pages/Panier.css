@@ -334,6 +334,31 @@
 	.panier-page {
 		padding: 120px 20px 40px 20px;
 	}
+
+	.panier-item {
+		grid-template-columns: 90px 1fr;
+		grid-template-areas:
+			"img info"
+			"img total";
+		gap: 16px;
+		row-gap: 8px;
+	}
+
+	.panier-item-img {
+		grid-area: img;
+		width: 90px;
+		height: 115px;
+	}
+
+	.panier-item-info {
+		grid-area: info;
+	}
+
+	.panier-item-sous-total {
+		grid-area: total;
+		text-align: right;
+		align-self: end;
+	}
 }
 
 /* ============================================

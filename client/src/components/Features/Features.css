@@ -62,21 +62,19 @@
 
 @media (max-width: 768px) {
 	.features {
-		display: flex;
-		flex-direction: row;
-		align-items: flex-start;
-		justify-content: flex-start;
+		display: grid;
+		grid-template-columns: repeat(2, 1fr);
 		margin-top: -20px !important;
 		padding: 20px 16px 30px;
 		height: auto !important;
-		overflow-x: auto;
-		white-space: nowrap;
-		gap: 12px;
+		gap: 24px 12px;
+	}
+
+	.feature-divider {
+		display: none;
 	}
 
 	.feature-item {
-		flex: 0 0 22%;
-		min-width: 85px;
 		padding: 0;
 		display: flex;
 		flex-direction: column;
