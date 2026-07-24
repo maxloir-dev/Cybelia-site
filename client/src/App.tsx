@@ -95,15 +95,10 @@ function App() {
 					<Route path="/confidentialite" element={<Confidentialite />} />
 					<Route path="/mentions-legales" element={<MentionsLegales />} />
 
+					{/* Panier consultable librement, sans connexion */}
+					<Route path="/panier" element={<Panier />} />
+
 					{/* Routes client connecté */}
-					<Route
-						path="/panier"
-						element={
-							<ProtectedRoute>
-								<Panier />
-							</ProtectedRoute>
-						}
-					/>
 					<Route
 						path="/profil"
 						element={
