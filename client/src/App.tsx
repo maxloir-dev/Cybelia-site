@@ -66,7 +66,7 @@ function App() {
 		<CartProvider>
 			<BrowserRouter>
 				<ScrollToTop />
-				<CookieBanner />
+				{introPlayed && <CookieBanner />}
 				<Chrome introPlayed={introPlayed}>
 					<Routes>
 					{/* Routes publiques */}
