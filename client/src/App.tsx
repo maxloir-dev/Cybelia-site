@@ -23,6 +23,7 @@ import Cgu from "./pages/Cgu";
 import Cgv from "./pages/Cgv";
 import Confidentialite from "./pages/Confidentialite";
 import MentionsLegales from "./pages/MentionsLegales";
+import CookieBanner from "./components/CookieBanner/CookieBanner";
 import "tailwindcss";
 import MiniPanier from "./components/MiniPanier/MiniPanier";
 
@@ -65,6 +66,7 @@ function App() {
 		<CartProvider>
 			<BrowserRouter>
 				<ScrollToTop />
+				<CookieBanner />
 				<Chrome introPlayed={introPlayed}>
 					<Routes>
 					{/* Routes publiques */}

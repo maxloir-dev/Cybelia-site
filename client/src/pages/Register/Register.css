@@ -90,6 +90,17 @@
 	cursor: not-allowed;
 }
 
+.register-cgu-label {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	font-size: 0.85rem;
+}
+
+.register-cgu-label a {
+	text-decoration: underline;
+}
+
 .register-erreur {
 	color: #c0392b;
 	font-size: 0.9rem;

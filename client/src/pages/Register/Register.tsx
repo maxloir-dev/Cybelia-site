@@ -17,6 +17,7 @@ function Register() {
 	const [confirmation, setConfirmation] = useState("");
 	const [erreur, setErreur] = useState("");
 	const [chargement, setChargement] = useState(false);
+	const [cguAcceptees, setCguAcceptees] = useState(false);
 
 	const { connexion } = useAuth();
 	const navigate = useNavigate();
@@ -28,6 +29,11 @@ function Register() {
 		// Vérification que les mots de passe correspondent
 		if (motDePasse !== confirmation) {
 			setErreur("Les mots de passe ne correspondent pas");
+			return;
+		}
+
+		if (!cguAcceptees) {
+			setErreur("Vous devez accepter les CGU pour créer un compte");
 			return;
 		}
 
@@ -129,6 +135,18 @@ function Register() {
 								required
 							/>
 						</div>
+
+						<label className="register-cgu-label">
+							<input
+								type="checkbox"
+								checked={cguAcceptees}
+								onChange={(e) => setCguAcceptees(e.target.checked)}
+							/>
+							J'accepte les{" "}
+							<Link to="/cgu" target="_blank" rel="noopener noreferrer">
+								Conditions Générales d'Utilisation
+							</Link>
+						</label>
 
 						<button
 							type="submit"

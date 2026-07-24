@@ -175,6 +175,26 @@
 	color: #c0392b;
 }
 
+.checkout-cgv {
+	display: flex;
+	flex-direction: column;
+	gap: 6px;
+	margin: 16px 0;
+}
+
+.checkout-cgv-label {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	font-size: 0.85rem;
+	color: var(--color-text);
+}
+
+.checkout-cgv-label a {
+	color: var(--color-text);
+	text-decoration: underline;
+}
+
 select.checkout-input {
 	cursor: pointer;
 }
