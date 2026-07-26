@@ -167,6 +167,13 @@ export const updateMotDePasse = async (req: AuthRequest, res: Response) => {
 
 // Réinitialisation du mot de passe
 
+// Le jeton de réinitialisation est un mot de passe temporaire : on ne stocke
+// que son empreinte, pour qu'une fuite de la base ne permette pas de s'en
+// servir. SHA-256 suffit ici (contrairement à bcrypt pour les mots de passe) :
+// le jeton fait déjà 256 bits d'aléa, il n'est pas devinable par force brute.
+const empreinteToken = (token: string) =>
+	crypto.createHash("sha256").update(token).digest("hex");
+
 // Envoie un email avec un lien de réinitialisation
 export const forgotPassword = async (req: Request, res: Response) => {
 	try {
@@ -182,7 +189,9 @@ export const forgotPassword = async (req: Request, res: Response) => {
 		const token = crypto.randomBytes(32).toString("hex");
 		const expires = new Date(Date.now() + 60 * 60 * 1000); // 1 heure
 
-		await setResetToken(email, token, expires);
+		// L'empreinte va en base, le jeton brut part par email : il n'existe
+		// donc qu'entre la boîte mail du destinataire et notre vérification
+		await setResetToken(email, empreinteToken(token), expires);
 		await envoyerEmailReinitialisation(email, token);
 
 		res.json({ message: "Si cet email existe, un lien a été envoyé." });
@@ -197,7 +206,14 @@ export const resetPassword = async (req: Request, res: Response) => {
 	try {
 		const { token, nouveau_mot_de_passe } = req.body;
 
-		const utilisateur = await getUserByResetToken(token);
+		if (!token) {
+			res.status(400).json({ message: "Lien invalide ou expiré." });
+			return;
+		}
+
+		// On recalcule l'empreinte du jeton reçu pour la comparer à celle
+		// stockée : le jeton brut n'est jamais relu depuis la base
+		const utilisateur = await getUserByResetToken(empreinteToken(token));
 		if (!utilisateur) {
 			res.status(400).json({ message: "Lien invalide ou expiré." });
 			return;
