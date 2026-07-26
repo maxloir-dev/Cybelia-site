@@ -26,6 +26,12 @@ dotenv.config();
 const app = express();
 const PORT = process.env.PORT || 3001;
 
+// Railway place l'application derrière un proxy : sans ce réglage, Express voit
+// l'IP du proxy pour toutes les requêtes et les rate limiters appliquent alors
+// un quota global à l'ensemble des visiteurs au lieu d'un quota par visiteur.
+// 1 = un seul proxy devant l'app (celui de Railway).
+app.set("trust proxy", 1);
+
 // Middlewares globaux
 
 app.use(helmet()); // Headers HTTP de sécurité (CSP, X-Frame-Options, etc.)
