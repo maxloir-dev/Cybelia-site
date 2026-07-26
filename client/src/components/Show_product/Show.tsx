@@ -64,6 +64,8 @@ export default function Show({ categorieId, titre }: Props) {
 	});
 	const [erreurs, setErreurs] = useState<Partial<Form>>({});
 	const [erreursEdition, setErreursEdition] = useState<Partial<Form>>({});
+	const [chargement, setChargement] = useState(true);
+	const [erreurChargement, setErreurChargement] = useState("");
 	const [imageFile, setImageFile] = useState<File | null>(null);
 	const [mockupFile, setMockupFile] = useState<File | null>(null);
 	const [imageFileEdition, setImageFileEdition] = useState<File | null>(null);
@@ -84,8 +86,20 @@ export default function Show({ categorieId, titre }: Props) {
 			? `${API_URL}/produits?categorie_id=${categorieId}&dimension_id=${dimensionFiltre}`
 			: `${API_URL}/produits?categorie_id=${categorieId}`;
 		fetch(url)
-			.then((res) => res.json())
-			.then((data) => setProduits(data));
+			.then((res) => {
+				if (!res.ok) throw new Error("Réponse invalide du serveur");
+				return res.json();
+			})
+			.then((data) => {
+				setProduits(data);
+				setErreurChargement("");
+			})
+			.catch(() =>
+				setErreurChargement(
+					"Impossible de charger les créations pour le moment.",
+				),
+			)
+			.finally(() => setChargement(false));
 	}, [categorieId, dimensionFiltre]);
 
 	useEffect(() => {
@@ -311,7 +325,40 @@ export default function Show({ categorieId, titre }: Props) {
 				</div>
 			)}
 
-			<p className="shop-count">{produitsFiltres.length} résultats affichés</p>
+			{chargement && (
+				<p className="shop-etat">Chargement des créations…</p>
+			)}
+
+			{erreurChargement && (
+				<div className="shop-etat shop-etat--erreur" role="alert">
+					<p>{erreurChargement}</p>
+					<button
+						type="button"
+						className="shop-etat-retry"
+						onClick={() => {
+							setChargement(true);
+							fetchProduits();
+						}}
+					>
+						Réessayer
+					</button>
+				</div>
+			)}
+
+			{!chargement && !erreurChargement && (
+				<p className="shop-count">
+					{produitsFiltres.length}{" "}
+					{produitsFiltres.length > 1 ? "résultats affichés" : "résultat affiché"}
+				</p>
+			)}
+
+			{!chargement && !erreurChargement && produitsFiltres.length === 0 && (
+				<p className="shop-etat">
+					{recherche.trim() || dimensionFiltre
+						? "Aucune création ne correspond à votre recherche."
+						: "Aucune création disponible pour le moment."}
+				</p>
+			)}
 
 			<div className="shop-grid">
 				{produitsFiltres.map((p, index) => (
@@ -407,6 +454,7 @@ export default function Show({ categorieId, titre }: Props) {
 							<div>
 								<input
 									name="nom"
+									aria-label="Nom du produit"
 									placeholder="Nom *"
 									value={form.nom}
 									onChange={handleChange}
@@ -417,6 +465,7 @@ export default function Show({ categorieId, titre }: Props) {
 							</div>
 							<textarea
 								name="description"
+								aria-label="Description du produit"
 								placeholder="Description"
 								value={form.description}
 								onChange={handleChange}
@@ -476,6 +525,7 @@ export default function Show({ categorieId, titre }: Props) {
 													type="number"
 													step="0.01"
 													min="0"
+													aria-label={`Prix pour le format ${d.label}`}
 													placeholder="Prix €"
 													className="form-dimension-prix"
 													value={dimensionsPrixAjout[d.id] ?? ""}
@@ -520,6 +570,7 @@ export default function Show({ categorieId, titre }: Props) {
 							<div>
 								<input
 									name="nom"
+									aria-label="Nom du produit"
 									placeholder="Nom *"
 									value={formEdition.nom}
 									onChange={handleChangeEdition}
@@ -530,6 +581,7 @@ export default function Show({ categorieId, titre }: Props) {
 							</div>
 							<textarea
 								name="description"
+								aria-label="Description du produit"
 								placeholder="Description"
 								value={formEdition.description}
 								onChange={handleChangeEdition}
@@ -537,6 +589,7 @@ export default function Show({ categorieId, titre }: Props) {
 							<div>
 								<input
 									name="prix"
+									aria-label="Prix du produit"
 									placeholder="Prix *"
 									value={formEdition.prix}
 									onChange={handleChangeEdition}

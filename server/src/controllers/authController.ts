@@ -197,6 +197,15 @@ export const resetPassword = async (req: Request, res: Response) => {
 	try {
 		const { token, nouveau_mot_de_passe } = req.body;
 
+		// Même exigence qu'à l'inscription : sans ça, le formulaire de
+		// réinitialisation accepte un mot de passe vide ou trop court
+		if (!nouveau_mot_de_passe || nouveau_mot_de_passe.length < 8) {
+			res.status(400).json({
+				message: "Le mot de passe doit contenir au moins 8 caractères",
+			});
+			return;
+		}
+
 		const utilisateur = await getUserByResetToken(token);
 		if (!utilisateur) {
 			res.status(400).json({ message: "Lien invalide ou expiré." });
