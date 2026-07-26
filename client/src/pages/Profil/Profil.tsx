@@ -21,6 +21,7 @@ function Profil() {
 	const [utilisateur, setUtilisateur] = useState<Utilisateur | null>(null);
 	const [commandes, setCommandes] = useState<Commande[]>([]);
 	const [chargement, setChargement] = useState(false);
+	const [enregistrement, setEnregistrement] = useState(false);
 	const [message, setMessage] = useState("");
 	const [erreur, setErreur] = useState("");
 	const [commandeSelectionnee, setCommandeSelectionnee] =
@@ -153,12 +154,15 @@ function Profil() {
 			setErreur("Impossible de mettre à jour : utilisateur non chargé.");
 			return;
 		}
+		setEnregistrement(true);
 		try {
 			await updateProfil(nom, prenom, email);
 			setUtilisateur({ ...utilisateur, nom, prenom, email });
 			setMessage("Profil mis à jour avec succès !");
 		} catch {
 			setErreur("Erreur lors de la mise à jour du profil");
+		} finally {
+			setEnregistrement(false);
 		}
 	};
 
@@ -172,6 +176,7 @@ function Profil() {
 			return;
 		}
 
+		setEnregistrement(true);
 		try {
 			await updateMotDePasse(ancienMdp, nouveauMdp);
 			setMessage("Mot de passe mis à jour avec succès !");
@@ -180,6 +185,8 @@ function Profil() {
 			setConfirmationMdp("");
 		} catch {
 			setErreur("Ancien mot de passe incorrect");
+		} finally {
+			setEnregistrement(false);
 		}
 	};
 
@@ -530,7 +537,9 @@ function Profil() {
 							marginTop: "20px",
 						}}
 					>
-						<ActionButton type="submit">Enregistrer</ActionButton>
+						<ActionButton type="submit" disabled={enregistrement}>
+							{enregistrement ? "Enregistrement..." : "Enregistrer"}
+						</ActionButton>
 					</div>
 				</form>
 			</main>
@@ -611,7 +620,9 @@ function Profil() {
 							marginTop: "20px",
 						}}
 					>
-						<ActionButton type="submit">Enregistrer</ActionButton>
+						<ActionButton type="submit" disabled={enregistrement}>
+							{enregistrement ? "Enregistrement..." : "Enregistrer"}
+						</ActionButton>
 					</div>
 				</form>
 			</main>

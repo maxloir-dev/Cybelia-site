@@ -60,7 +60,9 @@ function Register() {
 			}, 1500);
 		} catch {
 			setErreur("Cet email est déjà utilisé");
-		} finally {
+			// On ne réactive le bouton qu'en cas d'échec : en cas de succès la
+			// navigation est différée de 1,5 s (confettis) et un second clic
+			// pendant ce délai renverrait une erreur "email déjà utilisé"
 			setChargement(false);
 		}
 	};

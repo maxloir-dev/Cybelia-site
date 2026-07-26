@@ -5,7 +5,8 @@
 	--font-signature: "Great Vibes", cursive;
 
 	--color-primary: #111;
-	--color-secondary: #777;
+	/* #777 donnait 4,48:1 sur blanc, juste sous le seuil AA de 4,5:1 */
+	--color-secondary: #6b6b6b;
 	--color-text: #965846;
 	--color-background: #9e7b65;
 }

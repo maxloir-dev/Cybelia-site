@@ -134,6 +134,7 @@
 
 .perso-destines-item svg {
   color: var(--color-text);
+  margin-top: 12px;
 }
 
 .perso-destines-item span {
@@ -289,9 +290,12 @@
     margin-top: 20px;
   }
 
+  /* width explicite et non max-width : sur Safari iOS, une largeur seulement
+     plafonnée empêche aspect-ratio de calculer la hauteur de l'image, qui
+     tombe à 0 et devient invisible */
   .perso-realisations-grid > div:last-child:nth-child(odd) {
     grid-column: 1 / -1;
-    max-width: 60%;
+    width: 60%;
     margin: 0 auto;
   }
 

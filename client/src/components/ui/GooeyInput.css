@@ -41,9 +41,25 @@
 	transition: opacity 0.2s;
 }
 
-.gooey-button:disabled {
+/* Le conteneur est un div : on ne peut plus s'appuyer sur :disabled */
+.gooey-button[data-disabled] {
 	pointer-events: none;
 	opacity: 0.5;
+}
+
+/* Bouton loupe visible quand la recherche est repliée */
+.gooey-toggle {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	width: 100%;
+	height: 100%;
+	background: none;
+	border: none;
+	padding: 0;
+	color: inherit;
+	font: inherit;
+	cursor: pointer;
 }
 
 .gooey-search-icon {

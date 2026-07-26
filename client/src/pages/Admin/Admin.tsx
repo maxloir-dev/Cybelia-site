@@ -59,6 +59,7 @@ function Admin() {
 	const [categorieFiltre, setCategorieFiltre] = useState<number>(1);
 	const [chargement, setChargement] = useState(false);
 	const [modeEdition, setModeEdition] = useState(false);
+	const [ajoutEnCours, setAjoutEnCours] = useState(false);
 	const [produitEdite, setProduitEdite] = useState<Produit | null>(null);
 	const [nouveauProduit, setNouveauProduit] = useState({
 		nom: "",
@@ -223,6 +224,10 @@ function Admin() {
 	};
 
 	const ajouterProduit = async () => {
+		// L'ajout enchaîne un upload Cloudinary et plusieurs écritures : un
+		// second clic créerait un produit en double
+		if (ajoutEnCours) return;
+		setAjoutEnCours(true);
 		try {
 			let image_url = "";
 			let mockup_url = null;
@@ -272,6 +277,8 @@ function Admin() {
 			setVue("accueil");
 		} catch {
 			alert("Erreur lors de l'ajout du produit");
+		} finally {
+			setAjoutEnCours(false);
 		}
 	};
 
@@ -480,15 +487,17 @@ function Admin() {
 				</div>
 
 				{commandeSelectionnee && (
-					<button
-						type="button"
+					/* Overlay neutre : un bouton ne peut pas en contenir d'autres
+					   (HTML invalide, clavier imprévisible) */
+					<div
 						className="admin-popin-overlay"
+						role="presentation"
 						onClick={() => setCommandeSelectionnee(null)}
-						aria-label="Fermer"
 					>
 						<div
 							className="admin-popin"
-							role="document"
+							role="dialog"
+							aria-modal="true"
 							onClick={(e) => e.stopPropagation()}
 							onKeyDown={(e) => e.stopPropagation()}
 						>
@@ -496,6 +505,7 @@ function Admin() {
 								type="button"
 								className="admin-popin__fermer"
 								onClick={() => setCommandeSelectionnee(null)}
+								aria-label="Fermer"
 							>
 								&times;
 							</button>
@@ -569,7 +579,7 @@ function Admin() {
 								</button>
 							</div>
 						</div>
-					</button>
+					</div>
 				)}
 			</main>
 		);
@@ -751,15 +761,17 @@ function Admin() {
 					</div>
 
 					{commandeSelectionnee && (
-						<button
-							type="button"
+						/* Overlay neutre : un bouton ne peut pas en contenir d'autres
+						   (HTML invalide, clavier imprévisible) */
+						<div
 							className="admin-popin-overlay"
+							role="presentation"
 							onClick={() => setCommandeSelectionnee(null)}
-							aria-label="Fermer la fenêtre de détail"
 						>
 							<div
 								className="admin-popin"
-								role="document"
+								role="dialog"
+								aria-modal="true"
 								onClick={(e) => e.stopPropagation()}
 								onKeyDown={(e) => e.stopPropagation()}
 							>
@@ -767,6 +779,7 @@ function Admin() {
 									type="button"
 									className="admin-popin__fermer"
 									onClick={() => setCommandeSelectionnee(null)}
+									aria-label="Fermer la fenêtre de détail"
 								>
 									&times;
 								</button>
@@ -852,7 +865,7 @@ function Admin() {
 									</button>
 								</div>
 							</div>
-						</button>
+						</div>
 					)}
 				</div>
 			</main>
@@ -1552,8 +1565,9 @@ function Admin() {
 							type="button"
 							className="admin-pill-btn admin-pill-btn--actif"
 							onClick={ajouterProduit}
+							disabled={ajoutEnCours}
 						>
-							Ajouter le produit
+							{ajoutEnCours ? "Ajout en cours..." : "Ajouter le produit"}
 						</button>
 						<button
 							type="button"

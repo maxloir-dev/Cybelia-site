@@ -115,16 +115,27 @@ export function GooeyInput({
 					}}
 					transition={springTransition}
 				>
-					<button
-						type="button"
-						disabled={disabled}
-						onClick={handleExpand}
+					{/* Conteneur neutre : un <input> dans un <button> est du HTML
+					    invalide et casse le clavier et les lecteurs d'écran */}
+					<div
 						className="gooey-button"
+						data-disabled={disabled || undefined}
 					>
-						{!isExpanded && <SearchIcon />}
+						{!isExpanded && (
+							<button
+								type="button"
+								disabled={disabled}
+								onClick={handleExpand}
+								className="gooey-toggle"
+								aria-label={placeholder}
+							>
+								<SearchIcon />
+							</button>
+						)}
 						<input
 							ref={inputRef}
 							type="search"
+							aria-label={placeholder}
 							autoComplete="off"
 							value={value}
 							onChange={handleChange}
@@ -134,7 +145,7 @@ export function GooeyInput({
 							className="gooey-input"
 							style={{ display: isExpanded ? "block" : "none" }}
 						/>
-					</button>
+					</div>
 				</motion.div>
 
 				<div className="gooey-bubble-wrapper">
