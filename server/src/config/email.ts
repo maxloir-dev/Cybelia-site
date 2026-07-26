@@ -51,7 +51,7 @@ export const envoyerEmailConfirmationCommande = async (
 					</tr>
 				</tfoot>
 			</table>
-			<p style="color: #999; font-size: 12px; margin-top: 40px;">Cybele Architecture — <a href="https://cybele-architecture.fr" style="color: #965846;">cybele-architecture.fr</a></p>
+			<p style="color: #999; font-size: 12px; margin-top: 40px;">Cybele Architecture — <a href="https://cybelearchitecture.com" style="color: #965846;">cybelearchitecture.com</a></p>
 		</div>
 		`,
 	});
