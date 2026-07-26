@@ -167,6 +167,13 @@ export const updateMotDePasse = async (req: AuthRequest, res: Response) => {
 
 // Réinitialisation du mot de passe
 
+// Le jeton de réinitialisation est un mot de passe temporaire : on ne stocke
+// que son empreinte, pour qu'une fuite de la base ne permette pas de s'en
+// servir. SHA-256 suffit ici (contrairement à bcrypt pour les mots de passe) :
+// le jeton fait déjà 256 bits d'aléa, il n'est pas devinable par force brute.
+const empreinteToken = (token: string) =>
+	crypto.createHash("sha256").update(token).digest("hex");
+
 // Envoie un email avec un lien de réinitialisation
 export const forgotPassword = async (req: Request, res: Response) => {
 	try {
@@ -182,7 +189,9 @@ export const forgotPassword = async (req: Request, res: Response) => {
 		const token = crypto.randomBytes(32).toString("hex");
 		const expires = new Date(Date.now() + 60 * 60 * 1000); // 1 heure
 
-		await setResetToken(email, token, expires);
+		// L'empreinte va en base, le jeton brut part par email : il n'existe
+		// donc qu'entre la boîte mail du destinataire et notre vérification
+		await setResetToken(email, empreinteToken(token), expires);
 		await envoyerEmailReinitialisation(email, token);
 
 		res.json({ message: "Si cet email existe, un lien a été envoyé." });
@@ -197,8 +206,12 @@ export const resetPassword = async (req: Request, res: Response) => {
 	try {
 		const { token, nouveau_mot_de_passe } = req.body;
 
-		// Même exigence qu'à l'inscription : sans ça, le formulaire de
-		// réinitialisation accepte un mot de passe vide ou trop court
+
+				if (!token) {
+			res.status(400).json({ message: "Lien invalide ou expiré." });
+			return;
+		}
+
 		if (!nouveau_mot_de_passe || nouveau_mot_de_passe.length < 8) {
 			res.status(400).json({
 				message: "Le mot de passe doit contenir au moins 8 caractères",
@@ -206,7 +219,8 @@ export const resetPassword = async (req: Request, res: Response) => {
 			return;
 		}
 
-		const utilisateur = await getUserByResetToken(token);
+		const utilisateur = await getUserByResetToken(empreinteToken(token));
+
 		if (!utilisateur) {
 			res.status(400).json({ message: "Lien invalide ou expiré." });
 			return;

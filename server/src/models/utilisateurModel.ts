@@ -94,19 +94,24 @@ export const deleteUser = async (id: number) => {
 	await pool.query("DELETE FROM utilisateurs WHERE id = ?", [id]);
 };
 
-// Stocke un token de réinitialisation avec expiration (1h)
-export const setResetToken = async (email: string, token: string, expires: Date) => {
+// Stocke l'empreinte du token de réinitialisation avec expiration (1h)
+// Le token brut n'est jamais écrit en base : voir empreinteToken() dans authController
+export const setResetToken = async (
+	email: string,
+	tokenHash: string,
+	expires: Date,
+) => {
 	await pool.query(
 		"UPDATE utilisateurs SET reset_token = ?, reset_token_expires = ? WHERE email = ?",
-		[token, expires, email],
+		[tokenHash, expires, email],
 	);
 };
 
-// Trouve un utilisateur par son token de réinitialisation (non expiré)
-export const getUserByResetToken = async (token: string) => {
+// Trouve un utilisateur par l'empreinte de son token de réinitialisation (non expiré)
+export const getUserByResetToken = async (tokenHash: string) => {
 	const [rows]: any = await pool.query(
 		"SELECT * FROM utilisateurs WHERE reset_token = ? AND reset_token_expires > NOW()",
-		[token],
+		[tokenHash],
 	);
 	return rows[0];
 };
