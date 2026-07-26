@@ -16,6 +16,8 @@ export default function Contact() {
 	const [form, setForm] = useState<Form>(formVide);
 	const [erreurs, setErreurs] = useState<Partial<Form>>({});
 	const [envoye, setEnvoye] = useState(false);
+	const [envoiEnCours, setEnvoiEnCours] = useState(false);
+	const [erreurEnvoi, setErreurEnvoi] = useState("");
 
 	const valider = (f: Form) => {
 		const e: Partial<Form> = {};
@@ -43,15 +45,27 @@ export default function Contact() {
 			return;
 		}
 
-		// Remplacer par ton URL d'API réelle si nécessaire
-		await fetch(`${API_URL}/contact`, {
-			method: "POST",
-			headers: { "Content-Type": "application/json" },
-			body: JSON.stringify(form),
-		});
+		setEnvoiEnCours(true);
+		setErreurEnvoi("");
 
-		setEnvoye(true);
-		setForm(formVide);
+		try {
+			const reponse = await fetch(`${API_URL}/contact`, {
+				method: "POST",
+				headers: { "Content-Type": "application/json" },
+				body: JSON.stringify(form),
+			});
+
+			if (!reponse.ok) throw new Error("Envoi refusé par le serveur");
+
+			setEnvoye(true);
+			setForm(formVide);
+		} catch {
+			setErreurEnvoi(
+				"L'envoi a échoué. Vérifiez votre connexion et réessayez, ou écrivez-nous directement à cybele.architecture@gmail.com.",
+			);
+		} finally {
+			setEnvoiEnCours(false);
+		}
 	};
 
 	return (
@@ -134,9 +148,19 @@ export default function Contact() {
 							)}
 						</div>
 
+						{erreurEnvoi && (
+							<p className="contact-erreur-envoi" role="alert">
+								{erreurEnvoi}
+							</p>
+						)}
+
 						{/* Utilisation de ActionButton avec type="submit" */}
-						<ActionButton type="submit" className="contact-btn">
-							Envoyer
+						<ActionButton
+							type="submit"
+							className="contact-btn"
+							disabled={envoiEnCours}
+						>
+							{envoiEnCours ? "Envoi en cours..." : "Envoyer"}
 						</ActionButton>
 					</form>
 				)}

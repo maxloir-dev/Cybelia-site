@@ -23,6 +23,7 @@ function Home({ onIntroComplete }: HomeProps) {
 		return sessionStorage.getItem("introPlayed") ? "content" : "intro";
 	});
 	const [galerie, setGalerie] = useState<{ image: string; text: string }[]>([]);
+	const [erreurGalerie, setErreurGalerie] = useState(false);
 
 	// Récupère les derniers produits pour la galerie
 	useEffect(() => {
@@ -41,6 +42,7 @@ function Home({ onIntroComplete }: HomeProps) {
 				setGalerie(derniersProduits);
 			} catch (error) {
 				console.error("Erreur chargement galerie produits :", error);
+				setErreurGalerie(true);
 			}
 		};
 		chargerProduits();
@@ -98,14 +100,24 @@ function Home({ onIntroComplete }: HomeProps) {
 						</div>
 					</RevealCard>
 					<div className="gallery-wrapper">
-						<CircularGallery
-							items={galerie.length > 0 ? galerie : undefined}
-							bend={0}
-							textColor="#965846"
-							borderRadius={0.1}
-							scrollSpeed={2}
-							scrollEase={0.05}
-						/>
+						{galerie.length > 0 ? (
+							<CircularGallery
+								items={galerie}
+								bend={0}
+								textColor="#965846"
+								borderRadius={0.1}
+								scrollSpeed={2}
+								scrollEase={0.05}
+							/>
+						) : (
+							// Sans produits, CircularGallery affiche des photos d'exemple
+							// aléatoires : mieux vaut ne rien montrer que de fausses créations
+							<p className="gallery-etat">
+								{erreurGalerie
+									? "Les nouveautés n'ont pas pu être chargées."
+									: "Chargement des nouveautés…"}
+							</p>
+						)}
 					</div>
 					<RevealCard direction="right">
 						<div className="nouveautes-btn">

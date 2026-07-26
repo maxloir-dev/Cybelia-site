@@ -206,14 +206,21 @@ export const resetPassword = async (req: Request, res: Response) => {
 	try {
 		const { token, nouveau_mot_de_passe } = req.body;
 
-		if (!token) {
+
+				if (!token) {
 			res.status(400).json({ message: "Lien invalide ou expiré." });
 			return;
 		}
 
-		// On recalcule l'empreinte du jeton reçu pour la comparer à celle
-		// stockée : le jeton brut n'est jamais relu depuis la base
+		if (!nouveau_mot_de_passe || nouveau_mot_de_passe.length < 8) {
+			res.status(400).json({
+				message: "Le mot de passe doit contenir au moins 8 caractères",
+			});
+			return;
+		}
+
 		const utilisateur = await getUserByResetToken(empreinteToken(token));
+
 		if (!utilisateur) {
 			res.status(400).json({ message: "Lien invalide ou expiré." });
 			return;
