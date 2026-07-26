@@ -19,6 +19,7 @@ const ActionButton = ({
 	type = "button",
 	className = "",
 	inverse = false,
+	disabled = false,
 }: ActionButtonProps) => {
 	const content = <span className="button-text">{children}</span>;
 	const classes = `custom-button ${inverse ? "custom-button--inverse" : ""} ${className}`;
@@ -26,14 +27,19 @@ const ActionButton = ({
 	// Si une destination est fournie, on utilise Link de react-router
 	if (to) {
 		return (
-			<Link to={to} className={classes}>
+			<Link to={to} className={classes} onClick={onClick}>
 				{content}
 			</Link>
 		);
 	}
 
 	return (
-		<button className={classes} onClick={onClick} type={type}>
+		<button
+			className={classes}
+			onClick={onClick}
+			type={type}
+			disabled={disabled}
+		>
 			{content}
 		</button>
 	);

@@ -23,6 +23,7 @@ import Cgu from "./pages/Cgu";
 import Cgv from "./pages/Cgv";
 import Confidentialite from "./pages/Confidentialite";
 import MentionsLegales from "./pages/MentionsLegales";
+import NotFound from "./pages/NotFound";
 import CookieBanner from "./components/CookieBanner/CookieBanner";
 import "tailwindcss";
 import MiniPanier from "./components/MiniPanier/MiniPanier";
@@ -46,13 +47,18 @@ function Chrome({
 }) {
 	const { pathname } = useLocation();
 	const masquerChrome = pathname === "/checkout";
+	// L'intro ne joue que sur l'accueil : partout ailleurs (lien partagé,
+	// arrivée depuis Google, retour Stripe, F5) la navigation doit être
+	// disponible immédiatement
+	const attendreIntro = pathname === "/" && !introPlayed;
 
 	return (
 		<>
-			{introPlayed && !masquerChrome && <Navbar />}
+			{!attendreIntro && <CookieBanner />}
+			{!attendreIntro && !masquerChrome && <Navbar />}
 			{!masquerChrome && <MiniPanier />}
 			{children}
-			{introPlayed && !masquerChrome && <Footer />}
+			{!attendreIntro && !masquerChrome && <Footer />}
 		</>
 	);
 }
@@ -66,7 +72,6 @@ function App() {
 		<CartProvider>
 			<BrowserRouter>
 				<ScrollToTop />
-				{introPlayed && <CookieBanner />}
 				<Chrome introPlayed={introPlayed}>
 					<Routes>
 					{/* Routes publiques */}
@@ -126,6 +131,9 @@ function App() {
 							</ProtectedRoute>
 						}
 					/>
+
+					{/* Toute URL inconnue : évite une page vide sans issue */}
+					<Route path="*" element={<NotFound />} />
 					</Routes>
 				</Chrome>
 			</BrowserRouter>

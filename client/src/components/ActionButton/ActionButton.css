@@ -50,6 +50,21 @@
 	transform: scaleX(1); /* Le fond s'étire jusqu'à 100% */
 }
 
+/* État désactivé : pendant l'envoi d'un formulaire par exemple.
+   On neutralise aussi le survol pour que le bouton n'ait pas l'air cliquable */
+.custom-button:disabled {
+	opacity: 0.5;
+	cursor: not-allowed;
+}
+
+.custom-button:disabled:hover {
+	color: var(--color-background);
+}
+
+.custom-button:disabled:hover::before {
+	transform: scaleX(0);
+}
+
 .button-text {
 	position: relative;
 	z-index: 2; /* S'assure que le texte reste au-dessus du fond qui glisse */

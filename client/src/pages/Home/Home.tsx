@@ -51,9 +51,21 @@ function Home({ onIntroComplete }: HomeProps) {
 		const timer = setTimeout(() => {
 			sessionStorage.setItem("introPlayed", "true");
 			setStage("exiting");
-		}, 3000);
+		}, 1600);
 		return () => clearTimeout(timer);
 	}, [stage]);
+
+	// Filet de sécurité : le passage à "content" dépend uniquement du callback
+	// de fin d'animation GSAP. Si GSAP échoue, le visiteur resterait bloqué sur
+	// l'intro. Au-delà de la durée totale de l'intro (1,6 s + sortie), on
+	// affiche le site quoi qu'il arrive.
+	useEffect(() => {
+		const secours = setTimeout(() => {
+			sessionStorage.setItem("introPlayed", "true");
+			setStage("content");
+		}, 4000);
+		return () => clearTimeout(secours);
+	}, []);
 
 	if (stage === "content") {
 		onIntroComplete();
@@ -299,8 +311,8 @@ function Home({ onIntroComplete }: HomeProps) {
 			<SplitText
 				text="BIENVENUE"
 				className="intro-text"
-				delay={80}
-				duration={1.5}
+				delay={50}
+				duration={0.8}
 				animateOut={stage === "exiting"}
 				onExitComplete={() => setStage("content")}
 			/>
