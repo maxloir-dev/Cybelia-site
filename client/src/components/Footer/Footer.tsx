@@ -12,7 +12,9 @@ function Footer() {
 				<div className="footer-brand">
 					<img src={cybeliaLogoBlanc} alt="" className="footer-logo-img" />
 					<span className="signature">Cybelia</span>
-					<p className="footer-tagline">— Architecte d'intérieur</p>
+					<p className="footer-tagline">
+						— Architecte d'intérieur et illustratrice
+					</p>
 				</div>
 
 				{/* Tous les liens sur une seule ligne horizontale */}

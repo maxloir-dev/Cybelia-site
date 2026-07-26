@@ -41,6 +41,10 @@ function SplitText({
 		// Cacher les lettres au départ
 		gsap.set(splitRef.current.chars, { opacity: 0, y: 40 });
 
+		// Le conteneur est masqué en CSS jusqu'ici : on ne le révèle qu'une fois
+		// les lettres cachées, sinon le texte brut s'affiche avant l'animation
+		gsap.set(containerRef.current, { opacity: 1 });
+
 		// Animation d'entrée immédiate
 		gsap.to(splitRef.current.chars, {
 			opacity: 1,
@@ -76,7 +80,7 @@ function SplitText({
 		<div
 			ref={containerRef}
 			className={className}
-			style={{ overflow: "hidden" }}
+			style={{ overflow: "hidden", opacity: 0 }}
 		>
 			{text}
 		</div>

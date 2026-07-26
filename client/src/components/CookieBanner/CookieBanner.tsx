@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Link } from "react-router-dom";
 import "./CookieBanner.css";
 
@@ -25,13 +25,9 @@ function consentementValide(): boolean {
 }
 
 export default function CookieBanner() {
-	const [visible, setVisible] = useState(false);
-
-	useEffect(() => {
-		if (!consentementValide()) {
-			setVisible(true);
-		}
-	}, []);
+	// On lit le consentement dès l'initialisation du state : la bannière est
+	// donc affichée du premier rendu, sans passer par un second rendu
+	const [visible, setVisible] = useState(() => !consentementValide());
 
 	const enregistrerChoix = (choix: Consentement["choix"]) => {
 		const consentement: Consentement = { choix, date: new Date().toISOString() };
@@ -48,7 +44,9 @@ export default function CookieBanner() {
 					Ce site utilise des cookies nécessaires à son fonctionnement.
 					Aucun cookie de mesure d'audience ou publicitaire n'est déposé sans
 					votre consentement. Consultez notre{" "}
-					<Link to="/confidentialite">Politique de confidentialité</Link>{" "}
+					<Link to="/confidentialite" onClick={() => setVisible(false)}>
+						Politique de confidentialité
+					</Link>{" "}
 					pour en savoir plus.
 				</p>
 				<div className="cookie-actions">
