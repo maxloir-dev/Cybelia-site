@@ -16,5 +16,9 @@ build/
 *.log
 npm-debug.log*
 
+# Dumps SQL (jamais de données de prod dans le repo)
+*.sql
+!schema.sql
+
 # Divers
 .DS_Store
