@@ -512,6 +512,12 @@ function Admin() {
 							aria-modal="true"
 							onClick={(e) => e.stopPropagation()}
 							onKeyDown={(e) => e.stopPropagation()}
+							style={{
+								background:
+									commandeSelectionnee.statut === "traitee"
+										? "#d4edda"
+										: "#fef5c1",
+							}}
 						>
 							<button
 								type="button"
@@ -831,6 +837,12 @@ function Admin() {
 								aria-modal="true"
 								onClick={(e) => e.stopPropagation()}
 								onKeyDown={(e) => e.stopPropagation()}
+								style={{
+									background:
+										commandeSelectionnee.statut === "traitee"
+											? "#d4edda"
+											: "#fef5c1",
+								}}
 							>
 								<button
 									type="button"
