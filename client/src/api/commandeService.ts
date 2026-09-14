@@ -29,3 +29,10 @@ export const deleteCommande = async (
 	const response = await api.delete(`/commandes/${id}`);
 	return response.data;
 };
+export const modifierStatutCommande = async (
+	id: number,
+	statut: "en_cours" | "traitee",
+) => {
+	const response = await api.put(`/commandes/${id}/statut`, { statut });
+	return response.data;
+};

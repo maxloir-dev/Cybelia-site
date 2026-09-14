@@ -5,6 +5,7 @@ import {
 	getCommandeById,
 	getCommandesByUserId,
 	deleteCommandeById,
+	updateStatutCommande,
 } from "../models/commandeModel";
 
 // Routes liées aux commandes
@@ -81,5 +82,27 @@ export const deleteCommande = async (req: AuthRequest, res: Response) => {
 		res
 			.status(500)
 			.json({ message: "Erreur lors de la suppression de la commande" });
+	}
+};
+
+export const modifierStatutCommande = async (
+	req: AuthRequest,
+	res: Response,
+) => {
+	try {
+		const { statut } = req.body;
+		const id = Number(req.params.id);
+
+		if (!["en_cours", "traitee"].includes(statut)) {
+			res.status(400).json({ message: "Statut invalide" });
+			return;
+		}
+
+		await updateStatutCommande(id, statut as "en_cours" | "traitee");
+		res.json({ message: "Statut mis à jour" });
+	} catch {
+		res
+			.status(500)
+			.json({ message: "Erreur lors de la mise à jour du statut" });
 	}
 };

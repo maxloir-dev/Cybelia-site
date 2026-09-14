@@ -1,7 +1,11 @@
 import { useState, useEffect } from "react";
 import ActionButton from "../../components/ActionButton/ActionButton";
 import { useLocation } from "react-router-dom";
-import { getAllCommandes, deleteCommande } from "../../api/commandeService";
+import {
+	getAllCommandes,
+	deleteCommande,
+	modifierStatutCommande,
+} from "../../api/commandeService";
 import {
 	getProduitsByCategorie,
 	getProduitById,
@@ -137,7 +141,9 @@ function Admin() {
 			setVue("client-detail");
 		} catch (error) {
 			console.error("Erreur chargement historique client :", error);
-			alert("Impossible de charger l'historique de ce client. Réessayez plus tard.");
+			alert(
+				"Impossible de charger l'historique de ce client. Réessayez plus tard.",
+			);
 		} finally {
 			setChargement(false);
 		}
@@ -385,7 +391,6 @@ function Admin() {
 		);
 	}
 
-	// Vue Commandes
 	if (vue === "commandes") {
 		return (
 			<main className="admin-main">
@@ -410,6 +415,7 @@ function Admin() {
 						<polyline points="10 18 2 10 10 2" />
 					</svg>
 				</button>
+
 				<div className="admin-top">
 					<h1>Commandes</h1>
 					<GooeyInput
@@ -448,6 +454,14 @@ function Admin() {
 									className={`admin-postit ${estEnSuppression ? "admin-postit--suppression" : ""}`}
 									onClick={() => setCommandeSelectionnee(commande)}
 									aria-label={`Ouvrir la commande numéro ${commande.id}`}
+									style={{
+										background:
+											commande.statut === "traitee" ? "#d4edda" : "#fef5c1",
+										borderLeft:
+											commande.statut === "traitee"
+												? "4px solid #27ae60"
+												: "none",
+									}}
 								>
 									<span className="admin-postit__punaise" />
 									<div className="admin-postit__titre">
@@ -487,8 +501,6 @@ function Admin() {
 				</div>
 
 				{commandeSelectionnee && (
-					/* Overlay neutre : un bouton ne peut pas en contenir d'autres
-					   (HTML invalide, clavier imprévisible) */
 					<div
 						className="admin-popin-overlay"
 						role="presentation"
@@ -509,6 +521,7 @@ function Admin() {
 							>
 								&times;
 							</button>
+
 							<h3>Commande #{commandeSelectionnee.id}</h3>
 							<p className="admin-popin__date">
 								{commandeSelectionnee.nom_livraison}{" "}
@@ -538,6 +551,7 @@ function Admin() {
 									"fr-FR",
 								)}
 							</p>
+
 							<div className="admin-popin__lignes">
 								<h4>Articles commandés</h4>
 								{commandeSelectionnee.lignes?.map((ligne, index) => (
@@ -552,17 +566,60 @@ function Admin() {
 									</div>
 								))}
 							</div>
+
 							<div className="admin-popin__total">
 								<span>Total</span>
 								<strong>{commandeSelectionnee.montant_total}€</strong>
 							</div>
+
 							<div
 								style={{
 									display: "flex",
 									justifyContent: "center",
+									gap: "12px",
 									marginTop: "24px",
 								}}
 							>
+								<button
+									type="button"
+									className="admin-pill-btn admin-pill-btn--actif"
+									onClick={async () => {
+										const nouveauStatut =
+											commandeSelectionnee.statut === "traitee"
+												? "en_cours"
+												: "traitee";
+										await modifierStatutCommande(
+											commandeSelectionnee.id,
+											nouveauStatut,
+										);
+										setCommandes((prev) =>
+											prev.map((c) =>
+												c.id === commandeSelectionnee.id
+													? { ...c, statut: nouveauStatut }
+													: c,
+											),
+										);
+										setCommandeSelectionnee({
+											...commandeSelectionnee,
+											statut: nouveauStatut,
+										});
+									}}
+									style={{
+										background:
+											commandeSelectionnee.statut === "traitee"
+												? "#27ae60"
+												: "var(--color-text)",
+										borderColor:
+											commandeSelectionnee.statut === "traitee"
+												? "#27ae60"
+												: "var(--color-text)",
+									}}
+								>
+									{commandeSelectionnee.statut === "traitee"
+										? "✓ Traitée"
+										: "Marquer comme traitée"}
+								</button>
+
 								<button
 									type="button"
 									className="admin-pill-btn"
@@ -575,7 +632,7 @@ function Admin() {
 										handleSupprimerCommande(commandeSelectionnee.id)
 									}
 								>
-									Supprimer la commande
+									Supprimer
 								</button>
 							</div>
 						</div>
@@ -945,7 +1002,10 @@ function Admin() {
 									onClick={() => allerDetailProduit(produit)}
 								>
 									<img
-										src={cloudinaryUrl(produit.image_url, 150) || "/placeholder.jpg"}
+										src={
+											cloudinaryUrl(produit.image_url, 150) ||
+											"/placeholder.jpg"
+										}
 										alt={produit.nom}
 										className="admin-item__vignette"
 										loading="lazy"

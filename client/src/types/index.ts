@@ -83,6 +83,7 @@ export interface Commande {
 	ville?: string;
 	pays?: string;
 	lignes?: LigneCommande[];
+	statut?: "en_cours" | "traitee";
 }
 
 // Panier

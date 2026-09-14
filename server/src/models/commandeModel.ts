@@ -157,3 +157,12 @@ export const deleteCommandeById = async (id: number): Promise<void> => {
 
 	await pool.query("DELETE FROM commandes WHERE id = ?", [id]);
 };
+export const updateStatutCommande = async (
+	id: number,
+	statut: "en_cours" | "traitee",
+) => {
+	await pool.query("UPDATE commandes SET statut = ? WHERE id = ?", [
+		statut,
+		id,
+	]);
+};
