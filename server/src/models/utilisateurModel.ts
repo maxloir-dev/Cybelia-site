@@ -55,13 +55,17 @@ export const getCommandesByUtilisateur = async (id: number) => {
     `,
 		[id],
 	);
-	return grouperLignesParCommande(rows as any[], ["quantite", "prix_unitaire", "produit_nom"]);
+	return grouperLignesParCommande(rows as any[], [
+		"quantite",
+		"prix_unitaire",
+		"produit_nom",
+	]);
 };
 
 // Récupère le profil d'un utilisateur par son id
 export const getUserById = async (id: number) => {
 	const [rows]: any = await pool.query(
-		"SELECT id, nom, prenom, email, role_id, created_at FROM utilisateurs WHERE id = ?",
+		"SELECT id, nom, prenom, email, role_id, adresse, code_postal, ville, created_at FROM utilisateurs WHERE id = ?",
 		[id],
 	);
 	return rows[0];
@@ -82,10 +86,21 @@ export const updateUser = async (
 	nom: string,
 	prenom: string,
 	email: string,
+	adresse?: string,
+	code_postal?: string,
+	ville?: string,
 ) => {
 	await pool.query(
-		"UPDATE utilisateurs SET nom = ?, prenom = ?, email = ? WHERE id = ?",
-		[nom, prenom, email, id],
+		"UPDATE utilisateurs SET nom = ?, prenom = ?, email = ?, adresse = ?, code_postal = ?, ville = ? WHERE id = ?",
+		[
+			nom,
+			prenom,
+			email,
+			adresse ?? null,
+			code_postal ?? null,
+			ville ?? null,
+			id,
+		],
 	);
 };
 

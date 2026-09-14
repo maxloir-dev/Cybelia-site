@@ -52,6 +52,9 @@ function Profil() {
 				setNom(data.nom);
 				setPrenom(data.prenom);
 				setEmail(data.email);
+				setAdresse(data.adresse ?? "");
+				setCodePostal(data.code_postal ?? "");
+				setVille(data.ville ?? "");
 			} catch (error) {
 				console.error("Erreur chargement profil :", error);
 				setErreur("Impossible de charger votre profil. Réessayez plus tard.");
@@ -156,7 +159,7 @@ function Profil() {
 		}
 		setEnregistrement(true);
 		try {
-			await updateProfil(nom, prenom, email);
+			await updateProfil(nom, prenom, email, adresse, codePostal, ville);
 			setUtilisateur({ ...utilisateur, nom, prenom, email });
 			setMessage("Profil mis à jour avec succès !");
 		} catch {
@@ -260,7 +263,6 @@ function Profil() {
 							<path d="M4 20c0-4 3.6-7 8-7s8 3 8 7" />
 						</svg>
 						<h2>Mon profil</h2>
-						
 					</button>
 
 					{/* Carte Mot de passe */}

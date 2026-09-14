@@ -27,6 +27,9 @@ export interface Utilisateur {
 	nom: string;
 	prenom: string;
 	email: string;
+	adresse?: string;
+	code_postal?: string;
+	ville?: string;
 	role_id: number;
 	created_at: string;
 }

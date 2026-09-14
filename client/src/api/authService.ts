@@ -46,8 +46,18 @@ export const updateProfil = async (
 	nom: string,
 	prenom: string,
 	email: string,
+	adresse?: string,
+	code_postal?: string,
+	ville?: string,
 ): Promise<{ message: string }> => {
-	const response = await api.put("/auth/profil", { nom, prenom, email });
+	const response = await api.put("/auth/profil", {
+		nom,
+		prenom,
+		email,
+		adresse,
+		code_postal,
+		ville,
+	});
 	return response.data;
 };
 

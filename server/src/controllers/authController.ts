@@ -32,7 +32,11 @@ export const register = async (req: Request, res: Response) => {
 			return;
 		}
 		if (!mot_de_passe || mot_de_passe.length < 8) {
-			res.status(400).json({ message: "Le mot de passe doit contenir au moins 8 caractères" });
+			res
+				.status(400)
+				.json({
+					message: "Le mot de passe doit contenir au moins 8 caractères",
+				});
 			return;
 		}
 
@@ -118,8 +122,16 @@ export const updateProfil = async (req: AuthRequest, res: Response) => {
 			res.status(401).json({ message: "Utilisateur non authentifié" });
 			return;
 		}
-		const { nom, prenom, email } = req.body;
-		await updateUser(req.utilisateur.id, nom, prenom, email);
+		const { nom, prenom, email, adresse, code_postal, ville } = req.body;
+		await updateUser(
+			req.utilisateur.id,
+			nom,
+			prenom,
+			email,
+			adresse,
+			code_postal,
+			ville,
+		);
 		res.json({ message: "Profil mis à jour avec succès" });
 	} catch {
 		res
@@ -206,8 +218,7 @@ export const resetPassword = async (req: Request, res: Response) => {
 	try {
 		const { token, nouveau_mot_de_passe } = req.body;
 
-
-				if (!token) {
+		if (!token) {
 			res.status(400).json({ message: "Lien invalide ou expiré." });
 			return;
 		}
