@@ -19,6 +19,7 @@ import {
 	useEffect,
 	useState,
 } from "react";
+import SEO from "../SEO/SEO";
 
 type Produit = {
 	id: number;
@@ -74,9 +75,14 @@ export default function Show({ categorieId, titre }: Props) {
 	const [slideIndex, setSlideIndex] = useState(0);
 	const [recherche, setRecherche] = useState("");
 	const [dimensions, setDimensions] = useState<Dimension[]>([]);
-	const [dimensionSelectionnee, setDimensionSelectionnee] = useState<Dimension | null>(null);
-	const [toutesLesDimensions, setToutesLesDimensions] = useState<Dimension[]>([]);
-	const [dimensionsPrixAjout, setDimensionsPrixAjout] = useState<Record<number, string>>({});
+	const [dimensionSelectionnee, setDimensionSelectionnee] =
+		useState<Dimension | null>(null);
+	const [toutesLesDimensions, setToutesLesDimensions] = useState<Dimension[]>(
+		[],
+	);
+	const [dimensionsPrixAjout, setDimensionsPrixAjout] = useState<
+		Record<number, string>
+	>({});
 	const [dimensionFiltre, setDimensionFiltre] = useState<number | null>(null);
 	const { ajouterAuPanier } = useCart();
 	const { estAdmin } = useAuth();
@@ -107,7 +113,10 @@ export default function Show({ categorieId, titre }: Props) {
 	}, [fetchProduits]);
 
 	useEffect(() => {
-		if (categorieId === 2 || estAdmin) getAllDimensions().then(setToutesLesDimensions).catch(() => {});
+		if (categorieId === 2 || estAdmin)
+			getAllDimensions()
+				.then(setToutesLesDimensions)
+				.catch(() => {});
 	}, [categorieId, estAdmin]);
 
 	const handleChange = (
@@ -240,19 +249,16 @@ export default function Show({ categorieId, titre }: Props) {
 				image_url = urls.image_url;
 				mockup_url = urls.mockup_url;
 			}
-			await fetch(
-				`${API_URL}/produits/${produitEnEdition!.id}`,
-				{
-					method: "PUT",
-					headers: { "Content-Type": "application/json", ...authHeader },
-					body: JSON.stringify({
-						...formEdition,
-						prix: Number(formEdition.prix),
-						image_url,
-						mockup_url,
-					}),
-				},
-			);
+			await fetch(`${API_URL}/produits/${produitEnEdition!.id}`, {
+				method: "PUT",
+				headers: { "Content-Type": "application/json", ...authHeader },
+				body: JSON.stringify({
+					...formEdition,
+					prix: Number(formEdition.prix),
+					image_url,
+					mockup_url,
+				}),
+			});
 			setProduitEnEdition(null);
 			setImageFileEdition(null);
 			setMockupFileEdition(null);
@@ -291,6 +297,11 @@ export default function Show({ categorieId, titre }: Props) {
 
 	return (
 		<div className="shop-page">
+			<SEO
+				titre={titre}
+				description={`Découvrez notre collection de ${titre.toLowerCase()} — créations artisanales uniques faites à la main par Cybelia.`}
+				url={`https://cybelearchitecture.com/shop/${categorieId === 1 ? "cartes" : "affiches"}`}
+			/>
 			<div className="shop-top">
 				<h1 className="shop-title">{titre}</h1>
 				<GooeyInput
@@ -303,31 +314,32 @@ export default function Show({ categorieId, titre }: Props) {
 				/>
 			</div>
 
-			{categorieId === 2 && toutesLesDimensions.filter((d) => d.id !== 1).length > 0 && (
-				<div className="shop-filtres">
-					<button
-						type="button"
-						className={`shop-filtre-btn${dimensionFiltre === null ? " shop-filtre-btn--actif" : ""}`}
-						onClick={() => setDimensionFiltre(null)}
-					>
-						Tous les formats
-					</button>
-					{toutesLesDimensions.filter((d) => d.id !== 1).map((d) => (
+			{categorieId === 2 &&
+				toutesLesDimensions.filter((d) => d.id !== 1).length > 0 && (
+					<div className="shop-filtres">
 						<button
-							key={d.id}
 							type="button"
-							className={`shop-filtre-btn${dimensionFiltre === d.id ? " shop-filtre-btn--actif" : ""}`}
-							onClick={() => setDimensionFiltre(d.id)}
+							className={`shop-filtre-btn${dimensionFiltre === null ? " shop-filtre-btn--actif" : ""}`}
+							onClick={() => setDimensionFiltre(null)}
 						>
-							{d.label}
+							Tous les formats
 						</button>
-					))}
-				</div>
-			)}
+						{toutesLesDimensions
+							.filter((d) => d.id !== 1)
+							.map((d) => (
+								<button
+									key={d.id}
+									type="button"
+									className={`shop-filtre-btn${dimensionFiltre === d.id ? " shop-filtre-btn--actif" : ""}`}
+									onClick={() => setDimensionFiltre(d.id)}
+								>
+									{d.label}
+								</button>
+							))}
+					</div>
+				)}
 
-			{chargement && (
-				<p className="shop-etat">Chargement des créations…</p>
-			)}
+			{chargement && <p className="shop-etat">Chargement des créations…</p>}
 
 			{erreurChargement && (
 				<div className="shop-etat shop-etat--erreur" role="alert">
@@ -348,7 +360,9 @@ export default function Show({ categorieId, titre }: Props) {
 			{!chargement && !erreurChargement && (
 				<p className="shop-count">
 					{produitsFiltres.length}{" "}
-					{produitsFiltres.length > 1 ? "résultats affichés" : "résultat affiché"}
+					{produitsFiltres.length > 1
+						? "résultats affichés"
+						: "résultat affiché"}
 				</p>
 			)}
 
@@ -367,59 +381,59 @@ export default function Show({ categorieId, titre }: Props) {
 						direction={index % 2 === 0 ? "left" : "right"}
 						delay={(index % 4) * 0.08}
 					>
-					<div
-						className="shop-card"
-						onClick={() => ouvrirDetail(p)}
-						onKeyUp={(e) => e.key === "Enter" && ouvrirDetail(p)}
-					>
-						<img
-							src={cloudinaryUrl(p.image_url, 400)}
-							alt={p.nom}
-							className="shop-card-img"
-							loading="lazy"
-						/>
-						<h3 className="shop-card-nom">{p.nom}</h3>
-						<p className="shop-card-prix">
-							<span className="shop-card-prix-label">À partir de </span>
-							{Number(p.prix).toFixed(2)} €
-						</p>
-
-						<button
-							type="button"
-							className="custom-button shop-card-btn"
-							onClick={(e) => {
-								e.stopPropagation();
-								ouvrirDetail(p);
-							}}
+						<div
+							className="shop-card"
+							onClick={() => ouvrirDetail(p)}
+							onKeyUp={(e) => e.key === "Enter" && ouvrirDetail(p)}
 						>
-							<span className="button-text">Choisir un format</span>
-						</button>
+							<img
+								src={cloudinaryUrl(p.image_url, 400)}
+								alt={p.nom}
+								className="shop-card-img"
+								loading="lazy"
+							/>
+							<h3 className="shop-card-nom">{p.nom}</h3>
+							<p className="shop-card-prix">
+								<span className="shop-card-prix-label">À partir de </span>
+								{Number(p.prix).toFixed(2)} €
+							</p>
 
-						{estAdmin && (
-							<div className="shop-card-actions">
-								<button
-									type="button"
-									className="shop-card-edit"
-									onClick={(e) => {
-										e.stopPropagation();
-										ouvrirEdition(p);
-									}}
-								>
-									Modifier
-								</button>
-								<button
-									type="button"
-									className="shop-card-delete"
-									onClick={(e) => {
-										e.stopPropagation();
-										handleDelete(p.id);
-									}}
-								>
-									Supprimer
-								</button>
-							</div>
-						)}
-					</div>
+							<button
+								type="button"
+								className="custom-button shop-card-btn"
+								onClick={(e) => {
+									e.stopPropagation();
+									ouvrirDetail(p);
+								}}
+							>
+								<span className="button-text">Choisir un format</span>
+							</button>
+
+							{estAdmin && (
+								<div className="shop-card-actions">
+									<button
+										type="button"
+										className="shop-card-edit"
+										onClick={(e) => {
+											e.stopPropagation();
+											ouvrirEdition(p);
+										}}
+									>
+										Modifier
+									</button>
+									<button
+										type="button"
+										className="shop-card-delete"
+										onClick={(e) => {
+											e.stopPropagation();
+											handleDelete(p.id);
+										}}
+									>
+										Supprimer
+									</button>
+								</div>
+							)}
+						</div>
 					</RevealCard>
 				))}
 			</div>
@@ -651,8 +665,8 @@ export default function Show({ categorieId, titre }: Props) {
 									src={
 										(slideIndex === 0
 											? produitDetail.image_url
-											: (produitDetail.mockup_url ?? produitDetail.image_url)) ||
-										undefined
+											: (produitDetail.mockup_url ??
+												produitDetail.image_url)) || undefined
 									}
 									alt={produitDetail.nom}
 								/>

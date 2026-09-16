@@ -5,6 +5,7 @@ import { useAuth } from "../store/AuthContext";
 import ActionButton from "../components/ActionButton/ActionButton";
 import { cloudinaryUrl } from "../lib/cloudinary";
 import "./Panier.css";
+import SEO from "../components/SEO/SEO";
 
 function Panier() {
 	const { items, total, supprimerDuPanier, modifierQuantite, viderPanier } =
@@ -28,6 +29,7 @@ function Panier() {
 	if (items.length === 0) {
 		return (
 			<div className="panier-page">
+				<SEO noindex={true} />
 				<h1 className="panier-titre">Mon panier</h1>
 				<div className="panier-vide">
 					<p>Votre panier est vide.</p>
@@ -58,7 +60,9 @@ function Panier() {
 								<div className="panier-item-info">
 									<p className="panier-item-nom">{item.nom}</p>
 									{item.dimension_label && (
-										<p className="panier-item-dimension">{item.dimension_label}</p>
+										<p className="panier-item-dimension">
+											{item.dimension_label}
+										</p>
 									)}
 									<p className="panier-item-prix">
 										{item.prix.toFixed(2)} € / unité
@@ -118,7 +122,9 @@ function Panier() {
 
 						<div className="panier-actions">
 							<ActionButton onClick={handleCommander}>
-								{estConnecte ? "Passer commande" : "Se connecter pour commander"}
+								{estConnecte
+									? "Passer commande"
+									: "Se connecter pour commander"}
 							</ActionButton>
 							<ActionButton to="/shop" onClick={() => {}}>
 								Continuer mes achats

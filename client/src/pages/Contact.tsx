@@ -2,6 +2,7 @@ import { useState, type ChangeEvent, type FormEvent } from "react";
 import "./Contact.css";
 import ActionButton from "../components/ActionButton/ActionButton";
 import { API_URL } from "../api/config";
+import SEO from "../components/SEO/SEO";
 
 type Form = {
 	nom: string;
@@ -70,6 +71,11 @@ export default function Contact() {
 
 	return (
 		<div className="contact-page">
+			<SEO
+				titre="Contact"
+				description="Contactez Cybelia pour toute question sur nos créations artisanales ou pour passer une commande personnalisée."
+				url="https://cybelearchitecture.com/contact"
+			/>
 			<div className="contact-header">
 				<h1 className="contact-titre">Contact</h1>
 				<p className="contact-sous-titre">

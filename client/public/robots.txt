@@ -1,0 +1,9 @@
+User-agent: *
+Allow: /
+Disallow: /admin
+Disallow: /profil
+Disallow: /panier
+Disallow: /login
+Disallow: /register
+
+Sitemap: https://cybelearchitecture.com/sitemap.xml

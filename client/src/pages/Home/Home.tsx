@@ -10,6 +10,7 @@ import { getProduits } from "../../api/produitService";
 import type { Produit } from "../../types";
 import Carousel from "../../components/Carousel/Carousel";
 import { cloudinaryUrl } from "../../lib/cloudinary";
+import SEO from "../../components/SEO/SEO";
 
 const aproposImg =
 	"https://res.cloudinary.com/dgi4qubrq/image/upload/v1783414640/photo_cybe%CC%81lia_c6dutv.jpg";
@@ -73,6 +74,11 @@ function Home({ onIntroComplete }: HomeProps) {
 		onIntroComplete();
 		return (
 			<main className="home-sections">
+				<SEO
+					titre="Cybelia — Créations artisanales"
+					description="Découvrez les créations uniques de Cybelia — cartes postales et affiches artistiques faites à la main pour sublimer vos intérieurs."
+					url="https://cybelearchitecture.com"
+				/>
 				{/* Conteneur groupé pour la superposition */}
 				<div
 					className="hero-container"

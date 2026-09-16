@@ -4,6 +4,7 @@ import { register } from "../../api/authService";
 import { useAuth } from "../../store/AuthContext";
 import confetti from "canvas-confetti";
 import "./Register.css";
+import SEO from "../../components/SEO/SEO";
 
 // ============================================
 // Page d'inscription
@@ -70,6 +71,7 @@ function Register() {
 	return (
 		<main>
 			<div className="register-container">
+				<SEO noindex={true} />
 				<div className="register-box">
 					<h1>Inscription</h1>
 					<p className="subtitle">Créez votre espace personnel</p>

@@ -30,6 +30,7 @@ import { uploadImage } from "../../api/uploadService";
 import { GooeyInput } from "../../components/ui/GooeyInput";
 import { useScrollReveal } from "../../hooks/useScrollReveal";
 import { cloudinaryUrl } from "../../lib/cloudinary";
+import SEO from "../../components/SEO/SEO";
 
 // Types des vues possibles
 type Vue =
@@ -295,6 +296,7 @@ function Admin() {
 		return (
 			<main className="admin-main">
 				<div className="admin-header">
+					<SEO noindex={true} />
 					<h1>Dashboard</h1>
 					<p className="subtitle">Espace de gestion Cybelia</p>
 				</div>

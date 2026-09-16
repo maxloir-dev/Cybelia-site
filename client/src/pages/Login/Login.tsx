@@ -4,6 +4,7 @@ import { login } from "../../api/authService";
 import { useAuth } from "../../store/AuthContext";
 import confetti from "canvas-confetti";
 import "./Login.css";
+import SEO from "../../components/SEO/SEO";
 
 // Page de connexion
 
@@ -48,6 +49,7 @@ function Login() {
 	return (
 		<main>
 			<div className="login-container">
+				<SEO noindex={true} />
 				<div className="login-box">
 					<h1>Connexion</h1>
 					<p className="subtitle">Accédez à votre espace personnel</p>

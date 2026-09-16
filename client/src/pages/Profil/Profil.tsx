@@ -10,6 +10,7 @@ import type { Utilisateur, Commande } from "../../types";
 import "./Profil.css";
 import ActionButton from "../../components/ActionButton/ActionButton";
 import { cloudinaryUrl } from "../../lib/cloudinary";
+import SEO from "../../components/SEO/SEO";
 
 // ============================================
 // Types des vues possibles
@@ -200,6 +201,7 @@ function Profil() {
 		return (
 			<main className="profil-main">
 				<div className="profil-header">
+					<SEO noindex={true} />
 					<h1>
 						{utilisateur?.prenom} {utilisateur?.nom}
 					</h1>

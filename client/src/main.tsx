@@ -4,6 +4,7 @@ import "./index.css";
 import App from "./App.tsx";
 import "./styles.css";
 import { AuthProvider } from "./store/AuthContext.tsx";
+import { HelmetProvider } from "react-helmet-async";
 
 const rootElement = document.getElementById("root");
 
@@ -16,8 +17,10 @@ if (!rootElement) {
 
 createRoot(rootElement).render(
 	<StrictMode>
-		<AuthProvider>
-			<App />
-		</AuthProvider>
+		<HelmetProvider>
+			<AuthProvider>
+				<App />
+			</AuthProvider>
+		</HelmetProvider>
 	</StrictMode>,
 );
