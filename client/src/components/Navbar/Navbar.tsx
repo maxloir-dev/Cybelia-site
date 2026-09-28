@@ -19,6 +19,13 @@ function Navbar() {
 		setMenuOpen(false);
 	};
 
+	// Pour les liens de navigation : cliquer sur la page déjà affichée ne change
+	// pas l'URL, donc ni le menu ni la position de scroll ne bougeraient.
+	const naviguerVersPage = () => {
+		setMenuOpen(false);
+		window.scrollTo(0, 0);
+	};
+
 	useEffect(() => {
 		if (location.pathname) {
 			setMenuOpen(false);
@@ -76,25 +83,41 @@ function Navbar() {
 
 						<ul className="navbar-links">
 							<li>
-								<Link to="/">Accueil</Link>
+								<Link to="/" onClick={naviguerVersPage}>
+									Accueil
+								</Link>
 							</li>
 							<li>
-								<Link to="/shop">Shop</Link>
+								<Link to="/shop" onClick={naviguerVersPage}>
+									Shop
+								</Link>
 							</li>
 							<li>
-								<Link to="/personnalise" className="navbar-link--highlight">
+								<Link
+									to="/personnalise"
+									className="navbar-link--highlight"
+									onClick={naviguerVersPage}
+								>
 									Personnalisé
 								</Link>
 							</li>
 							<li>
-								<Link to="/contact">Contact</Link>
+								<Link to="/contact" onClick={naviguerVersPage}>
+									Contact
+								</Link>
 							</li>
 							<li>
-								<Link to="/about">À propos</Link>
+								<Link to="/about" onClick={naviguerVersPage}>
+									À propos
+								</Link>
 							</li>
 							{estAdmin && (
 								<li>
-									<Link to="/admin" className="navbar-admin-link">
+									<Link
+										to="/admin"
+										className="navbar-admin-link"
+										onClick={naviguerVersPage}
+									>
 										Admin
 									</Link>
 								</li>
@@ -105,7 +128,11 @@ function Navbar() {
 
 				{/* CENTRE : Le Logo */}
 				<div className="navbar-center-side">
-					<Link to="/" className="navbar-logo-link">
+					<Link
+						to="/"
+						className="navbar-logo-link"
+						onClick={naviguerVersPage}
+					>
 						<img src={cybeliaLogo} alt="Cybelia" className="navbar-logo-img" />
 					</Link>
 				</div>
