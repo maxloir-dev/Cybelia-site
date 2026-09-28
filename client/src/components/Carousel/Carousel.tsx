@@ -9,6 +9,14 @@ const slides = [
 
 const INTERVAL = 4000;
 
+// Largeurs proposées au navigateur, qui choisit la plus adaptée à l'écran et à
+// sa densité de pixels : net sur grand écran, léger sur mobile.
+const LARGEURS_IMAGE = [768, 1200, 1600, 2000];
+
+function srcSet(image: string) {
+	return LARGEURS_IMAGE.map((largeur) => `${cloudinaryUrl(image, largeur)} ${largeur}w`).join(", ");
+}
+
 function Carousel() {
 	const [current, setCurrent] = useState(0);
 	const [transitioning, setTransitioning] = useState(false);
@@ -44,6 +52,8 @@ function Carousel() {
 					>
 						<img
 							src={cloudinaryUrl(slide.image, 1200)}
+							srcSet={srcSet(slide.image)}
+							sizes="100vw"
 							alt={slide.alt}
 							className="carousel__image"
 						/>

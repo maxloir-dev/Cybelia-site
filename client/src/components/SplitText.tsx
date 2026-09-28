@@ -80,6 +80,9 @@ function SplitText({
 		<div
 			ref={containerRef}
 			className={className}
+			// Le texte est découpé lettre par lettre : un traducteur automatique
+			// traduirait les lettres isolées ("I" → "Je") et casserait le mot.
+			translate="no"
 			style={{ overflow: "hidden", opacity: 0 }}
 		>
 			{text}
