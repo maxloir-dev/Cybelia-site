@@ -6,7 +6,10 @@ import Hero from "../../components/Hero/Hero";
 import Features from "../../components/Features/Features";
 import RevealCard from "../../components/RevealCard";
 import CircularGallery from "../../components/CircularGallery/CircularGallery";
-import { getProduits } from "../../api/produitService";
+import {
+	getProduits,
+	getProduitsByCategorie,
+} from "../../api/produitService";
 import type { Produit } from "../../types";
 import Carousel from "../../components/Carousel/Carousel";
 import { cloudinaryUrl } from "../../lib/cloudinary";
@@ -14,6 +17,22 @@ import SEO from "../../components/SEO/SEO";
 
 const aproposImg =
 	"https://res.cloudinary.com/dgi4qubrq/image/upload/v1783414640/photo_cybe%CC%81lia_c6dutv.jpg";
+
+const CATEGORIE_AFFICHE = 2;
+
+type ItemGalerie = { image: string; text: string };
+
+// Les 8 derniers produits ajoutés, du plus récent au plus ancien
+function derniersProduits(produits: Produit[]): ItemGalerie[] {
+	return produits
+		.slice(-8)
+		.reverse()
+		.filter((p) => p.image_url)
+		.map((p) => ({
+			image: cloudinaryUrl(p.image_url, 600)!,
+			text: p.nom,
+		}));
+}
 
 interface HomeProps {
 	onIntroComplete: () => void;
@@ -23,24 +42,20 @@ function Home({ onIntroComplete }: HomeProps) {
 	const [stage, setStage] = useState<"intro" | "exiting" | "content">(() => {
 		return sessionStorage.getItem("introPlayed") ? "content" : "intro";
 	});
-	const [galerie, setGalerie] = useState<{ image: string; text: string }[]>([]);
+	const [galerie, setGalerie] = useState<ItemGalerie[]>([]);
+	const [galerieAffiches, setGalerieAffiches] = useState<ItemGalerie[]>([]);
 	const [erreurGalerie, setErreurGalerie] = useState(false);
 
-	// Récupère les derniers produits pour la galerie
+	// Galerie du haut : affiches uniquement. Galerie du bas : tous les produits.
 	useEffect(() => {
 		const chargerProduits = async () => {
 			try {
-				const produits: Produit[] = await getProduits();
-				// On prend les 8 derniers produits ajoutés
-				const derniersProduits = produits
-					.slice(-8)
-					.reverse()
-					.filter((p) => p.image_url)
-					.map((p) => ({
-						image: cloudinaryUrl(p.image_url, 600)!,
-						text: p.nom,
-					}));
-				setGalerie(derniersProduits);
+				const [affiches, tousLesProduits] = await Promise.all([
+					getProduitsByCategorie(CATEGORIE_AFFICHE),
+					getProduits(),
+				]);
+				setGalerieAffiches(derniersProduits(affiches));
+				setGalerie(derniersProduits(tousLesProduits));
 			} catch (error) {
 				console.error("Erreur chargement galerie produits :", error);
 				setErreurGalerie(true);
@@ -106,9 +121,9 @@ function Home({ onIntroComplete }: HomeProps) {
 						</div>
 					</RevealCard>
 					<div className="gallery-wrapper">
-						{galerie.length > 0 ? (
+						{galerieAffiches.length > 0 ? (
 							<CircularGallery
-								items={galerie}
+								items={galerieAffiches}
 								bend={0}
 								textColor="#965846"
 								borderRadius={0.1}
