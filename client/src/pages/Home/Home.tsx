@@ -6,10 +6,7 @@ import Hero from "../../components/Hero/Hero";
 import Features from "../../components/Features/Features";
 import RevealCard from "../../components/RevealCard";
 import CircularGallery from "../../components/CircularGallery/CircularGallery";
-import {
-	getProduits,
-	getProduitsByCategorie,
-} from "../../api/produitService";
+import { getProduitsByCategorie } from "../../api/produitService";
 import type { Produit } from "../../types";
 import Carousel from "../../components/Carousel/Carousel";
 import { cloudinaryUrl } from "../../lib/cloudinary";
@@ -18,6 +15,7 @@ import SEO from "../../components/SEO/SEO";
 const aproposImg =
 	"https://res.cloudinary.com/dgi4qubrq/image/upload/v1783414640/photo_cybe%CC%81lia_c6dutv.jpg";
 
+const CATEGORIE_CARTE_POSTALE = 1;
 const CATEGORIE_AFFICHE = 2;
 
 type ItemGalerie = { image: string; text: string };
@@ -42,20 +40,20 @@ function Home({ onIntroComplete }: HomeProps) {
 	const [stage, setStage] = useState<"intro" | "exiting" | "content">(() => {
 		return sessionStorage.getItem("introPlayed") ? "content" : "intro";
 	});
-	const [galerie, setGalerie] = useState<ItemGalerie[]>([]);
+	const [galerieCartes, setGalerieCartes] = useState<ItemGalerie[]>([]);
 	const [galerieAffiches, setGalerieAffiches] = useState<ItemGalerie[]>([]);
 	const [erreurGalerie, setErreurGalerie] = useState(false);
 
-	// Galerie du haut : affiches uniquement. Galerie du bas : tous les produits.
+	// Galerie du haut : affiches. Galerie du bas : cartes postales.
 	useEffect(() => {
 		const chargerProduits = async () => {
 			try {
-				const [affiches, tousLesProduits] = await Promise.all([
+				const [affiches, cartes] = await Promise.all([
 					getProduitsByCategorie(CATEGORIE_AFFICHE),
-					getProduits(),
+					getProduitsByCategorie(CATEGORIE_CARTE_POSTALE),
 				]);
 				setGalerieAffiches(derniersProduits(affiches));
-				setGalerie(derniersProduits(tousLesProduits));
+				setGalerieCartes(derniersProduits(cartes));
 			} catch (error) {
 				console.error("Erreur chargement galerie produits :", error);
 				setErreurGalerie(true);
@@ -280,9 +278,9 @@ function Home({ onIntroComplete }: HomeProps) {
 				{/* Section À propos */}
 				<div className="home-apropos-section">
 					<div className="home-apropos-galerie">
-						{galerie.length > 0 ? (
+						{galerieCartes.length > 0 ? (
 							<CircularGallery
-								items={galerie}
+								items={galerieCartes}
 								bend={0}
 								textColor="#965846"
 								borderRadius={0.1}
@@ -292,8 +290,8 @@ function Home({ onIntroComplete }: HomeProps) {
 						) : (
 							<p className="gallery-etat">
 								{erreurGalerie
-									? "Les nouveautés n'ont pas pu être chargées."
-									: "Chargement des nouveautés…"}
+									? "Les cartes postales n'ont pas pu être chargées."
+									: "Chargement des cartes postales…"}
 							</p>
 						)}
 					</div>
