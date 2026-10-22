@@ -283,12 +283,18 @@
 
 .home-apropos-image-wrapper {
 	width: 100%;
+	display: flex;
+	justify-content: center;
 }
 
 .home-apropos-image {
 	width: 100%;
-	height: 520px;
+	max-width: 420px;
+	aspect-ratio: 1 / 1;
+	height: auto;
+	border-radius: 50%;
 	object-fit: cover;
+	object-position: center;
 }
 
 .home-apropos-content-reveal {
@@ -367,7 +373,7 @@
 	}
 
 	.home-apropos-image {
-		height: 300px;
+		max-width: 280px;
 	}
 
 	.perso-pourqui-grid {
