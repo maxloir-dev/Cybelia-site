@@ -153,7 +153,7 @@
 }
 
 .nouveautes-header {
-	margin-bottom: 50px;
+	margin-bottom: 24px;
 }
 
 /* ── Section Pour qui ── */
@@ -257,8 +257,15 @@
 
 /* ── Section À propos ── */
 .home-apropos-section {
-	padding: 40px 80px 80px;
+	padding: 0 80px 80px;
 	background: #fff;
+}
+
+.home-apropos-galerie {
+	max-width: 1100px;
+	margin: 0 auto 80px;
+	position: relative;
+	height: 600px;
 }
 
 .home-apropos-inner {
@@ -341,7 +348,12 @@
 
 @media (max-width: 768px) {
 	.home-apropos-section {
-		padding: 60px 24px;
+		padding: 24px 24px 60px;
+	}
+
+	.home-apropos-galerie {
+		height: 400px;
+		margin-bottom: 40px;
 	}
 
 	.home-apropos-inner {
