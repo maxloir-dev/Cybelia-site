@@ -261,6 +261,13 @@
 	background: #fff;
 }
 
+.home-apropos-galerie {
+	max-width: 1100px;
+	margin: 0 auto 80px;
+	position: relative;
+	height: 600px;
+}
+
 .home-apropos-inner {
 	max-width: 1100px;
 	margin: 0 auto;
@@ -342,6 +349,11 @@
 @media (max-width: 768px) {
 	.home-apropos-section {
 		padding: 60px 24px;
+	}
+
+	.home-apropos-galerie {
+		height: 400px;
+		margin-bottom: 40px;
 	}
 
 	.home-apropos-inner {

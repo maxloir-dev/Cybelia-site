@@ -264,6 +264,24 @@ function Home({ onIntroComplete }: HomeProps) {
 
 				{/* Section À propos */}
 				<div className="home-apropos-section">
+					<div className="home-apropos-galerie">
+						{galerie.length > 0 ? (
+							<CircularGallery
+								items={galerie}
+								bend={0}
+								textColor="#965846"
+								borderRadius={0.1}
+								scrollSpeed={2}
+								scrollEase={0.05}
+							/>
+						) : (
+							<p className="gallery-etat">
+								{erreurGalerie
+									? "Les nouveautés n'ont pas pu être chargées."
+									: "Chargement des nouveautés…"}
+							</p>
+						)}
+					</div>
 					<div className="home-apropos-inner">
 						<RevealCard direction="left" className="home-apropos-image-reveal">
 							<div className="home-apropos-image-wrapper">
