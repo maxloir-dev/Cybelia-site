@@ -70,6 +70,7 @@ export interface LigneCommande {
 export interface Commande {
 	id: number;
 	montant_total: number;
+	frais_livraison?: number;
 	created_at: string;
 	nom?: string;
 	prenom?: string;

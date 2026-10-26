@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useCart } from "../store/CartContext";
 import { useAuth } from "../store/AuthContext";
@@ -6,6 +6,10 @@ import ActionButton from "../components/ActionButton/ActionButton";
 import { cloudinaryUrl } from "../lib/cloudinary";
 import "./Panier.css";
 import SEO from "../components/SEO/SEO";
+import {
+	estimerPanier,
+	type EstimationPanier,
+} from "../api/panierService";
 
 function Panier() {
 	const { items, total, supprimerDuPanier, modifierQuantite, viderPanier } =
@@ -13,9 +17,30 @@ function Panier() {
 	const { estConnecte } = useAuth();
 	const navigate = useNavigate();
 
+	const [estimation, setEstimation] = useState<EstimationPanier | null>(null);
+
 	useEffect(() => {
 		window.scrollTo(0, 0);
 	}, []);
+
+	// Les frais de livraison sont calculés par le serveur à chaque
+	// modification du panier (voir server/src/services/panierService.ts).
+	useEffect(() => {
+		if (items.length === 0) {
+			setEstimation(null);
+			return;
+		}
+
+		estimerPanier(
+			items.map((item) => ({
+				produit_id: item.id,
+				quantite: item.quantite,
+				dimension_id: item.dimension_id ?? null,
+			})),
+		)
+			.then(setEstimation)
+			.catch(() => setEstimation(null));
+	}, [items]);
 
 	const handleCommander = () => {
 		if (!estConnecte) {
@@ -113,11 +138,17 @@ function Panier() {
 						</div>
 						<div className="panier-recap__ligne">
 							<span>Livraison</span>
-							<span>À définir</span>
+							<span>
+								{estimation
+									? `${estimation.frais_livraison.toFixed(2)} €`
+									: "Calcul en cours…"}
+							</span>
 						</div>
 						<div className="panier-recap__ligne panier-recap__ligne--total">
 							<span>Total</span>
-							<span>{total.toFixed(2)} €</span>
+							<span>
+								{(estimation ? estimation.montant_total : total).toFixed(2)} €
+							</span>
 						</div>
 
 						<div className="panier-actions">

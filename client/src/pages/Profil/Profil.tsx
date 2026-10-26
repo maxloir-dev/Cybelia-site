@@ -124,7 +124,10 @@ function Profil() {
 				</thead>
 				<tbody>${lignesHTML}</tbody>
 			</table>
-			<div class="total">Total : ${Number(commande.montant_total).toFixed(2)} €</div>
+			<div style="text-align:right; margin-top:24px;">Livraison : ${Number(
+				commande.frais_livraison ?? 0,
+			).toFixed(2)} €</div>
+			<div class="total" style="margin-top:8px;">Total : ${Number(commande.montant_total).toFixed(2)} €</div>
 			<div class="footer">Cybelia — cybele.architecture@gmail.com</div>
 			<script>window.onload = () => { window.print(); }</script>
 		</body>
@@ -405,6 +408,13 @@ function Profil() {
 													)}
 											</button>
 										))}
+
+										<div className="profil-postit__total">
+											<span>Livraison</span>
+											<strong>
+												{Number(commande.frais_livraison ?? 0).toFixed(2)}€
+											</strong>
+										</div>
 
 										<div className="profil-postit__total">
 											<span>Total</span>

@@ -148,11 +148,13 @@ async function creerCommandeDepuisPaymentIntent(pi: StripePaymentIntent) {
 	};
 
 	// Prix recalculés depuis la DB (ne jamais faire confiance à des montants stockés)
-	const { lignesVerifiees, montant_total } = await calculerPanier(lignes);
+	const { lignesVerifiees, montant_total, frais_livraison } =
+		await calculerPanier(lignes);
 
 	const commande_id = await createCommande(
 		utilisateur_id,
 		montant_total,
+		frais_livraison,
 		livraison,
 		pi.id,
 	);
@@ -163,6 +165,7 @@ async function creerCommandeDepuisPaymentIntent(pi: StripePaymentIntent) {
 		livraison.prenom,
 		commande_id,
 		lignesVerifiees,
+		frais_livraison,
 		montant_total,
 	).catch((err) => console.error("[EMAIL] Échec envoi confirmation:", err));
 

@@ -26,16 +26,18 @@ export interface LivraisonData {
 export const createCommande = async (
 	utilisateur_id: number,
 	montant_total: number,
+	frais_livraison: number,
 	livraison: LivraisonData,
 	payment_intent_id: string | null = null,
 ) => {
 	const [result]: any = await pool.query(
 		`INSERT INTO commandes
-		 (utilisateur_id, montant_total, prenom_livraison, nom_livraison, email_livraison, telephone, adresse, code_postal, ville, pays, stripe_payment_intent_id)
-		 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+		 (utilisateur_id, montant_total, frais_livraison, prenom_livraison, nom_livraison, email_livraison, telephone, adresse, code_postal, ville, pays, stripe_payment_intent_id)
+		 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
 		[
 			utilisateur_id,
 			montant_total,
+			frais_livraison,
 			livraison.prenom,
 			livraison.nom,
 			livraison.email,
@@ -91,7 +93,7 @@ export const createLignesCommande = async (
 // Récupère toutes les commandes avec les infos du client et leurs lignes (pour la gérante)
 export const getAllCommandes = async () => {
 	const [rows]: any = await pool.query(`
-        SELECT c.id, c.montant_total, c.created_at,
+        SELECT c.id, c.montant_total, c.frais_livraison, c.created_at,
                u.nom, u.prenom, u.email,
                c.prenom_livraison, c.nom_livraison, c.email_livraison,
                c.telephone, c.adresse, c.code_postal, c.ville, c.pays,
@@ -113,7 +115,7 @@ export const getAllCommandes = async () => {
 export const getCommandeById = async (id: number) => {
 	const [rows]: any = await pool.query(
 		`
-        SELECT c.id, c.montant_total, c.created_at,
+        SELECT c.id, c.montant_total, c.frais_livraison, c.created_at,
                u.nom, u.prenom, u.email,
                lc.quantite, lc.prix_unitaire,
                COALESCE(lc.produit_nom, p.nom) AS produit_nom,
@@ -134,7 +136,7 @@ export const getCommandeById = async (id: number) => {
 export const getCommandesByUserId = async (utilisateur_id: number) => {
 	const [rows]: any = await pool.query(
 		`
-        SELECT c.id, c.montant_total, c.created_at,
+        SELECT c.id, c.montant_total, c.frais_livraison, c.created_at,
                lc.quantite, lc.prix_unitaire,
                COALESCE(lc.produit_nom, p.nom) AS produit_nom,
                COALESCE(lc.dimension_label, d.label) AS dimension_label,

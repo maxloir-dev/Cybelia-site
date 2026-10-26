@@ -15,6 +15,7 @@ import utilisateurRoutes from "./routes/utilisateurRoutes"; // Routes /api/utili
 import categorieRoutes from "./routes/categorieRoutes"; // Routes /api/categories
 import uploadRoutes from "./routes/uploadRoutes"; // Routes /api/upload
 import contactRoutes from "./routes/contactRoutes"; // Routes /api/contact
+import panierRoutes from "./routes/panierRoutes";
 import dimensionRoutes from "./routes/dimensionRoutes"; // Routes /api/dimensions
 import stripeRoutes from "./routes/stripeRoutes";
 import { handleWebhook } from "./controllers/stripeController";
@@ -78,6 +79,7 @@ app.use("/api/categories", categorieRoutes);
 app.use("/api/upload", uploadRoutes);
 app.use("/api/contact", contactLimiter, contactRoutes);
 app.use("/api/dimensions", dimensionRoutes);
+app.use("/api/panier", panierRoutes);
 app.use("/api/stripe", stripeRoutes);
 
 // Route de vérification que le serveur tourne
