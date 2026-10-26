@@ -16,6 +16,7 @@ export const envoyerEmailConfirmationCommande = async (
 	prenom: string,
 	commande_id: number,
 	lignes: { produit_nom: string; quantite: number; prix_unitaire: number; dimension_label?: string | null }[],
+	frais_livraison: number,
 	montant_total: number,
 ) => {
 	const lignesHtml = lignes
@@ -46,8 +47,12 @@ export const envoyerEmailConfirmationCommande = async (
 				<tbody>${lignesHtml}</tbody>
 				<tfoot>
 					<tr style="border-top: 1px solid #eee;">
-						<td style="padding-top: 12px; font-weight: bold;">Total</td>
-						<td style="padding-top: 12px; font-weight: bold; text-align: right;">${montant_total.toFixed(2)} €</td>
+						<td style="padding-top: 12px; color: #666;">Livraison</td>
+						<td style="padding-top: 12px; color: #666; text-align: right;">${frais_livraison.toFixed(2)} €</td>
+					</tr>
+					<tr>
+						<td style="padding-top: 8px; font-weight: bold;">Total</td>
+						<td style="padding-top: 8px; font-weight: bold; text-align: right;">${montant_total.toFixed(2)} €</td>
 					</tr>
 				</tfoot>
 			</table>

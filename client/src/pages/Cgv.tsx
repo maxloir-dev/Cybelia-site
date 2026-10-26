@@ -175,12 +175,24 @@ export default function Cgv() {
 
 				<section>
 					<h2>Article 8 – Frais de livraison</h2>
-					<p>Les frais de livraison sont indiqués avant la validation de la commande.</p>
-					<p>Ils varient selon :</p>
+					<p>
+						Les frais de livraison sont calculés automatiquement et affichés dans
+						le panier avant la validation définitive de la commande.
+					</p>
+					<p>Ils dépendent du format des articles commandés :</p>
 					<ul>
-						<li>le transporteur ;</li>
-						<li>le poids ;</li>
-						<li>la destination.</li>
+						<li>
+							chaque format dispose de son propre tarif d’envoi, correspondant
+							à l’emballage nécessaire à sa protection ;
+						</li>
+						<li>
+							un même tarif couvre jusqu’à trois articles d’un même format ;
+							au-delà, un envoi supplémentaire est facturé ;
+						</li>
+						<li>
+							lorsque la commande comporte plusieurs formats différents, les
+							frais correspondants s’additionnent.
+						</li>
 					</ul>
 					<p>Sauf indication contraire, ils restent à la charge du client.</p>
 				</section>

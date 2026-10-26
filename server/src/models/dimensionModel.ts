@@ -5,6 +5,7 @@ export interface Dimension {
 	label: string;
 	largeur_cm: number;
 	hauteur_cm: number;
+	frais_livraison: number;
 }
 
 export interface ProduitDimension extends Dimension {

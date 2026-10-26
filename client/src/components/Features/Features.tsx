@@ -62,7 +62,7 @@ const features = [
 			</svg>
 		),
 		title: "Livraison",
-		description: "Offerte dès 60€",
+		description: "Emballage rigide protégé",
 	},
 	{
 		id: 4,
