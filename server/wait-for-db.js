@@ -5,6 +5,7 @@
 // échoue alors avec `ENOTFOUND`. Ce script réessaie jusqu'à ce que la base
 // réponde, puis rend la main (exit 0). En local, la base répond du premier coup.
 
+require("dotenv").config();
 const mysql = require("mysql2/promise");
 
 const MAX_TENTATIVES = 30; // 30 × 2 s = jusqu'à 60 s d'attente
